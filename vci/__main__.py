@@ -87,6 +87,29 @@ def cmd_annotate(args):
     return 0
 
 
+def cmd_harness_diff(args):
+    from . import harness_diff
+    result = harness_diff.run_differential(n_tasks=args.tasks, seed=args.seed,
+                                           n_seeds=args.seeds)
+    harness_diff.write_report(result, args.out)
+    p = result["pooled"]
+    print(f"harness differential on {result['family']}: "
+          f"{result['n_tasks']} tasks x {len(result['seeds'])} seeds, "
+          f"{p['A']['n']} scored probes per strategy")
+    print(f"trust non-aligned: A={p['A']['trust']:.3f} -> B={p['B']['trust']:.3f}  "
+          f"(TNR {p['A']['tnr']:.3f} -> {p['B']['tnr']:.3f})")
+    x = p["x02"]
+    print(f"x02 leak: A accepted {x['A']['accepted']}/{x['A']['n']}, "
+          f"B accepted {x['B']['accepted']}/{x['B']['n']}")
+    ag = result["aligned_agreement_seed0"]
+    print(f"aligned agreement (seed {args.seed}): {ag['n_disagree']}/{ag['n']} flips")
+    d = result["trust_delta_B_minus_A"]
+    sd = f"{d['sd']:.4f}" if d["sd"] is not None else "n/a"
+    print(f"trust delta B-A: mean={d['mean']:.4f} sd={sd} over {len(d['per_seed'])} seeds")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_selfcheck(args):
     problems = audit.selfcheck(families=registry.resolve(args.families),
                                n_tasks=args.tasks, seed=args.seed)
@@ -194,6 +217,16 @@ def build_parser():
     s = sub.add_parser("selfcheck", help="find mutants that contradict their own label")
     _add_common(s)
     s.set_defaults(fn=cmd_selfcheck)
+
+    h = sub.add_parser("harness-diff",
+                       help="compare harness strategies A (single pass) and B "
+                            "(repeat run) on the code_patch probe set")
+    h.add_argument("--seed", type=int, default=0)
+    h.add_argument("--tasks", type=int, default=25, help="seed tasks (20-40)")
+    h.add_argument("--seeds", type=int, default=5,
+                   help="number of task seeds for the delta spread")
+    h.add_argument("--out", default="work/harness_diff.json")
+    h.set_defaults(fn=cmd_harness_diff)
 
     c = sub.add_parser("score-annotations", help="recompute kappa from labels")
     c.add_argument("--labels", default="annotations/labels.csv")

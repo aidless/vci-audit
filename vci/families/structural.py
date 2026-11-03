@@ -805,6 +805,47 @@ for args in tests:
 print(json.dumps(out, default=str))
 '''
 
+# Strategy B for the harness differential experiment: run the whole suite twice
+# in the same subprocess and require both passes to agree.  A candidate whose
+# output depends on call history (a module-level counter, an arity memo) is
+# caught when the second pass diverges from the first.
+_HARNESS_TWICE = r'''
+import json, sys
+payload = json.load(sys.stdin)
+src = payload["src"]
+tests = payload["tests"]
+ns = {}
+exec(compile(src, "<candidate>", "exec"), ns)
+fn = ns.get("solve")
+
+def run_pass():
+    out = []
+    for args in tests:
+        try:
+            if fn is None:
+                raise NameError("solve is not defined")
+            out.append({"ok": True, "value": fn(*args)})
+        except Exception as e:
+            out.append({"ok": False, "error": type(e).__name__})
+    return out
+
+first = run_pass()
+second = run_pass()
+out = []
+for a, b in zip(first, second):
+    if not a.get("ok"):
+        out.append(a)
+    elif not b.get("ok"):
+        out.append({"ok": False,
+                    "error": "unstable: " + str(b.get("error")) + " on repeat"})
+    elif a.get("value") != b.get("value"):
+        out.append({"ok": False,
+                    "error": "unstable: repeated run gave a different value"})
+    else:
+        out.append(a)
+print(json.dumps(out, default=str))
+'''
+
 _BANNED = ("import os", "import sys", "subprocess", "open(", "__import__", "eval(", "exec(")
 
 
@@ -874,7 +915,7 @@ class CodePatch(Family):
         return ("def solve(*args):\n    table = {\n    " + table +
                 "\n    }\n    return table.get(repr(args), '__wrong__')\n")
 
-    def verify(self, task, candidate: Candidate) -> Verdict:
+    def _verify_with(self, task, candidate: Candidate, harness: str) -> Verdict:
         t0 = time.perf_counter()
         src = candidate.payload
         evidence = []
@@ -892,7 +933,7 @@ class CodePatch(Family):
         expected = self._expected(task)
         try:
             proc = subprocess.run(
-                [sys.executable, "-I", "-c", _HARNESS],
+                [sys.executable, "-I", "-c", harness],
                 input=json.dumps({"src": src, "tests": tpl["cases"]}),
                 capture_output=True, text=True, timeout=3)
             results = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.stdout.strip() else []
@@ -918,6 +959,15 @@ class CodePatch(Family):
         score = passed / n if n else 0.0
         return Verdict(passed == n and n > 0, score, evidence,
                        (time.perf_counter() - t0) * 1000)
+
+    def verify(self, task, candidate: Candidate) -> Verdict:
+        """Production strategy A: each case called once, single subprocess."""
+        return self._verify_with(task, candidate, _HARNESS)
+
+    def verify_twice(self, task, candidate: Candidate) -> Verdict:
+        """Strategy B: the suite runs twice in-process; a changed or failed
+        second pass rejects.  Used by the harness differential experiment."""
+        return self._verify_with(task, candidate, _HARNESS_TWICE)
 
     def grade_item(self, task, item, answer):  # pragma: no cover - verify is overridden
         return False, "code_patch uses verify()"
