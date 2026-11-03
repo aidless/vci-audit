@@ -11,15 +11,15 @@ stability sweep over seeds 0–5: `work/seed_sweep.json`.
 
 | quantity | value |
 |---|---|
-| **Median VCI** | **0.980** (95% bootstrap CI 0.913 – 1.000) |
-| Mean / min / max | 0.961 / 0.814 (`sql_result`) / 1.000 (7 families) |
+| **Median VCI** | **0.983** (95% bootstrap CI 0.913 – 1.000) |
+| Mean / min / max | 0.963 / 0.814 (`sql_result`) / 1.000 (7 families) |
 | **Families ≥ 0.70** | **20 / 20** |
 | Families passing the reliability gate | 20 / 20 — **but κ is measured against synthetic labels** (see §5) |
 | Wrong candidates accepted | **0 / 5,574** |
 | Paraphrases accepted (`tpr_equiv`) | **775 / 775** |
 | Partial answers scored 1.0 | 0 / 2,099 |
 | Verifier exceptions | 0 |
-| Median VCI across seeds 0–5 | 0.978 – 0.985 (never below 20/20 ≥ 0.70) |
+| Median VCI across seeds 0–5 and repeated runs | 0.978 – 0.985 (never below 20/20 ≥ 0.70) |
 
 So: **the index can be measured, it is stable, and the value sits at the ceiling.** Every
 family clears 0.70. That is a much weaker result than it looks, for three reasons spelled out
@@ -33,8 +33,12 @@ VCI is `(C · T² · D)^0.25`, and the three components are not equally informat
   ideal values. This is not 20 independent findings: the mutant generator and the verifier were
   brought into exact agreement by `python -m vci selfcheck` (which rejects any mutant that
   contradicts its own label as a *generator bug*). T is therefore **saturated by construction**.
-* **C (cheapness) = 1.00 everywhere except `code_patch` (0.92, p95 ≈ 56 ms).** Fine-grained
+* **C (cheapness) = 1.00 everywhere except `code_patch` (0.95, p95 ≈ 44 ms).** Fine-grained
   verification is genuinely near-free: 19 of 20 families verify at p95 < 1 ms in-process.
+  `code_patch` is the only family whose score moves between runs, and because its VCI (~0.987)
+  happens to be one of the two middle values of the 20-family sort, that ±0.02 movement is what
+  makes the reported *median* land anywhere in 0.978–0.985. The per-family numbers are stable;
+  the median inherits the one hardware-dependent outlier.
 * **D (density) is the only component that varies**, from 0.44 to 1.00:
   `sql_result` 0.44, four structural families 0.667, `unit_convert` 0.69, … , seven families 1.00.
 
@@ -74,10 +78,11 @@ how easily the current measurement could be wrong:
    agree on both datasets passes. Its defect mutants also needed a `_force_wrong` fallback to
    guarantee they are actually wrong — a sign that "wrong SQL" is semantically slippery in a way
    the other families are not. Treat its FAR as optimistic.
-2. **`code_patch`** (VCI 0.981, C 0.92) — verified by executing the candidate in an isolated
+2. **`code_patch`** (VCI 0.987, C 0.95) — verified by executing the candidate in an isolated
    subprocess against 4 hidden cases with a 3 s timeout. The verifier cannot tell a real fix
    from a patch that hardcodes the expected outputs, and 4 cases is a thin boundary. Its high
-   VCI is also the only one that depends on machine speed (56 ms p95 on this host).
+   VCI is also the only one that depends on machine speed (44–56 ms p95 on this host,
+   C 0.92–0.95).
 3. **`regex_construct`** (VCI 0.976) — a regex is judged only against the labelled
    positive/negative strings shipped with the task. Any regex that satisfies those examples
    passes, including one that is trivially overfit to them. The spec is under-determined by
