@@ -9,6 +9,55 @@ Round-1 and round-2 memos are preserved in git history.
 
 ---
 
+## Round-5 addendum — positive directional probes, authored where they are measurable (2026-11-04)
+
+Round 5 closed the §8-3 blank **for the families where it can be closed honestly**:
+150 `directional_shift` probes (operator `DIR`, generator `v4.0`), one accept/reject pair
+per task for `sql_result`, `regex_construct`, `code_patch`.  Each probe carries a
+`task_override` — a perturbed copy of the task — and `audit` verifies the candidate
+against the override.  Accept probes submit the independently recomputed correct answer
+to the perturbed input; reject probes submit the answer that was correct *before* the
+change.
+
+**Result:** the `directional` row is now measured — n=575, pos=75/neg=500, **TPR 1.00,
+TNR 1.00, FAR90 0.00**, zero false rejects, zero stale accepts.  The sharp side is the
+stale-answer one: the sql constant-queries that memorise the visible primary result
+(the two HARD leaks of §4) are now caught 25/25 once the dataset shifts; the regex
+alternation of the original positives fails on fresh unseen strings 25/25; the
+`code_patch` implementation of the original spec fails the shifted spec's hidden cases
+25/25.
+
+**Structural finding (why 3 families, not 20):** seventeen verifiers in this suite grade
+the payload against expected values stored in the task itself.  There, a perturbed
+(input, truth) pair is accepted *by construction* — authoring 425 positive directional
+probes would manufacture a meaningless TPR 1.00.  Only verifiers that re-derive truth by
+executing the candidate against task-carried data (sql runs the query on shifted rows,
+regex re-tests fresh strings, code_patch re-runs hidden cases) can express directional
+risk at all.  Stated plainly: for fixture-replay verifiers the directional risk class
+does not exist in this architecture, and its absence is a property of the architecture,
+not evidence of robustness.  Their per-family directional cells stay `–`.
+
+**Two construction notes, honestly recorded.**
+
+- 2 of 25 sql tasks (items ⊆ {rich_depts, regions_over_3} with every region already over
+  the threshold) are invariant under any pure relabelling shift; they only became
+  shiftable after adding a variant that removes most rows of one region.  A task whose
+  answer does not change under a shift cannot support a stale-answer probe — authoring
+  one would be a false accusation, so the builder returns no probe rather than forcing
+  one.
+- Pooling caveat: the 50 correct directional outcomes per family dilute each family's
+  *pooled* trust (regex 0.500 → 0.667, sql 0.920 → 0.960, code_patch 0.585 → 0.652), and
+  `regex_construct` thereby crosses the provisional bar (0.690 → 0.797; the ≥0.70 count
+  moves 16/20 → 17/20).  **The leaks themselves are unchanged** — regex
+  minimum-functionality trust is still 0.500 and the per-category cells show it.  Median
+  VCI is unchanged (0.934).  Probe κ 0.664 → 0.701 [0.662, 0.736], α 0.666 → 0.701
+  (n=1,381 scored probes).
+
+The validity ceiling of §7 is unchanged: all new probes are still synthetic, and the
+directional row additionally measures only execution-derived verifiers by construction.
+
+---
+
 ## 1. Headline
 
 | quantity | round 1 | round 2 | **round 3** |
@@ -208,7 +257,8 @@ In priority order — each removes one of the ceilings above, and none is a cosm
    and `core_human_backed` stays empty.
 3. **Author positive directional probes** (25 per family: correct answer to the perturbed input).
    Without them `directional` TPR remains unmeasured and one third of the category table is half
-   studied.
+   studied.  **Done in round 5 for the three execution-derived verifiers — see the round-5
+   addendum, which also shows why the other seventeen cannot express the category.**
 4. **Close the `STATE/x02` leak.** Run the code_patch verifier in a subprocess per case, or run all
    cases twice and require identical output. Then the stateful probe set stops being a measure of
    the harness's process model.
@@ -219,7 +269,7 @@ In priority order — each removes one of the ceilings above, and none is a cosm
 ## 9. Reproduce
 
 ```
-python3 -m pytest -q                       # 79 tests
+python3 -m pytest -q                       # 97 tests
 python3 -m vci audit --families all --out outputs
 python3 -m vci label --sheet annotations/blind.csv --out annotations/labels.csv \
     --qualification --group-by-family --shuffle-seed 7

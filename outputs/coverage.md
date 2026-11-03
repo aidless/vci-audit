@@ -1,12 +1,12 @@
 # VCI coverage table (round 3)
 
-seed=`0`  tasks/family=`25`  families=`20`  aligned candidates=`6849`  non-aligned probes=`1232`  generator version=`3.0`
+seed=`0`  tasks/family=`25`  families=`20`  aligned candidates=`6849`  non-aligned probes=`1382`  generator version=`4.0`
 
-**Median VCI 0.934** (95% bootstrap CI 0.904-1.000); aligned-only median 0.984 (0.913-1.000). **16/20 families >= 0.70**.
+**Median VCI 0.934** (95% bootstrap CI 0.904-1.000); aligned-only median 0.990 (0.913-1.000). **17/20 families >= 0.70**.
 
 Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no human labels yet)` (human rows n=0, undecidable 0; synthetic upper bound 1.000 is reported separately and is not a human value).
 
-**Krippendorff alpha (ordinal) alongside:** `1.000` (source `synthetic`, decided values n=13698, undecidable 0, 95% CI 1.000-1.000). Independent-probe oracle alpha `0.664` (n=2462).
+**Krippendorff alpha (ordinal) alongside:** `1.000` (source `synthetic`, decided values n=13698, undecidable 0, 95% CI 1.000-1.000). Independent-probe oracle alpha `0.701` (n=2762).
 
 `alpha` and `kappa` are reported side by side, never merged. With two coders and two labels they answer the same question; they diverge when (a) undecidable rows exist -- kappa drops them, alpha keeps them as missing units and still counts them in the expected disagreement; (b) prevalence is extreme -- kappa's expected agreement is pinned by the marginals while alpha estimates it from the pooled distribution with a finite-sample correction; (c) more than two coders or ordinal labels are used, where kappa is not defined. If they disagree, trust neither until the undecidable count is reported.
 
@@ -28,9 +28,9 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | csp_assign | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | schedule_slots | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | topo_order | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| sql_result | 0.781 | 0.716-0.838 | 1.00 | 0.44 | 2.0 | 0.92 | 1.00 | 0.92 | 1.00 | 1.00 | 0.00 | 1.00 | 0.92 | 0.08 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| code_patch | 0.756 | 0.746-0.764 | 0.95 | 1.00 | 4.0 | 0.58 | 1.00 | 0.58 | 1.00 | 1.00 | 0.00 | 1.00 | 0.58 | 0.42 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
-| regex_construct | 0.690 | 0.677-0.700 | 1.00 | 0.91 | 4.0 | 0.50 | 1.00 | 0.50 | 1.00 | 1.00 | 0.00 | 1.00 | 0.50 | 0.50 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
+| code_patch | 0.807 | 0.800-0.814 | 1.00 | 1.00 | 4.0 | 0.65 | 1.00 | 0.65 | 1.00 | 1.00 | 0.00 | 1.00 | 0.65 | 0.35 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
+| sql_result | 0.798 | 0.754-0.838 | 1.00 | 0.44 | 2.0 | 0.96 | 1.00 | 0.96 | 1.00 | 1.00 | 0.00 | 1.00 | 0.96 | 0.04 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
+| regex_construct | 0.797 | 0.782-0.808 | 1.00 | 0.91 | 4.0 | 0.67 | 1.00 | 0.67 | 1.00 | 1.00 | 0.00 | 1.00 | 0.67 | 0.33 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | unit_convert | 0.000 | 0.000-0.000 | 1.00 | 0.69 | 3.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | log_field_extraction | 0.000 | 0.000-0.000 | 1.00 | 1.00 | 10.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.00 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | template_render | 0.000 | 0.000-0.000 | 1.00 | 1.00 | 5.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
@@ -43,7 +43,7 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 |---|---|---|---|---|---|---|---|
 | **pooled** | minimum_functionality | 154 | 50 | 104 | 0.00 | 0.46 | 1.00 |
 | **pooled** | invariance | 652 | 550 | 102 | 0.86 | 0.75 | 0.25 |
-| **pooled** | directional | 425 | 0 | 425 | - | 1.00 | 0.00 |
+| **pooled** | directional | 575 | 75 | 500 | 1.00 | 1.00 | 0.00 |
 | stats_summary | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | stats_summary | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
 | matrix_ops | invariance | 25 | 25 | 0 | 1.00 | - | - |
@@ -72,12 +72,15 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | schedule_slots | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
 | topo_order | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | topo_order | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
-| sql_result | minimum_functionality | 25 | 0 | 25 | - | 0.92 | 0.08 |
-| sql_result | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | code_patch | minimum_functionality | 29 | 0 | 29 | - | 0.00 | 1.00 |
 | code_patch | invariance | 126 | 25 | 101 | 1.00 | 0.75 | 0.25 |
+| code_patch | directional | 50 | 25 | 25 | 1.00 | 1.00 | 0.00 |
+| sql_result | minimum_functionality | 25 | 0 | 25 | - | 0.92 | 0.08 |
+| sql_result | invariance | 25 | 25 | 0 | 1.00 | - | - |
+| sql_result | directional | 50 | 25 | 25 | 1.00 | 1.00 | 0.00 |
 | regex_construct | minimum_functionality | 50 | 0 | 50 | - | 0.50 | 0.50 |
 | regex_construct | invariance | 25 | 25 | 0 | 1.00 | - | - |
+| regex_construct | directional | 50 | 25 | 25 | 1.00 | 1.00 | 0.00 |
 | unit_convert | minimum_functionality | 25 | 25 | 0 | 0.00 | - | - |
 | unit_convert | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | unit_convert | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
@@ -87,7 +90,7 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | template_render | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | template_render | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
 
-`-` in TPR/TNR/FAR90 means the denominator is empty (no such probe was authored), not zero. `directional` currently has no positive probe, so its TPR is unmeasured; see the memo, §validity ceiling.
+`-` in TPR/TNR/FAR90 means the denominator is empty (no such probe was authored), not zero. Positive `directional` probes exist only for families whose verifier derives truth by executing the candidate against task-carried data (sql_result, regex_construct, code_patch); for fixture-replay verifiers a perturbed (input, truth) pair would be accepted by construction, so none is authored and the family cell stays `-`. See the memo, §validity ceiling.
 
 ## Attribution: where a disagreement lands
 
@@ -97,8 +100,8 @@ Three buckets: `verifier_too_strict` (a correct answer rejected because of its s
 |---|---|---|---|---|---|
 | verifier_too_strict | 75 | 0 | 0 | 75 | 0 |
 | task_under_specified | 50 | 0 | 0 | 50 | 0 |
-| true_defect | 631 | 550 | 81 | 0 | 0 |
-| agreement | 475 | 0 | 0 | 0 | 475 |
+| true_defect | 706 | 625 | 81 | 0 | 0 |
+| agreement | 550 | 0 | 0 | 0 | 550 |
 | observe | 1 | 0 | 0 | 0 | 0 |
 
 First examples per bucket (full list in `attribution.csv`):
@@ -131,8 +134,8 @@ Cell = share of that class the verifier accepted. `n` is the number of probes in
 | topo_order | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | life_step | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | sql_result | 1.00 (n=25) | - | 0.08 (n=25) | - | - | - |
-| code_patch | 1.00 (n=25) | - | 1.00 (n=25) | 1.00 (n=4) | - | 0.25 (n=102) |
 | regex_construct | 1.00 (n=25) | - | - | 0.50 (n=50) | - | - |
+| code_patch | 1.00 (n=25) | - | 1.00 (n=25) | 1.00 (n=4) | - | 0.25 (n=102) |
 | unit_convert | 1.00 (n=25) | 0.00 (n=25) | - | - | 0.00 (n=25) | - |
 | log_field_extraction | 0.00 (n=75) | - | - | - | 0.00 (n=25) | - |
 | template_render | 1.00 (n=25) | 0.00 (n=25) | - | - | 0.00 (n=25) | - |
@@ -141,6 +144,6 @@ Cell = share of that class the verifier accepted. `n` is the number of probes in
 
 - **unit_convert** (non-aligned gate): TPR 0.50 < 0.90 (valid variants rejected); FAR90 1.00 > 0.20 (tolerance admits wrong answers)
 - **log_field_extraction** (non-aligned gate): TPR 0.00 < 0.90 (valid variants rejected); FAR90 1.00 > 0.20 (tolerance admits wrong answers)
-- **regex_construct** (non-aligned gate): TNR 0.50 < 0.90 (wrong answers accepted); FAR90 0.50 > 0.20 (tolerance admits wrong answers)
+- **regex_construct** (non-aligned gate): TNR 0.67 < 0.90 (wrong answers accepted); FAR90 0.33 > 0.20 (tolerance admits wrong answers)
 - **template_render** (non-aligned gate): TPR 0.50 < 0.90 (valid variants rejected); FAR90 1.00 > 0.20 (tolerance admits wrong answers)
-- **code_patch** (non-aligned gate): TNR 0.58 < 0.90 (wrong answers accepted); FAR90 0.42 > 0.20 (tolerance admits wrong answers)
+- **code_patch** (non-aligned gate): TNR 0.65 < 0.90 (wrong answers accepted); FAR90 0.35 > 0.20 (tolerance admits wrong answers)

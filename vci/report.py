@@ -192,8 +192,12 @@ def write_markdown(payload, path):
                          f"{c['n_neg']} | {_f(c['tpr'], 2)} | {_f(c['tnr'], 2)} | "
                          f"{_f(c['far90'], 2)} |")
     lines += ["", "`-` in TPR/TNR/FAR90 means the denominator is empty (no such probe "
-              "was authored), not zero. `directional` currently has no positive probe, "
-              "so its TPR is unmeasured; see the memo, §validity ceiling."]
+              "was authored), not zero. Positive `directional` probes exist only for "
+              "families whose verifier derives truth by executing the candidate "
+              "against task-carried data (sql_result, regex_construct, code_patch); "
+              "for fixture-replay verifiers a perturbed (input, truth) pair would be "
+              "accepted by construction, so none is authored and the family cell "
+              "stays `-`. See the memo, §validity ceiling."]
 
     lines += ["", "## Attribution: where a disagreement lands", "",
               "Three buckets: `verifier_too_strict` (a correct answer rejected because of "

@@ -41,6 +41,21 @@ cannot see.
 | `INF` | non-termination / unbounded resource use | detectable by a watchdog, but the cost is wall-clock: observed, not scored |
 | `EQUIV` | not a defect: same meaning, different spelling | authored, not decided; measures false rejects only where the author is right |
 | `AMB` | not a defect: a defensible second reading of an under-specified prompt | a rejection here blames the task text, not the verifier |
+| `DIR` | input changed, so the correct answer changed | only measurable where the verifier derives truth by executing the candidate against task-carried data; on fixture-replay verifiers a perturbed pair is accepted by construction and is therefore not authored |
+
+Round-5 additions
+-----------------
+``directional_shift`` probes carry a ``task_override``: a perturbed copy of the
+task whose input data changed in a known way.  ``audit._probe_record`` verifies
+the candidate against the override, not the original task.  Positive probes
+submit the independently recomputed correct answer to the perturbed input
+(expectation ``accept``); negative probes submit the answer that was correct
+*before* the change (expectation ``reject``).  They exist only for the three
+families whose verifier re-derives truth by execution (``sql_result``,
+``regex_construct``, ``code_patch``).  For the remaining seventeen the verifier
+compares against expected values stored in the task, so a perturbed
+(input, truth) pair would be accepted by construction and would manufacture a
+meaningless TPR -- no such probe is authored.
 
 Representative weakness of the whole sample (Just et al., FSE 2014): mutants are
 correlated with real faults but their *distribution* is not the distribution of
@@ -80,6 +95,7 @@ Failure classes
 ``silent_partial``      runs fine, locally right, wrong at a boundary
 ``semantic_equivalent`` same meaning, different spelling
 ``resource``            timeout / state-dependent (non-deterministic) output
+``directional_shift``   the task input changed; the answer must change with it
 
 ``expectation`` is one of ``accept`` / ``reject`` / ``observe``.  ``observe``
 probes are measured (cost, outcome) but excluded from TPR/TNR because the
@@ -106,6 +122,7 @@ FAILURE_CLASSES = (
     "silent_partial",
     "semantic_equivalent",
     "resource",
+    "directional_shift",
 )
 EXPECTATIONS = ("accept", "reject", "observe")
 
@@ -120,6 +137,7 @@ CATEGORY_BY_CLASS = {
     "silent_partial": "directional",
     "semantic_equivalent": "invariance",
     "resource": "invariance",
+    "directional_shift": "directional",
 }
 
 #: Default mutation operator per failure class (overridden per probe where a
@@ -131,15 +149,16 @@ OPERATOR_BY_CLASS = {
     "silent_partial": "CR",
     "semantic_equivalent": "EQUIV",
     "resource": "STATE",
+    "directional_shift": "DIR",
 }
 
 #: The mutation operators a probe record may carry (see the module docstring).
 OPERATORS = ("AOR", "ROR", "CR", "SDL", "TR", "OVF", "HARD", "STATE",
-             "NONDET", "INF", "EQUIV", "AMB")
+             "NONDET", "INF", "EQUIV", "AMB", "DIR")
 
 #: Bumped whenever a probe payload changes, so a result file can be traced to
 #: the sample that produced it.
-GENERATOR_VERSION = "3.0"
+GENERATOR_VERSION = "4.0"
 
 
 @dataclass
@@ -157,6 +176,9 @@ class Probe:
     note: str
     basis: str
     generator_version: str = GENERATOR_VERSION
+    #: Round 5: when set, the verifier is run against this perturbed task
+    #: instead of the original one (directional probes only).
+    task_override: Any = None
 
     @property
     def label(self) -> Optional[str]:
@@ -238,7 +260,7 @@ def _digits(value: int, base: int) -> str:
 
 def _mk(task: Task, idx: int, cls: str, exp: str, payload: Any,
         note: str, basis: str, category: Optional[str] = None,
-        operator: Optional[str] = None) -> Probe:
+        operator: Optional[str] = None, task_override: Any = None) -> Probe:
     assert cls in FAILURE_CLASSES and exp in EXPECTATIONS
     cat = category or CATEGORY_BY_CLASS[cls]
     op = operator or OPERATOR_BY_CLASS[cls]
@@ -246,7 +268,7 @@ def _mk(task: Task, idx: int, cls: str, exp: str, payload: Any,
     return Probe(probe_id=f"{task.task_id}-x{idx:02d}", task_id=task.task_id,
                  family=task.family, failure_class=cls, checklist_category=cat,
                  operator=op, expectation=exp, payload=payload, note=note,
-                 basis=basis)
+                 basis=basis, task_override=task_override)
 
 
 def _record_key(task: Task) -> Dict[str, Dict[str, Any]]:
@@ -448,7 +470,7 @@ def _regex(task: Task, heavy: bool) -> List[Probe]:
     # the verifier notices this one, which isolates "positive-only overfit".
     all_labels = ["^(?:" + "|".join(re.escape(s) for s in sp["pos"] + sp["neg"])
                   + ")$" for sp in specs]
-    return [
+    probes = [
         _mk(task, 0, "semantic_equivalent", "accept", acc,
             "patterns re-derived from the stated rule with a different spelling",
             "own rule->regex derivation; no access to the family's pattern strings"),
@@ -461,6 +483,69 @@ def _regex(task: Task, heavy: bool) -> List[Probe]:
             "generalises to nothing (this should be caught)",
             "built from the full labelled set"),
     ]
+    fresh_specs = _regex_fresh_specs(task)
+    override = Task(family=task.family, task_id=task.task_id + "-dir",
+                    prompt=task.prompt +
+                    "\n[directional probe: labelled strings replaced by fresh ones]",
+                    items=[dict(it) for it in task.items],
+                    meta={"specs": fresh_specs})
+    probes += [
+        _mk(task, 3, "directional_shift", "accept", acc,
+            "the general rule patterns, evaluated against a fresh set of "
+            "positive/negative strings the probe author never saw labelled",
+            "fresh strings generated here from the stated rule and self-checked "
+            "against the own pattern; the verifier must classify them",
+            operator="DIR", task_override=override),
+        _mk(task, 4, "directional_shift", "reject", overfit,
+            "alternation of the *original* positive strings, evaluated against the "
+            "fresh string set: right answer to the old input",
+            "the input changed, so the memorised alternation must fail on the "
+            "fresh positives", operator="DIR", task_override=override),
+    ]
+    return probes
+
+
+#: Candidate fresh strings per spec kind (round 5).  Positives must match the
+#: own rule pattern, negatives must not; both are checked at build time.
+_FRESH_STRINGS = {
+    "hex_color": (
+        ["#9C4f2A", "#0a1B2c", "#Ff00Aa", "#123aBc"],
+        ["#9C4f2", "#9C4f2A1", "#9C4f2G", "9C4f2A", "#9C 4f2A"]),
+    "ipv4_shape": (
+        ["10.20.30.40", "1.2.3.4", "192.168.0.100", "255.0.127.9"],
+        ["10.20.30", "10.20.30.40.50", "10.20.30.0400", "a.20.30.40",
+         "10.20.30.40 "]),
+    "identifier": (
+        ["alpha_99", "z_123", "beta7_x", "q_w_e_r_1"],
+        ["Alpha_99", "ab", "a_b", "9abc_", "a-b_c", "a_b_c_d_e_f_g_h_1_2"]),
+    "iso_date_shape": (
+        ["2026-11-04", "1999-01-01", "2030-12-31", "2024-02-29"],
+        ["2026-1-4", "20261104", "2026/11/04", "26-11-0404", "2026-11-04 "]),
+    "python_file": (
+        ["utils.py", "my.module-v2.py", "_private.py", "UPPER.py"],
+        ["utils.pyc", "utils.PY", "utils", "utils.py ", ".py"]),
+    "hex_bytes": (
+        ["de ad be ef", "00", "ff 00 aa 11", "0f"],
+        ["DE AD", "de ad ", "dea d", "0g 00", "de  ad"]),
+}
+
+
+def _regex_fresh_specs(task: Task) -> List[Dict[str, Any]]:
+    """Fresh pos/neg strings per spec, disjoint from the task's labelled set."""
+    out = []
+    for sp in task.meta["specs"]:
+        kind = sp["kind"]
+        pattern = re.compile(_GENERAL[kind])
+        pos_c, neg_c = _FRESH_STRINGS[kind]
+        seen = set(sp["pos"]) | set(sp["neg"])
+        pos = [s for s in pos_c
+               if s not in seen and pattern.fullmatch(s) is not None]
+        neg = [s for s in neg_c
+               if s not in seen and pattern.fullmatch(s) is None]
+        assert len(pos) >= 2 and len(neg) >= 2, f"not enough fresh strings for {kind}"
+        out.append({"kind": kind, "pos": pos[:2], "neg": neg[:2],
+                    "loose": sp["loose"], "tight": sp["tight"]})
+    return out
 
 
 def _template(task: Task, heavy: bool) -> List[Probe]:
@@ -512,7 +597,7 @@ def _sql(task: Task, heavy: bool) -> List[Probe]:
         rows = it["expected"]["primary"]
         selects = ["SELECT " + ", ".join(_sql_lit(c) for c in row) for row in rows]
         consts.append(" UNION ALL ".join(selects) if selects else "SELECT NULL LIMIT 0")
-    return [
+    probes = [
         _mk(task, 0, "semantic_equivalent", "accept", acc,
             "same result set expressed with aliases, ordinal ORDER BY and IN/H> forms",
             "own SQL rewrite per question, checked against no verifier code"),
@@ -522,6 +607,135 @@ def _sql(task: Task, heavy: bool) -> List[Probe]:
             "built from the task fixture's primary result rows, as a memorising solver "
             "would", operator="HARD"),
     ]
+    shifted = _sql_shifted_task(task)
+    if shifted is not None:
+        probes += [
+            _mk(task, 2, "directional_shift", "accept", acc,
+                "correct general queries, submitted against a shifted dataset "
+                "(amounts doubled, dept/region/status rotated)",
+                "own pure-Python reference recomputed the shifted expected values; "
+                "the verifier must execute on the shifted rows to agree",
+                operator="DIR", task_override=shifted),
+            _mk(task, 3, "directional_shift", "reject", consts,
+                "constant rows memorising the original primary result, submitted "
+                "after the dataset shift: right answer to the old input",
+                "the input changed, so the memorised answer must fail; caught iff "
+                "the verifier really executes on the shifted data",
+                operator="DIR", task_override=shifted),
+        ]
+    return probes
+
+
+# ------------------------------------------------- directional helpers (round 5)
+_SQL_DEPT_ROT = {"ENG": "SLS", "SLS": "OPS", "OPS": "HR", "HR": "ENG"}
+_SQL_REGION_ROT = {"NA": "EU", "EU": "APAC", "APAC": "NA"}
+_SQL_STATUS_ROT = {"paid": "pending", "pending": "refund", "refund": "paid"}
+_SQL_STATUS_SWAP = {"paid": "pending", "pending": "paid", "refund": "refund"}
+#: Own copy of the constant depts fixture (task data; never read back from the
+#: family module at decision time).
+_SQL_DEPTS = [("ENG", "Ada", 900), ("SLS", "Grace", 700),
+              ("OPS", "Linus", 500), ("HR", "Maria", 300)]
+
+
+def _sql_ref(key: str, rows: List[List[Any]]) -> List[List[Any]]:
+    """Pure-Python reference results for the six question templates."""
+    if key == "sum_by_dept":
+        tot: Dict[str, int] = {}
+        for r in rows:
+            tot[r[1]] = tot.get(r[1], 0) + r[3]
+        return [[d, tot[d]] for d in sorted(tot)]
+    if key == "count_paid":
+        return [[sum(1 for r in rows if r[4] == "paid")]]
+    if key == "top2_depts":
+        tot = {}
+        for r in rows:
+            tot[r[1]] = tot.get(r[1], 0) + r[3]
+        assert len(set(tot.values())) == len(tot), "top2 tie repair failed"
+        return [[d, t] for d, t in sorted(tot.items(), key=lambda kv: (-kv[1], kv[0]))[:2]]
+    if key == "regions_over_3":
+        cnt: Dict[str, int] = {}
+        for r in rows:
+            cnt[r[2]] = cnt.get(r[2], 0) + 1
+        return [[g] for g in sorted(cnt) if cnt[g] > 3]
+    if key == "rich_depts":
+        return [[n, h, b] for n, h, b in sorted(_SQL_DEPTS) if b > 600]
+    if key == "avg_by_region":
+        sums: Dict[str, List[int]] = {}
+        for r in rows:
+            sums.setdefault(r[2], []).append(r[3])
+        return [[g, sum(v) / len(v)] for g, v in sorted(sums.items())]
+    raise KeyError(key)
+
+
+def _sql_shift_rows(rows: List[List[Any]], mult: int,
+                    status_map: Dict[str, str],
+                    shrink_first_region: bool = False) -> List[List[Any]]:
+    out = [[r[0], _SQL_DEPT_ROT[r[1]], _SQL_REGION_ROT[r[2]], r[3] * mult,
+            status_map[r[4]]] for r in rows]
+    if shrink_first_region:
+        # Large but valid shift: keep only two rows of the lexicographically
+        # first region, so a "all regions are over 3" answer must change.
+        first = sorted({r[2] for r in out})[0]
+        kept, seen = [], 0
+        for r in out:
+            if r[2] == first:
+                seen += 1
+                if seen > 2:
+                    continue
+            kept.append(r)
+        out = kept
+    # top2_depts is ordered by total: ties would make the reference order
+    # engine-dependent, so bump amounts until every dept total is distinct.
+    for _ in range(20):
+        tot: Dict[str, int] = {}
+        for r in out:
+            tot[r[1]] = tot.get(r[1], 0) + r[3]
+        dup = {d for d, t in tot.items() if list(tot.values()).count(t) > 1}
+        if not dup:
+            return out
+        for r in out:
+            if r[1] in dup:
+                r[3] += 1
+                break
+    raise AssertionError("tie repair did not converge")
+
+
+def _sql_shifted_task(task: Task) -> Optional[Task]:
+    """A copy of the task on shifted data, with expected values recomputed here.
+
+    Returns ``None`` when no deterministic shift changes any item's result
+    (then a stale-answer probe would be accidentally correct).
+    """
+    variants = [
+        (2, _SQL_STATUS_ROT, False), (2, _SQL_STATUS_SWAP, False),
+        (3, _SQL_STATUS_ROT, False), (2, _SQL_STATUS_ROT, True),
+        (2, _SQL_STATUS_SWAP, True), (3, _SQL_STATUS_SWAP, True),
+        (2, _SQL_STATUS_ROT, "shrink"), (3, _SQL_STATUS_SWAP, "shrink"),
+    ]
+    for mult, status_map, drop_last in variants:
+        shrink = drop_last == "shrink"
+        rows = _sql_shift_rows(task.meta["rows"], mult, status_map, shrink)
+        probe = _sql_shift_rows(task.meta["probe"], mult, status_map, shrink)
+        if drop_last is True:
+            rows, probe = rows[:-1], probe[:-1]
+        items, changed = [], False
+        for it in task.items:
+            exp = {"primary": _sql_ref(it["key"], rows),
+                   "probe": _sql_ref(it["key"], probe)}
+            old = it["expected"]
+            if exp["primary"] != old["primary"] or exp["probe"] != old["probe"]:
+                changed = True
+            items.append({"unit": it["unit"], "expected": exp,
+                          "ordered": it["ordered"], "key": it["key"]})
+        if changed:
+            prompt = (task.prompt +
+                      "\n[directional probe: dataset shifted -- amounts scaled, "
+                      "dept/region/status relabelled]")
+            meta = {"rows": rows, "probe": probe,
+                    "questions": task.meta["questions"]}
+            return Task(family=task.family, task_id=task.task_id + "-dir",
+                        prompt=prompt, items=items, meta=meta)
+    return None
 
 
 def _table(task: Task, heavy: bool) -> List[Probe]:
@@ -808,6 +1022,7 @@ def _life(task: Task, heavy: bool) -> List[Probe]:
 
 # ---------------------------------------------------------------- code-patch probes
 _CASES: Dict[str, List[List[Any]]] = {}
+_TEMPLATES: Dict[str, Dict[str, Any]] = {}
 
 
 def _code_cases() -> Dict[str, List[List[Any]]]:
@@ -818,6 +1033,18 @@ def _code_cases() -> Dict[str, List[List[Any]]]:
         for t in _CODE_TEMPLATES:
             _CASES[t["name"]] = [list(c) for c in t["cases"]]
     return _CASES
+
+
+def _code_templates() -> Dict[str, Dict[str, Any]]:
+    """The fixture rows themselves (spec text, buggy source, case inputs)."""
+    if not _TEMPLATES:
+        from .families.structural import _CODE_TEMPLATES  # fixture table only
+
+        for t in _CODE_TEMPLATES:
+            _TEMPLATES[t["name"]] = {"spec": t["spec"], "buggy": t["buggy"],
+                                     "sig": list(t["sig"]),
+                                     "cases": [list(c) for c in t["cases"]]}
+    return _TEMPLATES
 
 
 def _code_impl(name: str) -> Tuple[Callable[..., Any], str]:
@@ -913,6 +1140,32 @@ def _code(task: Task, heavy: bool) -> List[Probe]:
             "task's answer",
             "module-level memo keyed by arity only, deliberately not keyed by input",
             operator="STATE"),
+    ]
+    # Round 5 (directional): the task's spec is swapped for the next template in
+    # the fixture table.  The verifier derives truth by executing the candidate
+    # against that template's hidden cases, so an input change it cannot track
+    # would show up here.  ids x09/x10 stay fixed whether or not heavy probes run.
+    names = list(_code_templates())
+    other = names[(names.index(name) + 1) % len(names)]
+    tpl_b = _code_templates()[other]
+    override = Task(
+        family=task.family, task_id=task.task_id + "-dir",
+        prompt=(f"Fix the function below so that it satisfies: {tpl_b['spec']}.  "
+                "Return the full module source defining solve.\n\n" + tpl_b["buggy"]),
+        items=[{"unit": f"t{i + 1}", "expected": None, "case_index": i}
+               for i in range(len(tpl_b["cases"]))],
+        meta={"template": other, "sig": tpl_b["sig"]})
+    probes += [
+        _mk(task, 9, "directional_shift", "accept", _code_impl(other)[1],
+            f"independent correct implementation of the shifted spec ({other})",
+            "own implementation of the new spec; the verifier must execute it "
+            "against the new template's hidden cases",
+            operator="DIR", task_override=override),
+        _mk(task, 10, "directional_shift", "reject", alt_src,
+            f"correct implementation of the *original* spec ({name}), submitted "
+            f"after the task shifted to {other}: right answer to the old input",
+            "the input changed, so the old correct answer must fail the new "
+            "hidden cases", operator="DIR", task_override=override),
     ]
     if name == "chunk":
         probes.append(_mk(task, 6, "overfit_to_tests", "reject",

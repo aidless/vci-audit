@@ -72,16 +72,24 @@ def test_attribution_csv_covers_every_probe(tmp_path):
 
 def test_pooled_category_rates_with_an_empty_denominator_are_none(tmp_path):
     payload = _run(tmp_path)
-    direction = payload["summary"]["pooled_categories"]["directional"]
-    assert direction["n_neg"] > 0 and direction["n_pos"] == 0
-    assert direction["tpr"] is None
-    assert direction["tnr"] is not None
+    cats = payload["summary"]["pooled_categories"]
+    # In this slice minimum_functionality still has no positive probe: an empty
+    # denominator must be reported as None, never as 0.0 ...
+    minfunc = cats["minimum_functionality"]
+    assert minfunc["n_neg"] > 0 and minfunc["n_pos"] == 0
+    assert minfunc["tpr"] is None
+    assert minfunc["tnr"] is not None
     # ... and the rendered table must not print it as 0.00.
     md_path = tmp_path / "coverage.md"
     report.write_markdown(payload, str(md_path))
     row = [l for l in md_path.read_text(encoding="utf-8").splitlines()
-           if l.startswith("| **pooled** | directional |")]
+           if l.startswith("| **pooled** | minimum_functionality |")]
     assert row and "| - |" in row[0]
+    # Round 5: sql_result contributes directional positives, so the directional
+    # TPR is now measured (and the shifted correct answers must all pass).
+    direction = cats["directional"]
+    assert direction["n_pos"] > 0 and direction["n_neg"] > 0
+    assert direction["tpr"] == 1.0
 
 
 def test_raw_jsonl_is_written_for_auditability(tmp_path):

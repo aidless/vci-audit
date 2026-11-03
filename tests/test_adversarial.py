@@ -67,6 +67,11 @@ def test_probe_fields_are_valid_and_bound_to_the_task():
             assert p.checklist_category in adversarial.CHECKLIST_CATEGORIES
             assert p.operator in adversarial.OPERATORS
             assert p.generator_version == adversarial.GENERATOR_VERSION
+            # Round 5: only directional probes may carry a perturbed task.
+            assert (p.task_override is not None) == (p.failure_class == "directional_shift")
+            if p.task_override is not None:
+                assert p.task_override.family == p.family
+                assert p.task_override.task_id == p.task_id + "-dir"
         # Every family contributes at least one *reject* probe and at least one
         # equivalence or ambiguity probe: a family with only reject probes could
         # not measure false rejections.
@@ -91,7 +96,7 @@ def test_all_three_checklist_categories_and_operators_are_covered():
     assert missing == [], f"documented operators missing: {missing}"
 
 
-def test_all_six_failure_classes_are_covered_across_the_registry():
+def test_all_seven_failure_classes_are_covered_across_the_registry():
     seen = set()
     for meta in registry.registry_metadata():
         fam = registry.by_name(meta["family"])
@@ -177,3 +182,63 @@ def test_only_the_code_patch_fixture_table_is_imported():
         if isinstance(node, ast.ImportFrom) and node.level > 0:
             modules.add("vci." + (node.module or ""))
     assert modules == {"vci.schema", "vci.families.structural"}
+
+
+# --- Round 5: positive directional probes on execution-derived verifiers -----
+def _run_directional(family, n=3, seed=0):
+    fam = registry.by_name(family)
+    out = []
+    for task in fam.generate(n, random.Random(seed)):
+        for p in adversarial.probes_for(family, task):
+            if p.failure_class != "directional_shift":
+                continue
+            eff = p.task_override or task
+            cand = Candidate(cand_id=p.probe_id, task_id=task.task_id,
+                             family=family, payload=p.payload,
+                             defect=p.failure_class)
+            out.append((p, fam.verify(eff, cand)))
+    return out
+
+
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+def test_every_task_has_a_directional_probe_pair(family):
+    fam = registry.by_name(family)
+    task = fam.generate(1, random.Random(3))[0]
+    probes = [p for p in adversarial.probes_for(family, task)
+              if p.failure_class == "directional_shift"]
+    assert {p.expectation for p in probes} == {"accept", "reject"}
+    assert all(p.checklist_category == "directional" and p.operator == "DIR"
+               for p in probes)
+
+
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+def test_directional_accept_probes_are_accepted(family):
+    """The correct answer to the perturbed input must pass: a rejection is a
+    false reject on new input -- the quantity the directional TPR measures."""
+    pairs = [(p, v) for p, v in _run_directional(family) if p.expectation == "accept"]
+    assert pairs
+    bad = [p.probe_id for p, v in pairs if not v.passed]
+    assert bad == [], f"{family} falsely rejects the shifted correct answer: {bad}"
+
+
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+def test_directional_stale_answers_are_rejected(family):
+    """The answer that was correct *before* the input shift must now fail."""
+    pairs = [(p, v) for p, v in _run_directional(family) if p.expectation == "reject"]
+    assert pairs
+    leaked = [p.probe_id for p, v in pairs if v.passed]
+    assert leaked == [], f"{family} accepts a stale answer after the shift: {leaked}"
+
+
+def test_directional_override_changes_what_the_verifier_sees():
+    """Guard against a vacuous override: the shifted-accept payload must fail
+    on the *original* task, proving the verdict depends on the override."""
+    fam = registry.by_name("code_patch")
+    task = fam.generate(1, random.Random(0))[0]
+    p = next(p for p in adversarial.probes_for("code_patch", task)
+             if p.failure_class == "directional_shift" and p.expectation == "accept")
+    cand = Candidate(cand_id=p.probe_id, task_id=task.task_id,
+                     family="code_patch", payload=p.payload,
+                     defect=p.failure_class)
+    assert fam.verify(p.task_override, cand).passed
+    assert not fam.verify(task, cand).passed

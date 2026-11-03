@@ -45,8 +45,9 @@ def _first_evidence(evidence) -> str:
     return str(first.get("detail", ""))[:160]
 
 
-def _verdict_record(fam, task, cand, source, expectation=None) -> Dict[str, Any]:
-    verdict = fam.verify(task, cand)
+def _verdict_record(fam, task, cand, source, expectation=None,
+                    verify_task=None) -> Dict[str, Any]:
+    verdict = fam.verify(verify_task if verify_task is not None else task, cand)
     crashed = any(str(e.get("detail", "")).startswith("verifier exception")
                   for e in verdict.evidence)
     return {
@@ -71,7 +72,13 @@ def _probe_record(fam, task, probe) -> Dict[str, Any]:
     cand = Candidate(cand_id=probe.probe_id, task_id=task.task_id,
                      family=fam.name, payload=probe.payload,
                      defect=probe.failure_class, note=probe.note)
-    rec = _verdict_record(fam, task, cand, "non_aligned", probe.expectation)
+    # Directional probes are judged against their perturbed copy of the task;
+    # the record keeps the original task_id so the probe stays bound to it.
+    override = getattr(probe, "task_override", None)
+    rec = _verdict_record(fam, task, cand, "non_aligned", probe.expectation,
+                          verify_task=override)
+    if override is not None:
+        rec["task_shifted"] = True
     rec["label"] = probe.label or "observe"
     rec["family"] = fam.name
     rec["basis"] = probe.basis
