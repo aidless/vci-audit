@@ -1,0 +1,2237 @@
+{
+ "manifest": {
+  "vci_version": "0.1.0",
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "seed": 0,
+  "n_tasks": 25,
+  "n_boot": 500,
+  "families": [
+   "arith_expression",
+   "unit_convert",
+   "stats_summary",
+   "base_convert",
+   "matrix_ops",
+   "date_arith",
+   "json_schema_extract",
+   "log_field_extraction",
+   "regex_construct",
+   "template_render",
+   "sql_result",
+   "table_aggregate",
+   "sort_multikey",
+   "interval_merge",
+   "grid_path",
+   "csp_assign",
+   "schedule_slots",
+   "topo_order",
+   "life_step",
+   "code_patch"
+  ],
+  "generated_at_utc": "2026-11-03T12:41:50Z",
+  "note": "Only latency (cost_ms) is hardware dependent; every other number is a pure function of the seed and the family set."
+ },
+ "config": {
+  "seed": 0,
+  "n_tasks": 25,
+  "n_boot": 500,
+  "cheap_ms": 20.0,
+  "costly_ms": 500.0,
+  "reliability_gate": {
+   "tpr": 0.9,
+   "tnr": 0.9,
+   "far90": 0.2,
+   "kappa": 0.6
+  }
+ },
+ "summary": {
+  "vci_median": 0.979967082019229,
+  "vci_median_ci": [
+   0.9125055615098754,
+   1.0
+  ],
+  "vci_mean": 0.9607075005165928,
+  "vci_min": 0.8144476398584994,
+  "vci_max": 1.0,
+  "families_ge_0.7": 20,
+  "families_ge_0.5": 20,
+  "families_reliable": 20,
+  "families_reliable_human_kappa": 0,
+  "n_families": 20,
+  "n_tasks_per_family": 25,
+  "n_candidates": 6849,
+  "kappa_pooled": {
+   "value": 1.0,
+   "n": 6849,
+   "po": 1.0,
+   "source": "synthetic",
+   "synthetic": {
+    "value": 1.0,
+    "n": 6849,
+    "po": 1.0
+   },
+   "human": {
+    "value": 0.0,
+    "n": 0,
+    "po": 0.0
+   }
+  }
+ },
+ "families": [
+  {
+   "family": "arith_expression",
+   "domain": "mathematics",
+   "task_shape": "evaluate K arithmetic expressions with precedence",
+   "premise": "exact rational arithmetic, no external tools",
+   "scoring": "fraction of expressions whose value matches exactly (rel tol 1e-9)",
+   "item_unit": "one expression",
+   "n_tasks": 25,
+   "n_candidates": 332,
+   "units_per_task": 5.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 257.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.8933333333333333,
+   "vci": 0.9721950037160866,
+   "vci_ci": [
+    0.95352614706278,
+    0.989846400767953
+   ],
+   "latency_ms": {
+    "p50": 0.04822347545996308,
+    "p95": 0.11099814437329768,
+    "mean": 0.05571001401474049
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7500000000000001
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.38866666666666666
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7500000000000001
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.20000000000000004
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7500000000000001
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8026666666666666
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7500000000000001
+    },
+    "partial": {
+     "n": 82,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 332,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 332,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 11
+  },
+  {
+   "family": "unit_convert",
+   "domain": "measurement",
+   "task_shape": "convert K quantities between units of the same dimension",
+   "premise": "closed set of exact rational conversion factors",
+   "scoring": "fraction of conversions within 1e-9 relative tolerance",
+   "item_unit": "one conversion",
+   "n_tasks": 25,
+   "n_candidates": 309,
+   "units_per_task": 3.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 234.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.6933333333333332,
+   "vci": 0.9125055615098754,
+   "vci_ci": [
+    0.8650615454144222,
+    0.9496578070887317
+   ],
+   "latency_ms": {
+    "p50": 0.06034097168594599,
+    "p95": 0.12184074148535727,
+    "mean": 0.06679178842472991
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.654
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.654
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.654
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.096
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.654
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.75
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.654
+    },
+    "partial": {
+     "n": 59,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 309,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 309,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 108
+  },
+  {
+   "family": "stats_summary",
+   "domain": "statistics",
+   "task_shape": "compute 5 descriptive statistics for a small numeric sample",
+   "premise": "explicit percentile and ddof conventions",
+   "scoring": "fraction of statistics within 1e-6 relative tolerance",
+   "item_unit": "one statistic",
+   "n_tasks": 25,
+   "n_candidates": 325,
+   "units_per_task": 5.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 250.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.06047997158020735,
+    "p95": 0.10858583264052869,
+    "mean": 0.06527081167755219
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "partial": {
+     "n": 100,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 325,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 325,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 205
+  },
+  {
+   "family": "base_convert",
+   "domain": "computer science",
+   "task_shape": "represent K integers in a requested base",
+   "premise": "positional notation with a small, closed digit alphabet",
+   "scoring": "fraction of representations that parse to the correct integer",
+   "item_unit": "one integer",
+   "n_tasks": 25,
+   "n_candidates": 342,
+   "units_per_task": 5.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 267.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.92,
+   "vci": 0.9793703613355593,
+   "vci_ci": [
+    0.9648571584702385,
+    0.9932656102288296
+   ],
+   "latency_ms": {
+    "p50": 0.01627253368496895,
+    "p95": 0.0338684709277004,
+    "mean": 0.01796782500116013
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.77
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.77
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.77
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.12000000000000002
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.77
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8152380952380954
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "partial": {
+     "n": 92,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 342,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 342,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 302
+  },
+  {
+   "family": "matrix_ops",
+   "domain": "linear algebra",
+   "task_shape": "multiply or transpose small integer matrices",
+   "premise": "exact integer arithmetic, fully specified operation",
+   "scoring": "fraction of correct output cells",
+   "item_unit": "one matrix cell",
+   "n_tasks": 25,
+   "n_candidates": 390,
+   "units_per_task": 9.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 340.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.01917051849886775,
+    "p95": 0.05154102109372616,
+    "mean": 0.024927676153870728
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8500000000000001
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.022222222222222223
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6199999999999998
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.38
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6199999999999998
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7266666666666666
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.022222222222222223
+    },
+    "partial": {
+     "n": 165,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 390,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 390,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 399
+  },
+  {
+   "family": "date_arith",
+   "domain": "calendar",
+   "task_shape": "shift K dates by days or months with end-of-month clamping",
+   "premise": "ISO-8601 civil calendar, documented clamping rule",
+   "scoring": "fraction of dates that match exactly",
+   "item_unit": "one date",
+   "n_tasks": 25,
+   "n_candidates": 323,
+   "units_per_task": 4.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 248.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.8666666666666667,
+   "vci": 0.9648571584702385,
+   "vci_ci": [
+    0.9457416090031758,
+    0.9793703613355593
+   ],
+   "latency_ms": {
+    "p50": 0.012221978977322578,
+    "p95": 0.020106998272240162,
+    "mean": 0.012939430026470139
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7326666666666668
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7326666666666668
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.19733333333333333
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7326666666666668
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7906666666666667
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "partial": {
+     "n": 73,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 323,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 323,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 496
+  },
+  {
+   "family": "json_schema_extract",
+   "domain": "information extraction",
+   "task_shape": "extract a fixed set of typed fields from a short document into JSON",
+   "premise": "closed schema with explicit per-field comparison rules",
+   "scoring": "fraction of schema fields that match (set semantics for tags, order for steps)",
+   "item_unit": "one schema field",
+   "n_tasks": 25,
+   "n_candidates": 375,
+   "units_per_task": 6.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 300.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.030030962079763412,
+    "p95": 0.05648572696372867,
+    "mean": 0.03382680161545674
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8571428571428573
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "partial": {
+     "n": 125,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 375,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 375,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 593
+  },
+  {
+   "family": "log_field_extraction",
+   "domain": "log parsing",
+   "task_shape": "parse 2-3 semi-structured log lines into typed records",
+   "premise": "explicit timestamp/level/code normalisation rules",
+   "scoring": "fraction of record fields that match after normalisation",
+   "item_unit": "one record field",
+   "n_tasks": 25,
+   "n_candidates": 535,
+   "units_per_task": 10.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 460.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.03547803498804569,
+    "p95": 0.06201692158356309,
+    "mean": 0.03846414173979347
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9159999999999999
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9159999999999999
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9159999999999999
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.264
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9159999999999999
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9159999999999999
+    },
+    "partial": {
+     "n": 285,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 535,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 535,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 690
+  },
+  {
+   "family": "regex_construct",
+   "domain": "text processing",
+   "task_shape": "write K regular expressions, each labelled with positive/negative examples",
+   "premise": "executable pattern semantics against a labelled string set, including held-out probes",
+   "scoring": "fraction of specifications that classify every labelled string correctly",
+   "item_unit": "one regex specification",
+   "n_tasks": 25,
+   "n_candidates": 328,
+   "units_per_task": 4.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 253.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.9066666666666667,
+   "vci": 0.9758024682993207,
+   "vci_ci": [
+    0.9573479717381596,
+    0.989846400767953
+   ],
+   "latency_ms": {
+    "p50": 0.31773251248523593,
+    "p95": 0.4696982156019656,
+    "mean": 0.3239568628132252
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.08133333333333333
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7466666666666667
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.1733333333333334
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7466666666666667
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7993333333333333
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7466666666666667
+    },
+    "partial": {
+     "n": 78,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 328,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 328,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 787
+  },
+  {
+   "family": "template_render",
+   "domain": "text rendering",
+   "task_shape": "render a K-line template with formatting and escaping rules",
+   "premise": "closed placeholder alphabet with explicit filters",
+   "scoring": "fraction of rendered lines that match exactly",
+   "item_unit": "one rendered line",
+   "n_tasks": 25,
+   "n_candidates": 350,
+   "units_per_task": 5.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 275.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.009078998118638992,
+    "p95": 0.014774565352126956,
+    "mean": 0.01011347132069724
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.20000000000000007
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8333333333333333
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8000000000000003
+    },
+    "partial": {
+     "n": 100,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 350,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 350,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 884
+  },
+  {
+   "family": "sql_result",
+   "domain": "databases",
+   "task_shape": "write K SQL queries against a small schema",
+   "premise": "queries are executed on a visible dataset and a held-out probe dataset",
+   "scoring": "fraction of queries whose result set matches on both datasets",
+   "item_unit": "one query",
+   "n_tasks": 25,
+   "n_candidates": 258,
+   "units_per_task": 2.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 208.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.44,
+   "vci": 0.8144476398584994,
+   "vci_ci": [
+    0.788558983339814,
+    0.8436854963800713
+   ],
+   "latency_ms": {
+    "p50": 1.411270466633141,
+    "p95": 2.2310154687147588,
+    "mean": 1.4574338123382813
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.5533333333333332
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6933333333333331
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "partial": {
+     "n": 33,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 258,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 258,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 981
+  },
+  {
+   "family": "table_aggregate",
+   "domain": "data analysis",
+   "task_shape": "compute count/sum/mean per group from a small table",
+   "premise": "closed aggregation semantics with documented rounding",
+   "scoring": "fraction of group-metric cells that match",
+   "item_unit": "one group-metric cell",
+   "n_tasks": 25,
+   "n_candidates": 498,
+   "units_per_task": 12.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 423.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.09372353088110685,
+    "p95": 0.14915479114279148,
+    "mean": 0.09716013666189997
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9066666666666668
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9066666666666668
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9066666666666668
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.4600000000000001
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.72
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7820000000000001
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.9066666666666668
+    },
+    "partial": {
+     "n": 248,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 498,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 498,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1078
+  },
+  {
+   "family": "sort_multikey",
+   "domain": "data processing",
+   "task_shape": "sort K records by up to three keys with stable ties",
+   "premise": "total order specified explicitly; stability is part of the answer",
+   "scoring": "fraction of output positions holding the expected record",
+   "item_unit": "one output position",
+   "n_tasks": 25,
+   "n_candidates": 413,
+   "units_per_task": 8.0,
+   "metrics": {
+    "n_pos": 75.0,
+    "n_neg": 338.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.02297700848430395,
+    "p95": 0.05278424359858034,
+    "mean": 0.02734370548819298
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 50,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7273015873015873
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8636507936507937
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7273015873015873
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8636507936507937
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.11966666666666669
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.034761904761904765
+    },
+    "partial": {
+     "n": 163,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 413,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 413,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1175
+  },
+  {
+   "family": "interval_merge",
+   "domain": "algorithms",
+   "task_shape": "merge overlapping half-open intervals",
+   "premise": "half-open [a,b) semantics; touching endpoints are not merged",
+   "scoring": "fraction of expected merged intervals present at the right position",
+   "item_unit": "one merged interval",
+   "n_tasks": 25,
+   "n_candidates": 321,
+   "units_per_task": 5.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 271.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.027166912332177162,
+    "p95": 0.05342706572264433,
+    "mean": 0.03102919082461952
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7873333333333334
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7873333333333334
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.055999999999999994
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7873333333333334
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8253333333333336
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.34476190476190477
+    },
+    "partial": {
+     "n": 96,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 321,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 321,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1272
+  },
+  {
+   "family": "grid_path",
+   "domain": "planning",
+   "task_shape": "find shortest paths for K start/goal pairs on an obstacle grid",
+   "premise": "exact BFS distance; obstacle and adjacency rules are decidable",
+   "scoring": "fraction of paths that are valid, obstacle-free and optimal length",
+   "item_unit": "one start/goal pair",
+   "n_tasks": 25,
+   "n_candidates": 275,
+   "units_per_task": 3.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.6666666666666665,
+   "vci": 0.9036020036098448,
+   "vci_ci": [
+    0.9036020036098448,
+    0.9036020036098448
+   ],
+   "latency_ms": {
+    "p50": 0.03191700670868158,
+    "p95": 0.05177141865715385,
+    "mean": 0.034051711078394546
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.75
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "partial": {
+     "n": 50,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 275,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1369
+  },
+  {
+   "family": "csp_assign",
+   "domain": "constraint programming",
+   "task_shape": "colour K small graphs under edge and pin constraints",
+   "premise": "finite domains; constraints are decidable and multiple solutions are legal",
+   "scoring": "fraction of sub-problems whose assignment satisfies every constraint",
+   "item_unit": "one colouring problem",
+   "n_tasks": 25,
+   "n_candidates": 275,
+   "units_per_task": 3.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.6666666666666665,
+   "vci": 0.9036020036098448,
+   "vci_ci": [
+    0.9036020036098448,
+    0.9036020036098448
+   ],
+   "latency_ms": {
+    "p50": 0.040924991481006145,
+    "p95": 0.06640268256887794,
+    "mean": 0.04255275284363465
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.37333333333333335
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.75
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "partial": {
+     "n": 50,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 275,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1466
+  },
+  {
+   "family": "schedule_slots",
+   "domain": "scheduling",
+   "task_shape": "place K small meeting sets into free calendar slots",
+   "premise": "30-minute discrete slots; availability and room conflicts are decidable",
+   "scoring": "fraction of sub-schedules satisfying availability, duration and non-overlap",
+   "item_unit": "one meeting set",
+   "n_tasks": 25,
+   "n_candidates": 275,
+   "units_per_task": 3.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.6666666666666665,
+   "vci": 0.9036020036098448,
+   "vci_ci": [
+    0.9036020036098448,
+    0.9036020036098448
+   ],
+   "latency_ms": {
+    "p50": 0.027445959858596325,
+    "p95": 0.05575268296524882,
+    "mean": 0.03119592173871669
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.14666666666666667
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.75
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "partial": {
+     "n": 50,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 275,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1563
+  },
+  {
+   "family": "topo_order",
+   "domain": "graph algorithms",
+   "task_shape": "produce a topological order for K DAGs",
+   "premise": "any order satisfying all edge constraints is correct",
+   "scoring": "fraction of DAGs whose output order respects every edge and lists each node once",
+   "item_unit": "one DAG",
+   "n_tasks": 25,
+   "n_candidates": 275,
+   "units_per_task": 3.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 0.6666666666666665,
+   "vci": 0.9036020036098448,
+   "vci_ci": [
+    0.9036020036098448,
+    0.9036020036098448
+   ],
+   "latency_ms": {
+    "p50": 0.011453055776655674,
+    "p95": 0.02058176323771478,
+    "mean": 0.013185077854855494
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6666666666666664
+    },
+    "partial": {
+     "n": 50,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 275,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1660
+  },
+  {
+   "family": "life_step",
+   "domain": "cellular automata",
+   "task_shape": "advance one Conway Life board by one generation (dead border)",
+   "premise": "fully deterministic local rule",
+   "scoring": "fraction of output rows that match exactly",
+   "item_unit": "one output row",
+   "n_tasks": 25,
+   "n_candidates": 342,
+   "units_per_task": 6.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 292.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 1.0,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 1.0,
+   "vci_ci": [
+    1.0,
+    1.0
+   ],
+   "latency_ms": {
+    "p50": 0.012920470908284187,
+    "p95": 0.03187071997672319,
+    "mean": 0.015094606355595135
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.2253333333333333
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.3106666666666667
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8226666666666667
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.09066666666666666
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8226666666666667
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.8495238095238098
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.168
+    },
+    "partial": {
+     "n": 117,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 342,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 342,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1757
+  },
+  {
+   "family": "code_patch",
+   "domain": "software engineering",
+   "task_shape": "repair a buggy Python function against a hidden test harness",
+   "premise": "unit tests are executable ground truth; code runs in an isolated subprocess",
+   "scoring": "fraction of unit tests that pass",
+   "item_unit": "one unit test",
+   "n_tasks": 25,
+   "n_candidates": 308,
+   "units_per_task": 4.0,
+   "metrics": {
+    "n_pos": 50.0,
+    "n_neg": 258.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "cheapness": 0.9244925787910082,
+   "trust": 1.0,
+   "density": 1.0,
+   "vci": 0.9805638027028988,
+   "vci_ci": [
+    0.9793796800470586,
+    0.9822560528520254
+   ],
+   "latency_ms": {
+    "p50": 40.770192455966026,
+    "p95": 56.243562180316076,
+    "mean": 42.13195007298952
+   },
+   "per_defect": {
+    "correct": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "accept_rate": 1.0,
+     "mean_score": 1.0
+    },
+    "boundary": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.7060000000000001
+    },
+    "off_by_one": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.36599999999999994
+    },
+    "type_mismatch": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.064
+    },
+    "order": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.35400000000000004
+    },
+    "missing": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.0
+    },
+    "extra": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.032
+    },
+    "semantic_wrong": {
+     "n": 25,
+     "accept_rate": 0.0,
+     "mean_score": 0.6660000000000003
+    },
+    "partial": {
+     "n": 83,
+     "accept_rate": 0.0,
+     "mean_score": 0.5
+    }
+   },
+   "verifier_errors": 0,
+   "reliable": true,
+   "unreliable_reasons": [],
+   "kappa": {
+    "value": 1.0,
+    "n": 308,
+    "po": 1.0,
+    "source": "synthetic",
+    "synthetic": {
+     "value": 1.0,
+     "n": 308,
+     "po": 1.0
+    },
+    "human": {
+     "value": 0.0,
+     "n": 0,
+     "po": 0.0
+    }
+   },
+   "seed": 1854
+  }
+ ]
+}
