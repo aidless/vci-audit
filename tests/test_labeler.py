@@ -168,6 +168,19 @@ def test_qualification_warns_but_never_blocks(tmp_path):
     assert _answers(out) == {"a-01": "1"}
 
 
+def test_cli_exposes_the_labeler_flags():
+    """The flags existed in the labeler but were never wired to argparse."""
+    from vci.__main__ import build_parser
+
+    args = build_parser().parse_args(
+        ["label", "--sheet", "s.csv", "--out", "o.csv",
+         "--qualification", "--group-by-family", "--shuffle-seed", "7"])
+    assert args.fn is not None
+    assert args.qualification is True
+    assert args.group_by_family is True
+    assert args.shuffle_seed == 7
+
+
 def test_load_answers_keeps_the_last_write(tmp_path):
     sheet = _sheet(tmp_path, ROWS[:1])
     out = str(tmp_path / "labels.csv")

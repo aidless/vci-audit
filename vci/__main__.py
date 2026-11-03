@@ -53,11 +53,11 @@ def cmd_audit(args):
           f"(n={s['kappa_pooled']['synthetic']['n']})")
     if not s["kappa_pooled"]["human"]["n"]:
         print("note: no human labels found, so kappa is measured against the mutant "
-              "generator and is an upper bound. Run 'python -m vci label' on "
+              "generator and is an upper bound. Run 'python3 -m vci label' on "
               "annotations/blind.csv to obtain a human kappa.", file=sys.stderr)
     print("wrote " + ", ".join(os.path.join(args.out, n) for n in
                                ("results.json", "coverage.csv", "coverage.md",
-                                "dashboard.html")))
+                                "attribution.csv", "dashboard.html")))
     return 0
 
 
