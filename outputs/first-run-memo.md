@@ -240,7 +240,11 @@ upper bound** on behaviour in deployment, never an estimate of it. Two concrete 
    assertions — none of which this probe set creates.
 
 This ceiling is not softened by the round-3 additions. The category table, the attribution table
-and α all improve *bookkeeping*; none of them samples real model output.
+and α all improve *bookkeeping*; none of them samples real model output. **Round 6 (addendum
+below) partially lifts consequence 2 for six families**: it replays the exercise on outputs from a
+real model instead of authored mutants, and confirms the second predicted failure mode
+("plausible-but-wrong … none of which this probe set creates" — in fact real failures were
+*mostly not plausible*, and the dominant real risk turned out to be false rejects, not leaks).
 
 ## 8. What the next round must do to raise validity
 
@@ -250,7 +254,9 @@ In priority order — each removes one of the ceilings above, and none is a cosm
    produces wrong answers (a cheap local model is enough), then grade 20 *observed* wrong answers
    per family by hand. Recompute TPR/TNR against those. This is the only step that lifts the
    Just et al. ceiling; until it is done, "verification coverage" is coverage of authored probes
-   only. The purpose-built sample is a diagnostic, not an estimate.
+   only. The purpose-built sample is a diagnostic, not an estimate.  **Done in round 6 for six
+   families (779 units hand-graded) — see the round-6 addendum. Still open for the other fourteen
+   and for a stronger model.**
 2. **Human labels.** Fill `annotations/labels.csv` (3-level scale, `undecidable` allowed) with the
    round-3 labeler (`--qualification --group-by-family --shuffle-seed 7`) and rerun the retest at
    `--round 2 --shuffle-seed 99` for stability. Until a human sheet exists, κ and α stay synthetic
@@ -269,7 +275,7 @@ In priority order — each removes one of the ceilings above, and none is a cosm
 ## 9. Reproduce
 
 ```
-python3 -m pytest -q                       # 97 tests
+python3 -m pytest -q                       # 112 tests
 python3 -m vci audit --families all --out outputs
 python3 -m vci label --sheet annotations/blind.csv --out annotations/labels.csv \
     --qualification --group-by-family --shuffle-seed 7
@@ -278,3 +284,79 @@ python3 -m vci audit --families all --out outputs     # with human labels presen
 
 Bootstrap intervals are seeded per block (`seed + 1 … seed + 6`), so a rerun reproduces the
 same CI; only latency (`p95 ms`) depends on the machine.
+
+---
+
+# Round-6 addendum — real model failures replace synthetic mutants (6 families)
+
+Rounds 1–5 measured verifiers against *authored* probes, so every TPR/TNR carried the
+Just et al. ceiling (§7). Round 6 implements §8-1: a real local model
+(`evalsft-qwen25-05b`, digest `075e6329e216…`, temperature 0, seed 20261104, single sample)
+solves fresh tasks (a seed disjoint from the audit's), the family verifiers grade the parsed
+outputs, and **all 779 units are hand-adjudicated by a human** against the task content.
+Artifacts: `work/realfail.json` (raw run), `work/realfail_sheet.jsonl` (grading sheet),
+`work/realfail_human.csv` (labels), `work/realfail_analysis.json` (metrics).
+Reproduce: `python3 -m vci realfail` then `realfail-sheet` then `realfail-analyze`
+(requires a local ollama server for the first step only).
+
+## R6.1 What the model did
+
+150 tasks, 0 transport errors, mean 2.0 s/task. Verifier accepted 25/150 tasks
+(mean score 0.314). Per family (unit level, human truth):
+
+| family | units | model correct (human) | verifier TPR | verifier TNR | κ | false acc | false rej |
+|---|---|---|---|---|---|---|---|
+| arith_expression | 87 | 6 (7 %) | 1.000 | 1.000 | 1.000 | 0 | 0 |
+| unit_convert | 80 | 0 (0 %) | n/a | 1.000 | — | 0 | 0 |
+| template_render | 125 | 29 (23 %) | 0.931 | 1.000 | 0.954 | 0 | 2 |
+| log_field_extraction | 315 | 315 (100 %) | 1.000 | n/a | — | 0 | 0 |
+| regex_construct | 105 | 7 (7 %) | **0.000** | 1.000 | — | 0 | 7 |
+| sql_result | 67 | 12 (18 %) | 0.083 | 1.000 | 0.130 | 0 | 11 |
+| **pooled** | 779 | 369 | **0.946** [0.918, 0.965] | **1.000** [0.991, 1.000] | 0.948 | **0** | **20** |
+
+## R6.2 Findings
+
+1. **Zero false accepts on 410 real wrong units** (TNR 1.000, Wilson lower 0.991). The leaks
+   that synthetic probes proved exploitable — the sql_result memorized-constant query, the
+   regex overfit alternation (x01, still open per round 5) — were *not exercised* by natural
+   failures: the model did emit literal alternations of the visible positives in 6/25 regex
+   tasks, but always corrupted (`a | b` with spaces around the pipe, or wrapped in dicts), so
+   all were rejected. The leak is real and remains open; this particular failure distribution
+   simply never produced a well-formed exploit. A stronger model plausibly would.
+2. **The dominant real risk is false rejects (20/369 correct units, pooled TPR 0.946), and
+   18/20 are packaging strictness, not grading logic**: correct regex patterns rejected because
+   the model wrapped them as `{"pattern": …}` per unit (regex real TPR 0.000!); semantically
+   correct SQL rejected for the same dict wrapping (sql real TPR 0.083); 2 money values
+   rejected for being JSON numbers (`853.35`) instead of strings (`"853.35"`). This is exactly
+   the EQUIV/format-strictness class that drove the synthetic 0.000 VCIs — corroborated on
+   real outputs, from the accept side.
+3. **Real defect modes barely overlap the synthetic operator set.** Among the 430 rejected
+   units: 192 wrong values, 132 dict-wrapped answers, 79 missing answers (parse failure or
+   truncated output), 27 enumeration-prefixed strings (`"1. 1/5"`). The synthetic wrongs are
+   "close but wrong" scalars (off-by-one, sign flip, floor); natural failures are catastrophic
+   (unit-name echoes, 10×–1000× magnitude errors, repeated identical values across all units,
+   schema hallucination in SQL). `unit_convert`: 0/80 correct — a complete inability, which no
+   synthetic probe predicted.
+4. **The real model surfaced a task-side defect the probes never flagged.** In
+   `arith_expression`, the generator evaluates strictly left-to-right but renders expressions
+   with standard operator notation ("evaluate … with precedence" in the premise). 8/87 units
+   across 7/25 tasks therefore have references that contradict the printed expression under
+   standard precedence (e.g. `(11 - 2 * 6) / 5` expects `54/5`, i.e. `((11-2)*6)/5`). All 8
+   model answers were wrong under *both* readings, so labels are unaffected — but a human or
+   stronger model answering standard mathematics would be unfairly rejected on 28 % of tasks.
+   This is a `task_under_specified`-class defect discovered *by* hand-grading real outputs.
+
+## R6.3 What this does and does not change
+
+- For these six families and this model, "the verifier accepts real garbage" is **not** the
+  observed failure mode (0/410); "the verifier rejects correct-but-mispackaged answers" is
+  (20/369). The round-3 repair list (close the leaks) remains valid as *adversarial*
+  hardening, but deployment grading of weak models would first need output-schema tolerant
+  extraction (unwrap `{"pattern": …}`, `{"sql": …}`, accept numeric money).
+- Still synthetic-ceilinged: the other 14 families; any claim about stronger models (whose
+  failure modes — including well-formed overfit exploits — may differ qualitatively);
+  human-label κ from §4.2 (`annotations/labels.csv` still empty); and this study itself uses
+  a single adjudicator, one model, temperature 0, one sample per task.
+- The Just et al. ceiling is lifted exactly here and only here: real failures confirm the
+  direction of the synthetic audit (strictness classes bit in reality) while reversing the
+  perceived severity ranking (leaks matter less than false rejects, for this model).

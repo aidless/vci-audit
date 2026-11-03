@@ -110,6 +110,75 @@ def cmd_harness_diff(args):
     return 0
 
 
+def cmd_realfail(args):
+    import json
+    from . import realfail
+    fams = registry.resolve(args.families) if args.families != "default" else \
+        [registry.by_name(n) for n in realfail.DEFAULT_FAMILIES]
+    payload = realfail.run(fams, n_tasks=args.tasks, seed=args.seed,
+                           model=args.model, host=args.host,
+                           max_tokens=args.max_tokens, timeout_s=args.timeout)
+    import os
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=1)
+    n_err = sum(1 for r in payload["records"] if "error" in r)
+    n_scored = sum(1 for r in payload["records"] if "verdict" in r)
+    n_pass = sum(1 for r in payload["records"]
+                 if r.get("verdict", {}).get("passed"))
+    print(f"realfail: {len(payload['records'])} tasks "
+          f"({n_scored} scored, {n_err} transport errors), "
+          f"verifier accepted {n_pass}")
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_realfail_sheet(args):
+    import json
+    from . import realfail
+    with open(args.run, encoding="utf-8") as fh:
+        payload = json.load(fh)
+    fams = {f.name: f for f in registry.FAMILIES}
+    rows = realfail.emit_sheet(payload, fams)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        for r in rows:
+            fh.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
+    print(f"wrote {len(rows)} sheet rows to {args.out}")
+    return 0
+
+
+def cmd_realfail_analyze(args):
+    import json
+    from . import realfail
+    with open(args.run, encoding="utf-8") as fh:
+        payload = json.load(fh)
+    labels = realfail.load_human_labels(args.labels)
+    fams = {f.name: f for f in registry.FAMILIES}
+    rep = realfail.analyze(payload, labels, fams)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    rs = rep["run_stats"]
+    print(f"run: {rs['n_tasks_run']} tasks, {rs['n_errors']} errors, "
+          f"{rs['parse_fail']} parse failures, "
+          f"verifier passed {rs['verifier_passed_tasks']} tasks")
+    print(f"labels: {rep['n_labeled']}/{rep['n_sheet_rows']} units labeled "
+          f"({rep['n_undecidable']} undecidable, {len(rep['unlabeled'])} missing)")
+    for fam, c in rep["per_family"].items():
+        k = f"{c['kappa']:.3f}" if c["kappa"] is not None else "n/a"
+        tpr = f"{c['tpr']:.3f}" if c["tpr"] is not None else "n/a"
+        tnr = f"{c['tnr']:.3f}" if c["tnr"] is not None else "n/a"
+        print(f"  {fam:22s} n={c['n']:3d} pos={c['pos']:3d} neg={c['neg']:3d} "
+              f"TPR={tpr} TNR={tnr} kappa={k} "
+              f"FA={len(c['false_accepts'])} FR={len(c['false_rejects'])}")
+    p = rep["pooled"]
+    k = f"{p['kappa']:.3f}" if p["kappa"] is not None else "n/a"
+    print(f"  {'POOLED':22s} n={p['n']:3d} pos={p['pos']:3d} neg={p['neg']:3d} "
+          f"TPR={p['tpr']:.3f} TNR={p['tnr']:.3f} kappa={k} "
+          f"FA={len(p['false_accepts'])} FR={len(p['false_rejects'])}")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_selfcheck(args):
     problems = audit.selfcheck(families=registry.resolve(args.families),
                                n_tasks=args.tasks, seed=args.seed)
@@ -227,6 +296,35 @@ def build_parser():
                    help="number of task seeds for the delta spread")
     h.add_argument("--out", default="work/harness_diff.json")
     h.set_defaults(fn=cmd_harness_diff)
+
+    rf = sub.add_parser("realfail",
+                        help="sample real model outputs via local ollama and "
+                             "verify them (round-6 real-failure study)")
+    rf.add_argument("--families", default="default",
+                    help="'default' = the six round-6 families, 'all', or a list")
+    rf.add_argument("--seed", type=int, default=20261104,
+                    help="task seed (disjoint from the audit seed 0)")
+    rf.add_argument("--tasks", type=int, default=25)
+    rf.add_argument("--model", default="evalsft-qwen25-05b:latest")
+    rf.add_argument("--host", default="http://localhost:11434")
+    rf.add_argument("--max-tokens", type=int, default=1024, dest="max_tokens")
+    rf.add_argument("--timeout", type=float, default=120.0)
+    rf.add_argument("--out", default="work/realfail.json")
+    rf.set_defaults(fn=cmd_realfail)
+
+    rs = sub.add_parser("realfail-sheet",
+                        help="emit the per-unit human-adjudication sheet")
+    rs.add_argument("--run", default="work/realfail.json")
+    rs.add_argument("--out", default="work/realfail_sheet.jsonl")
+    rs.set_defaults(fn=cmd_realfail_sheet)
+
+    ra = sub.add_parser("realfail-analyze",
+                        help="merge human labels and compute verifier "
+                             "TPR/TNR/kappa against human truth")
+    ra.add_argument("--run", default="work/realfail.json")
+    ra.add_argument("--labels", default="work/realfail_human.csv")
+    ra.add_argument("--out", default="work/realfail_analysis.json")
+    ra.set_defaults(fn=cmd_realfail_analyze)
 
     c = sub.add_parser("score-annotations", help="recompute kappa from labels")
     c.add_argument("--labels", default="annotations/labels.csv")
