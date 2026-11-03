@@ -2,7 +2,7 @@
 
 seed=`0`  tasks/family=`25`  families=`20`  aligned candidates=`6849`  non-aligned probes=`1232`  generator version=`3.0`
 
-**Median VCI 0.934** (95% bootstrap CI 0.904-1.000); aligned-only median 0.987 (0.913-1.000). **16/20 families >= 0.70**.
+**Median VCI 0.934** (95% bootstrap CI 0.904-1.000); aligned-only median 0.984 (0.913-1.000). **16/20 families >= 0.70**.
 
 Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no human labels yet)` (human rows n=0, undecidable 0; synthetic upper bound 1.000 is reported separately and is not a human value).
 
@@ -29,7 +29,7 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | schedule_slots | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | topo_order | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | sql_result | 0.781 | 0.716-0.838 | 1.00 | 0.44 | 2.0 | 0.92 | 1.00 | 0.92 | 1.00 | 1.00 | 0.00 | 1.00 | 0.92 | 0.08 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| code_patch | 0.760 | 0.751-0.768 | 0.97 | 1.00 | 4.0 | 0.58 | 1.00 | 0.58 | 1.00 | 1.00 | 0.00 | 1.00 | 0.58 | 0.42 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
+| code_patch | 0.756 | 0.746-0.764 | 0.95 | 1.00 | 4.0 | 0.58 | 1.00 | 0.58 | 1.00 | 1.00 | 0.00 | 1.00 | 0.58 | 0.42 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | regex_construct | 0.690 | 0.677-0.700 | 1.00 | 0.91 | 4.0 | 0.50 | 1.00 | 0.50 | 1.00 | 1.00 | 0.00 | 1.00 | 0.50 | 0.50 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | unit_convert | 0.000 | 0.000-0.000 | 1.00 | 0.69 | 3.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | log_field_extraction | 0.000 | 0.000-0.000 | 1.00 | 1.00 | 10.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.00 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |

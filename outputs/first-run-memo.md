@@ -14,18 +14,20 @@ Round-1 and round-2 memos are preserved in git history.
 | quantity | round 1 | round 2 | **round 3** |
 |---|---|---|---|
 | Median VCI (all evidence) | 0.983 | 0.934 | **0.934** (95% bootstrap CI 0.904 – 1.000) |
-| Median VCI (aligned mutants only) | 0.983 | 0.978 | 0.978 |
+| Median VCI (aligned mutants only) | 0.983 | 0.978 | 0.984 |
 | Families ≥ 0.70 | 20 / 20 | 15 / 20 | **16 / 20** |
 | Families failing the aligned gate | 0 | 0 | 0 |
-| Families failing the non-aligned gate | *not measured* | 5 | **4** |
+| Families failing the non-aligned gate | *not measured* | 5 | **5** |
 | Core list (provisional) | 20 | 15 | **15** |
 | Core list (human-backed) | 0 | 0 | **0** |
 | κ source | synthetic | synthetic | **synthetic (no human sheet)** |
 | α source | — | synthetic (value was wrong, §5) | **synthetic** |
 
-The median did not move. Only `code_patch` moved (0.131 → 0.760), and that movement is a
-*measurement* change, not a verifier improvement: round 2 probed it with two resource probes per
-task and both were invisible to a one-shot harness. Round 3 added three and two of them are caught.
+The median did not move. Only `code_patch` moved (0.131 → **0.756**, CI 0.746-0.764; a second
+run on a quieter machine gave 0.760 because `C` is measured from p95 latency), and that movement
+is a *measurement* change, not a verifier improvement: round 2 probed it with two resource probes
+per task and both were invisible to a one-shot harness. Round 3 added three and two of them are
+caught.
 
 ## 2. Why `code_patch` moved, and what it means
 
