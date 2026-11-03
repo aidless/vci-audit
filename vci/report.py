@@ -27,6 +27,11 @@ def write_csv(payload, path):
             "tpr_na", "tnr_na", "far90_na", "n_probe_pos", "n_probe_neg",
             "kappa", "kappa_source", "kappa_human", "kappa_human_n",
             "kappa_stability", "kappa_stability_n",
+            "alpha", "alpha_source", "alpha_human", "alpha_human_n",
+            "alpha_undecidable", "alpha_oracle_na",
+            "tpr_mf", "tnr_mf", "far90_mf",
+            "tpr_inv", "tnr_inv", "far90_inv",
+            "tpr_dir", "tnr_dir", "far90_dir",
             "p95_ms", "probe_p95_ms", "reliable", "reliable_non_aligned",
             "core", "core_human_backed", "unreliable_reasons",
             "unreliable_reasons_non_aligned"]
@@ -37,6 +42,8 @@ def write_csv(payload, path):
             m = r["metrics_aligned"]
             na = r["metrics_non_aligned"]
             k = r["kappa"]
+            al = r["alpha"]
+            cat = r["per_category"]
             w.writerow({
                 "family": r["family"],
                 "domain": r["domain"],
@@ -69,6 +76,23 @@ def write_csv(payload, path):
                 "kappa_stability": (_f(k["stability"]["value"])
                                     if k["stability"]["value"] is not None else "-"),
                 "kappa_stability_n": k["stability"]["n"],
+                "alpha": _f(al["value"]) if al["value"] is not None else "-",
+                "alpha_source": al["source"],
+                "alpha_human": (_f(al["human"]["value"])
+                                if al["human"]["value"] is not None else "-"),
+                "alpha_human_n": al["human"]["n"],
+                "alpha_undecidable": al["n_undecidable"],
+                "alpha_oracle_na": (_f(al["oracle_non_aligned"]["value"])
+                                    if al["oracle_non_aligned"]["value"] is not None else "-"),
+                "tpr_mf": _f(cat["minimum_functionality"]["tpr"], 2),
+                "tnr_mf": _f(cat["minimum_functionality"]["tnr"], 2),
+                "far90_mf": _f(cat["minimum_functionality"]["far90"], 2),
+                "tpr_inv": _f(cat["invariance"]["tpr"], 2),
+                "tnr_inv": _f(cat["invariance"]["tnr"], 2),
+                "far90_inv": _f(cat["invariance"]["far90"], 2),
+                "tpr_dir": _f(cat["directional"]["tpr"], 2),
+                "tnr_dir": _f(cat["directional"]["tnr"], 2),
+                "far90_dir": _f(cat["directional"]["far90"], 2),
                 "p95_ms": _f(r["latency_ms"]["p95"], 1),
                 "probe_p95_ms": _f(r["probe_latency_ms"]["p95"], 1),
                 "reliable": "yes" if r["reliable"] else "no",
@@ -85,12 +109,14 @@ def write_csv(payload, path):
 def write_markdown(payload, path):
     s = payload["summary"]
     kp = s["kappa_pooled"]
+    ap = s["alpha_pooled"]
     lines = [
-        "# VCI coverage table (round 2)",
+        "# VCI coverage table (round 3)",
         "",
         f"seed=`{payload['manifest']['seed']}`  tasks/family=`{payload['manifest']['n_tasks']}`  "
         f"families=`{s['n_families']}`  aligned candidates=`{s['n_candidates']}`  "
-        f"non-aligned probes=`{s['n_probes']}`",
+        f"non-aligned probes=`{s['n_probes']}`  generator version=`"
+        f"{payload['manifest'].get('probe_generator_version', '-')}`",
         "",
         f"**Median VCI {_f(s['vci_median'])}** "
         f"(95% bootstrap CI {_f(s['vci_median_ci'][0])}-{_f(s['vci_median_ci'][1])}); "
@@ -104,17 +130,35 @@ def write_markdown(payload, path):
         f"undecidable {kp['human']['n_undecidable']}; synthetic upper bound "
         f"{_f(kp['synthetic']['value'])} is reported separately and is not a human value).",
         "",
+        f"**Krippendorff alpha (ordinal) alongside:** `{_f(ap['value']) if ap['value'] is not None else '-'}` "
+        f"(source `{ap['source']}`, decided values n={ap['n']}, "
+        f"undecidable {ap['n_undecidable']}, 95% CI "
+        f"{_f(ap['ci'][0])}-{_f(ap['ci'][1])}). "
+        f"Independent-probe oracle alpha `{_f(ap['oracle_non_aligned']['value']) if ap['oracle_non_aligned']['value'] is not None else '-'}` "
+        f"(n={ap['oracle_non_aligned']['n']}).",
+        "",
+        "`alpha` and `kappa` are reported side by side, never merged. With two coders "
+        "and two labels they answer the same question; they diverge when (a) undecidable "
+        "rows exist -- kappa drops them, alpha keeps them as missing units and still "
+        "counts them in the expected disagreement; (b) prevalence is extreme -- kappa's "
+        "expected agreement is pinned by the marginals while alpha estimates it from the "
+        "pooled distribution with a finite-sample correction; (c) more than two coders or "
+        "ordinal labels are used, where kappa is not defined. If they disagree, trust "
+        "neither until the undecidable count is reported.",
+        "",
         "## Per family: VCI, components, aligned vs non-aligned trust",
         "",
         "| family | VCI | 95% CI | C | D | K | T | T-aligned | T-non-aligned | "
         "TPR al | TNR al | FAR90 al | TPR na | TNR na | FAR90 na | kappa (src) | "
-        "gate al | gate na |",
-        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
+        "alpha (src) | gate al | gate na |",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in sorted(payload["families"], key=lambda x: -x["vci"]):
         m, na, k = r["metrics_aligned"], r["metrics_non_aligned"], r["kappa"]
+        al = r["alpha"]
         gate_na = ("yes" if r["reliable_non_aligned"] else "NO"
                    if r["reliable_non_aligned"] is False else "-")
+        alpha_txt = f"{_f(al['value'],2)} ({al['source']})" if al["value"] is not None else "-"
         lines.append(
             f"| {r['family']} | {_f(r['vci'])} | "
             f"{_f(r['vci_ci'][0])}-{_f(r['vci_ci'][1])} | {_f(r['cheapness'],2)} | "
@@ -122,8 +166,58 @@ def write_markdown(payload, path):
             f"{_f(r['trust_aligned'],2)} | {_f(r['trust_non_aligned'],2)} | "
             f"{_f(m['tpr'],2)} | {_f(m['tnr'],2)} | {_f(m['far90'],2)} | "
             f"{_f(na['tpr'],2)} | {_f(na['tnr'],2)} | {_f(na['far90'],2)} | "
-            f"{_f(k['value'],2)} ({k['source']}) | "
+            f"{_f(k['value'],2)} ({k['source']}) | {alpha_txt} | "
             f"{'yes' if r['reliable'] else 'NO'} | {gate_na} |")
+
+    cats = ("minimum_functionality", "invariance", "directional")
+    lines += ["", "## CheckList categories: TPR / TNR / FAR90", "",
+              "`minimum_functionality` = at least handle the stated function; "
+              "`invariance` = a meaning-preserving change must not change the verdict "
+              "(includes state/non-determinism); `directional` = a specific input change "
+              "must move the answer in the specified direction. Pooled row is over every "
+              "family; a family cell is `-` when that category was not sampled.",
+              "",
+              "| family | category | n | pos | neg | TPR | TNR | FAR90 |",
+              "|---|---|---|---|---|---|---|---|"]
+    for cat in cats:
+        c = s["pooled_categories"][cat]
+        lines.append(f"| **pooled** | {cat} | {c['n']} | {c['n_pos']} | {c['n_neg']} "
+                     f"| {_f(c['tpr'], 2)} | {_f(c['tnr'], 2)} | {_f(c['far90'], 2)} |")
+    for r in sorted(payload["families"], key=lambda x: -x["vci"]):
+        for cat in cats:
+            c = r["per_category"][cat]
+            if not c["n"]:
+                continue
+            lines.append(f"| {r['family']} | {cat} | {c['n']} | {c['n_pos']} | "
+                         f"{c['n_neg']} | {_f(c['tpr'], 2)} | {_f(c['tnr'], 2)} | "
+                         f"{_f(c['far90'], 2)} |")
+    lines += ["", "`-` in TPR/TNR/FAR90 means the denominator is empty (no such probe "
+              "was authored), not zero. `directional` currently has no positive probe, "
+              "so its TPR is unmeasured; see the memo, §validity ceiling."]
+
+    lines += ["", "## Attribution: where a disagreement lands", "",
+              "Three buckets: `verifier_too_strict` (a correct answer rejected because of "
+              "its spelling/form), `task_under_specified` (a defensible second reading "
+              "rejected -- the prompt, not the verifier, is incomplete), `true_defect` "
+              "(the candidate really is wrong; split into caught/missed). `agreement` "
+              "means the verifier did what the probe expected.",
+              "",
+              "| bucket | n | caught | missed | false-reject | accepted |",
+              "|---|---|---|---|---|---|"]
+    for bucket in ("verifier_too_strict", "task_under_specified", "true_defect",
+                   "agreement", "observe"):
+        a = s["attribution"][bucket]
+        lines.append(f"| {bucket} | {a['n']} | {a['caught']} | {a['missed']} | "
+                     f"{a['false_reject']} | {a['accepted']} |")
+    lines += ["", "First examples per bucket (full list in `attribution.csv`):", ""]
+    for bucket in ("verifier_too_strict", "task_under_specified", "true_defect"):
+        a = s["attribution"][bucket]
+        for ex in a["examples"][:2]:
+            lines.append(f"- **{bucket}** `{ex['cand_id']}` ({ex['operator']}, "
+                         f"{ex['checklist_category']}) {ex['note']} -- basis: "
+                         f"{ex['basis']}; verifier said: "
+                         f"{ex['verifier_evidence'] or 'no evidence line'}")
+
     lines += ["", "## Non-aligned acceptance by failure class", "",
               "Cell = share of that class the verifier accepted. `n` is the number of "
               "probes in the class. `-` means the class was not sampled for the family.",
@@ -191,11 +285,15 @@ td.mono{font-variant-numeric:tabular-nums}
 .legend{font-size:12px;color:var(--mut);margin-top:10px}
 .note{font-size:12.5px;color:var(--mut);margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
 </style></head><body><div class="wrap">
-<h1>Verification Coverage Index &mdash; round 2</h1>
+<h1>Verification Coverage Index &mdash; round 3</h1>
 <p class="sub" id="sub"></p>
 <div class="cards" id="cards"></div>
 <h2>VCI by family (aligned vs non-aligned marked)</h2><div class="panel" id="bars"></div>
-<p class="legend">Solid bar = round-2 VCI (trust limited by non-aligned probes). Dashed line = 0.70 threshold. Red = fails the aligned reliability gate.</p>
+<p class="legend">Solid bar = round-3 VCI (trust limited by non-aligned probes). Dashed line = 0.70 threshold. Red = fails the aligned reliability gate.</p>
+<h2>CheckList categories: TPR / TNR / FAR90</h2><div class="panel" id="cats"></div>
+<p class="legend">A cell is <em>-</em> when no probe of that class exists: an unmeasured rate is not a zero. Probe counts are small (25-154 per pooled class), so read them as a diagnosis, not a certification.</p>
+<h2>Attribution: where a disagreement lands</h2><div class="panel" id="attr"></div>
+<p class="legend">`missed` = a true defect the verifier accepted; `caught` = rejected; `false-reject` = a correct answer it rejected; `accepted` = agreement. Full per-probe rows in <code>attribution.csv</code>.</p>
 <h2>Components</h2><div class="panel" id="comp"></div>
 <h2>Per-family detail</h2><div class="panel" id="table"></div>
 <h2>Aligned mutants: which defect classes slip through</h2><div class="panel" id="heat"></div>
@@ -209,15 +307,16 @@ td.mono{font-variant-numeric:tabular-nums}
 const D=JSON.parse(document.getElementById('data').textContent);
 const f3=x=>(x==null?'-':Number(x).toFixed(3));
 const f2=x=>(x==null?'-':Number(x).toFixed(2));
-const S=D.summary, K=S.kappa_pooled;
+const S=D.summary, K=S.kappa_pooled, A=S.alpha_pooled;
 document.getElementById('sub').textContent=
- `${D.manifest.n_tasks} seed tasks per family &middot; ${S.n_candidates} aligned mutants + ${S.n_probes} non-aligned probes &middot; seed ${D.manifest.seed} &middot; generated ${D.manifest.generated_at_utc}`;
+ `${D.manifest.n_tasks} seed tasks per family &middot; ${S.n_candidates} aligned mutants + ${S.n_probes} non-aligned probes &middot; seed ${D.manifest.seed} &middot; generator v${D.manifest.probe_generator_version} &middot; generated ${D.manifest.generated_at_utc}`;
 const cards=[
- ['Median VCI (round 2)',f3(S.vci_median),`95% CI ${f3(S.vci_median_ci[0])}-${f3(S.vci_median_ci[1])} &middot; aligned-only ${f3(S.vci_median_aligned)}`],
+ ['Median VCI (round 3)',f3(S.vci_median),`95% CI ${f3(S.vci_median_ci[0])}-${f3(S.vci_median_ci[1])} &middot; aligned-only ${f3(S.vci_median_aligned)}`],
  ['Families >= 0.70',`${S.families_ge_0.7} / ${S.n_families}`,`aligned-only: ${S.families_ge_0.7_aligned}`],
  ['Median trust',f3(S.trust_median_non_aligned),`aligned ${f3(S.trust_median_aligned)} &middot; non-aligned shown`],
  ['Core families',`${S.core_provisional.length}`,`human-backed: ${S.core_human_backed.length}`],
- ['kappa in use',K.human.n?f3(K.human.value):'n/a',`source ${K.source} &middot; human n=${K.human.n} &middot; synthetic ${f3(K.synthetic.value)}`]
+ ['kappa in use',K.human.n?f3(K.human.value):'n/a',`source ${K.source} &middot; human n=${K.human.n} &middot; synthetic ${f3(K.synthetic.value)}`],
+ ['alpha (ordinal)',A.source==='human'?f3(A.value):'synthetic',`n=${A.n} &middot; undecidable ${A.n_undecidable} &middot; probe-oracle ${f3(A.oracle_non_aligned.value)}`]
 ];
 document.getElementById('cards').innerHTML=cards.map(c=>
  `<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="n">${c[2]}</div></div>`).join('');
@@ -242,16 +341,38 @@ document.getElementById('table').innerHTML=
  `<table><thead><tr><th class="f">family</th><th class="f">domain</th><th>VCI</th><th>CI</th>
  <th>C</th><th>D</th><th>K</th><th>T</th><th>T al</th><th>T na</th>
  <th>TPR al</th><th>TNR al</th><th>FAR90 al</th><th>TPR na</th><th>TNR na</th><th>FAR90 na</th>
- <th>kappa</th><th>src</th><th>p95&nbsp;ms</th><th>gate al / na</th></tr></thead><tbody>`+
+ <th>kappa</th><th>a</th><th>src</th><th>p95&nbsp;ms</th><th>gate al / na</th></tr></thead><tbody>`+
  sorted.map(r=>{const m=r.metrics_aligned,na=r.metrics_non_aligned;return `<tr><td class="f">${r.family}</td><td class="f" style="color:var(--mut)">${r.domain}</td>
  <td class="mono">${f3(r.vci)}</td><td class="mono" style="color:var(--mut)">${f2(r.vci_ci[0])}-${f2(r.vci_ci[1])}</td>
  <td class="mono">${f2(r.cheapness)}</td><td class="mono">${f2(r.density)}</td><td class="mono">${Number(r.units_per_task).toFixed(1)}</td>
  <td class="mono">${f2(r.trust)}</td><td class="mono">${f2(r.trust_aligned)}</td><td class="mono">${f2(r.trust_non_aligned)}</td>
  <td class="mono">${f2(m.tpr)}</td><td class="mono">${f2(m.tnr)}</td><td class="mono">${f2(m.far90)}</td>
  <td class="mono">${f2(na.tpr)}</td><td class="mono">${f2(na.tnr)}</td><td class="mono">${f2(na.far90)}</td>
- <td class="mono">${f2(r.kappa.value)}</td><td class="mono" style="color:var(--mut)">${r.kappa.source}</td>
+ <td class="mono">${f2(r.kappa.value)}</td><td class="mono">${r.alpha.source==='human'?f2(r.alpha.value):'-'}</td><td class="mono" style="color:var(--mut)">${r.kappa.source}</td>
  <td class="mono">${Number(r.latency_ms.p95).toFixed(1)}</td>
  <td>${r.reliable?'<span class="pill ok">al</span>':'<span class="pill bad">al</span>'} ${r.reliable_non_aligned===false?'<span class="pill bad">na</span>':r.reliable_non_aligned?'<span class="pill ok">na</span>':'<span class="pill warn">na ?</span>'}${r.core_eligible?' <span class="pill warn">core*</span>':''}</td></tr>`}).join('')+
+ `</tbody></table>`;
+const cats=['minimum_functionality','invariance','directional'];
+document.getElementById('cats').innerHTML=
+ `<table><thead><tr><th class="f">family</th><th class="f">category</th><th>n</th>
+ <th>pos</th><th>neg</th><th>TPR</th><th>TNR</th><th>FAR90</th></tr></thead><tbody>`+
+ cats.map(c=>{const x=S.pooled_categories[c];return `<tr><td class="f"><b>pooled</b></td><td class="f">${c}</td>
+ <td class="mono">${x.n}</td><td class="mono">${x.n_pos}</td><td class="mono">${x.n_neg}</td>
+ <td class="mono">${f2(x.tpr)}</td><td class="mono">${f2(x.tnr)}</td><td class="mono">${f2(x.far90)}</td></tr>`}).join('')+
+ sorted.map(r=>cats.filter(c=>r.per_category[c].n).map(c=>{const x=r.per_category[c];return `<tr>
+ <td class="f">${r.family}</td><td class="f" style="color:var(--mut)">${c}</td>
+ <td class="mono">${x.n}</td><td class="mono">${x.n_pos}</td><td class="mono">${x.n_neg}</td>
+ <td class="mono">${f2(x.tpr)}</td><td class="mono">${f2(x.tnr)}</td><td class="mono">${f2(x.far90)}</td></tr>`}).join('')).join('')+
+ `</tbody></table>`;
+const buckets=['verifier_too_strict','task_under_specified','true_defect','agreement','observe'];
+document.getElementById('attr').innerHTML=
+ `<table><thead><tr><th class="f">bucket</th><th>n</th><th>caught</th><th>missed</th>
+ <th>false-reject</th><th>accepted</th></tr></thead><tbody>`+
+ buckets.map(b=>{const x=S.attribution[b];const isBad=(b==='true_defect')?x.missed:(b==='observe'?0:x.false_reject);
+ const bg=isBad?'#fae6e6':'#fff';const fg=isBad?'#a12c2c':'inherit';
+ return `<tr><td class="f">${b}</td><td class="mono">${x.n}</td><td class="mono">${x.caught}</td>
+ <td class="mono" style="background:${bg};color:${fg}">${x.missed}</td>
+ <td class="mono">${x.false_reject}</td><td class="mono">${x.accepted}</td></tr>`}).join('')+
  `</tbody></table>`;
 const defects=['boundary','off_by_one','type_mismatch','order','missing','extra','semantic_wrong','semantic_equivalent','partial'];
 document.getElementById('heat').innerHTML=
@@ -284,6 +405,11 @@ document.getElementById('note').textContent=
  `synthetic upper bound ${f3(K.synthetic.value)} is never used in place of a human value; `+
  `human test-retest stability ${K.stability.value==null?'n/a':f3(K.stability.value)} (n=${K.stability.n}). `+
  `core* = VCI>=0.70 and T>=0.90 and D>0, but the kappa behind it is synthetic, so the list is provisional. `+
+ `alpha (Krippendorff, ordinal) is reported next to kappa and never instead of it; both are currently `+
+ `${A.source}, so neither is a human reliability number. `+
+ `Validity ceiling: probes are synthetic mutants, not a sample of real model failures (Just et al. 2014 `+
+ `find mutants correlate with faults but are easier to kill and misrepresent their distribution), so `+
+ `TPR/TNR here are an upper bound on deployment behaviour. `+
  `Latency is the only hardware-dependent number. Self-contained page: no network requests.`;
 </script></body></html>"""
 
@@ -295,10 +421,42 @@ def write_html(payload, path):
         fh.write(HTML.replace("__DATA__", data))
 
 
+def write_attribution_csv(payload, path, rows=None):
+    """One row per non-aligned probe: category, operator, expectation, verdict,
+    attribution bucket, and the basis a reviewer can check.
+
+    ``rows`` is the complete probe list from ``audit.run_audit``.  Without it
+    the writer falls back to the capped ``examples`` in ``results.json`` -- the
+    CSV then samples rather than covers, which is why the audit passes ``rows``.
+    """
+    cols = ["family", "cand_id", "task_id", "failure_class", "checklist_category",
+            "operator", "generator_version", "expectation", "label", "passed",
+            "score", "attribution", "attribution_detail", "note", "basis",
+            "verifier_evidence"]
+    if rows is None:
+        rows = []
+        for r in payload["families"]:
+            for bucket in ("verifier_too_strict", "task_under_specified",
+                           "true_defect", "agreement", "observe"):
+                for ex in r["attribution"][bucket]["examples"]:
+                    rows.append(dict(ex, attribution=bucket,
+                                     task_id="", score=""))
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=cols)
+        w.writeheader()
+        for r in rows:
+            w.writerow({c: r.get(c, "") for c in cols})
+
+
 def write_all(payload, out_dir):
+    """Write the five deliverables.  Keys starting with ``_`` are private
+    (full probe rows) and never reach ``results.json`` or the dashboard."""
     os.makedirs(out_dir, exist_ok=True)
+    rows = payload.get("_attribution_rows")
+    body = {k: v for k, v in payload.items() if not k.startswith("_")}
     with open(os.path.join(out_dir, "results.json"), "w", encoding="utf-8") as fh:
-        json.dump(payload, fh, ensure_ascii=False, indent=1)
-    write_csv(payload, os.path.join(out_dir, "coverage.csv"))
-    write_markdown(payload, os.path.join(out_dir, "coverage.md"))
-    write_html(payload, os.path.join(out_dir, "dashboard.html"))
+        json.dump(body, fh, ensure_ascii=False, indent=1)
+    write_csv(body, os.path.join(out_dir, "coverage.csv"))
+    write_markdown(body, os.path.join(out_dir, "coverage.md"))
+    write_attribution_csv(body, os.path.join(out_dir, "attribution.csv"), rows)
+    write_html(body, os.path.join(out_dir, "dashboard.html"))

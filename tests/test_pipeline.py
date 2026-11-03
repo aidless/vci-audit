@@ -1,4 +1,5 @@
 """End-to-end smoke test of the audit pipeline on a small family slice."""
+import csv
 import json
 import os
 
@@ -48,6 +49,41 @@ def test_audit_reports_every_required_metric(tmp_path):
         assert "tpr_equiv" in row["metrics"]
 
 
+def test_attribution_csv_covers_every_probe(tmp_path):
+    """The attribution table must be a table, not a sample of examples."""
+    payload = _run(tmp_path)
+    out = tmp_path / "out"
+    report.write_all(payload, str(out))
+    with open(out / "attribution.csv", newline="", encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    assert len(rows) == payload["summary"]["n_probes"]
+    assert {r["attribution"] for r in rows} <= {
+        "verifier_too_strict", "task_under_specified", "true_defect",
+        "agreement", "observe"}
+    for r in rows:
+        # A reviewer must be able to re-derive the verdict from the row alone.
+        assert r["operator"] and r["checklist_category"]
+        assert r["generator_version"]
+        assert r["basis"]
+    # The full rows are private: they must not bloat results.json.
+    assert "_attribution_rows" not in json.loads(
+        (out / "results.json").read_text(encoding="utf-8"))
+
+
+def test_pooled_category_rates_with_an_empty_denominator_are_none(tmp_path):
+    payload = _run(tmp_path)
+    direction = payload["summary"]["pooled_categories"]["directional"]
+    assert direction["n_neg"] > 0 and direction["n_pos"] == 0
+    assert direction["tpr"] is None
+    assert direction["tnr"] is not None
+    # ... and the rendered table must not print it as 0.00.
+    md_path = tmp_path / "coverage.md"
+    report.write_markdown(payload, str(md_path))
+    row = [l for l in md_path.read_text(encoding="utf-8").splitlines()
+           if l.startswith("| **pooled** | directional |")]
+    assert row and "| - |" in row[0]
+
+
 def test_raw_jsonl_is_written_for_auditability(tmp_path):
     _run(tmp_path)
     cand_path = tmp_path / "work" / "candidates.jsonl"
@@ -58,12 +94,13 @@ def test_raw_jsonl_is_written_for_auditability(tmp_path):
     assert {"cand_id", "defect", "label", "passed", "score", "cost_ms"} <= set(first)
 
 
-def test_report_writes_four_self_contained_deliverables(tmp_path):
+def test_report_writes_five_self_contained_deliverables(tmp_path):
     payload = _run(tmp_path)
     out = tmp_path / "out"
     report.write_all(payload, str(out))
     names = sorted(os.listdir(out))
-    assert names == ["coverage.csv", "coverage.md", "dashboard.html", "results.json"]
+    assert names == ["attribution.csv", "coverage.csv", "coverage.md",
+                     "dashboard.html", "results.json"]
     html = (out / "dashboard.html").read_text(encoding="utf-8")
     assert "<script id=\"data\"" in html
     # Offline: no remote assets of any kind.

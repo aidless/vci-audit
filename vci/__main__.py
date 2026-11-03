@@ -3,7 +3,8 @@
     python -m vci audit --families all --out outputs/
     python -m vci list-families
     python -m vci annotate --per-family 3 --out annotations/blind.csv
-    python -m vci label --sheet annotations/blind.csv --out annotations/labels.csv
+    python -m vci label --sheet annotations/blind.csv --out annotations/labels.csv \
+        --qualification --group-by-family
     python -m vci label --sheet annotations/blind.csv \
         --out annotations/labels_retest.csv --round 2 --shuffle-seed 99
     python -m vci selfcheck
@@ -102,7 +103,13 @@ def cmd_label(args):
     from .labeler import run
 
     stats = run(args.sheet, args.out, round_no=args.round, annotator=args.user,
-                shuffle_seed=args.shuffle_seed, limit=args.limit, redo=args.redo)
+                shuffle_seed=args.shuffle_seed, limit=args.limit, redo=args.redo,
+                group_by_family=args.group_by_family,
+                qualification=args.qualification)
+    qual = stats.get("qualification")
+    if qual:
+        print(f"qualification: {qual['correct']}/{qual['total']} correct"
+              + (f" (wrong: {', '.join(qual['wrong'])})" if qual["wrong"] else ""))
     return 0 if stats["quit"] or stats["total"] else 2
 
 
@@ -178,6 +185,10 @@ def build_parser():
                    help="shuffle pending rows deterministically (use a fresh seed for the retest)")
     b.add_argument("--limit", type=int, default=0, help="0 = no limit")
     b.add_argument("--redo", action="store_true", help="ignore existing answers")
+    b.add_argument("--group-by-family", action="store_true", dest="group_by_family",
+                   help="present one family at a time, shuffled within the family")
+    b.add_argument("--qualification", action="store_true",
+                   help="ask 3 calibration items first (wrong answers warn, never block)")
     b.set_defaults(fn=cmd_label)
 
     s = sub.add_parser("selfcheck", help="find mutants that contradict their own label")

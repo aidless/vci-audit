@@ -63,12 +63,32 @@ def test_probe_fields_are_valid_and_bound_to_the_task():
             assert p.label == {"accept": "correct", "reject": "incorrect",
                                "observe": None}[p.expectation]
             classes.add(p.failure_class)
+            # Round 3: each record must be self-describing for a reviewer.
+            assert p.checklist_category in adversarial.CHECKLIST_CATEGORIES
+            assert p.operator in adversarial.OPERATORS
+            assert p.generator_version == adversarial.GENERATOR_VERSION
         # Every family contributes at least one *reject* probe and at least one
         # equivalence or ambiguity probe: a family with only reject probes could
         # not measure false rejections.
         assert any(p.expectation == "reject" for p in probes)
         assert any(p.failure_class in ("semantic_equivalent", "spec_ambiguity")
                    for p in probes)
+
+
+def test_all_three_checklist_categories_and_operators_are_covered():
+    cats, ops = set(), set()
+    for meta in registry.registry_metadata():
+        fam = registry.by_name(meta["family"])
+        task = fam.generate(1, random.Random(3))[0]
+        probes = adversarial.probes_for(fam.name, task, heavy=True)
+        cats |= {p.checklist_category for p in probes}
+        ops |= {p.operator for p in probes}
+    assert cats == set(adversarial.CHECKLIST_CATEGORIES)
+    assert ops <= set(adversarial.OPERATORS)
+    # The operator table in the module docstring must not drift from the code.
+    doc = adversarial.__doc__
+    missing = [op for op in ops if f"`{op}`" not in doc]
+    assert missing == [], f"documented operators missing: {missing}"
 
 
 def test_all_six_failure_classes_are_covered_across_the_registry():
@@ -114,10 +134,19 @@ def test_code_patch_hardcoded_answers_are_accepted_known_leak():
 
 
 def test_code_patch_stateful_output_is_invisible_known_leak():
-    """First call correct, later calls return None; one-shot verification passes."""
+    """Round 3: only the *first-call-only* defect is still invisible.
+
+    The one-shot subprocess verifier runs every case in a single import, so it
+    does see "fails from the second invocation on", alternation and a
+    arity-keyed memo -- those three are caught.  What it cannot see is a solver
+    that is right exactly once: `x02` is correct for its first five calls, which
+    covers the whole harness, and returns `None` afterwards.  That is the leak
+    this test registers, by id, so a future fix shows up as a test change.
+    """
     pairs = _run("code_patch", "resource")
     assert pairs
-    assert all(v.passed for _, v in pairs)
+    known_leaks = {p.probe_id for p, v in pairs if v.passed}
+    assert known_leaks == {"code_patch-001-x02"}, known_leaks
 
 
 def test_log_equivalent_timestamps_are_rejected_known_over_strictness():

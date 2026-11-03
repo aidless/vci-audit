@@ -1,4 +1,4 @@
-"""Round-2 non-aligned probes.
+"""Round-2/3 non-aligned probes.
 
 Why this module exists
 ----------------------
@@ -6,6 +6,51 @@ Round 1 generated mutants with the family's own generators, so every mutant was
 labelled by the same code that judged it.  That construction makes TPR/TNR look
 perfect by definition.  This module builds a *second* sample source whose labels
 do not come from the verifier.
+
+Round-3 additions
+-----------------
+* every probe carries a CheckList category (``minimum_functionality`` /
+  ``invariance`` / ``directional``), the mutation operator that produced it,
+  its true label (derived from ``expectation``, never from the verifier) and a
+  generator version.  The category split is what makes the per-family TPR/TNR
+  meaningful: a verifier can be good at minimum functionality and bad at
+  invariance, and collapsing the two hides that.
+* probes named ``EQUIV`` (same meaning, different spelling) are kept apart from
+  probes named ``AMB`` (a defensible reading of an under-specified prompt).
+  Both are labelled "should be accepted", but only the first is a verifier
+  defect; the second is a task-text defect.  ``audit._probe_record`` writes that
+  verdict basis into ``attribution``.
+
+Mutation operators: what each one stands for, and its representative weakness
+-----------------------------------------------------------------------------
+Orthodox names follow Jia & Harman 2011; ``OVF``/``HARD``/``STATE`` have no
+program-mutation analogue and are the three that a fixture-replaying harness
+cannot see.
+
+| operator | real defect it stands for | representative weakness |
+|---|---|---|
+| `AOR` | wrong formula | loud: any value check kills it, so acceptance says nothing |
+| `ROR` | boundary error | one inequality per family; a happy-path check is blind |
+| `CR` | stale constant / off-by-one | easy to kill with exact fixtures; over-weights small numeric errors |
+| `SDL` | a missing step / dropped functionality | only visible if the verifier asserts that step at all |
+| `TR` | transposed operands or wrong emission order | looks equivalent whenever the checker sorts or compares sets |
+| `OVF` | a rule that only holds on the labelled examples | at most one per family: cannot represent the overfitting space |
+| `HARD` | lookup table instead of an algorithm | obviously wrong in principle, yet invisible to a fixture-replaying harness |
+| `STATE` | answer depends on history, not input | needs a second invocation; one-shot verifiers cannot see it |
+| `NONDET` | same input, different answer | needs repeated calls; most harnesses call once |
+| `INF` | non-termination / unbounded resource use | detectable by a watchdog, but the cost is wall-clock: observed, not scored |
+| `EQUIV` | not a defect: same meaning, different spelling | authored, not decided; measures false rejects only where the author is right |
+| `AMB` | not a defect: a defensible second reading of an under-specified prompt | a rejection here blames the task text, not the verifier |
+
+Representative weakness of the whole sample (Just et al., FSE 2014): mutants are
+correlated with real faults but their *distribution* is not the distribution of
+real faults, and they are easier to kill.  Therefore TPR/TNR measured on these
+probes is an optimistic upper bound on deployment behaviour, not an estimate of
+it -- synthetic mutants are not a sample of real defects, and this round's
+validity is capped by that (see ``outputs/first-run-memo.md``, "validity
+ceiling").  Equivalence is not decided by a general algorithm (the problem is
+undecidable; Offutt & Pan 1997), so ``EQUIV`` probes are authored arguments,
+one basis line each, not a solved equivalence oracle.
 
 Independence contract (enforced by ``tests/test_adversarial.py``)
 ----------------------------------------------------------------
@@ -64,6 +109,38 @@ FAILURE_CLASSES = (
 )
 EXPECTATIONS = ("accept", "reject", "observe")
 
+#: CheckList (Ribeiro et al., ACL 2020) test types, applied to candidate answers.
+CHECKLIST_CATEGORIES = ("minimum_functionality", "invariance", "directional")
+
+#: Which CheckList question a failure class is asking.
+CATEGORY_BY_CLASS = {
+    "hardcoded_expected": "minimum_functionality",
+    "overfit_to_tests": "minimum_functionality",
+    "spec_ambiguity": "minimum_functionality",
+    "silent_partial": "directional",
+    "semantic_equivalent": "invariance",
+    "resource": "invariance",
+}
+
+#: Default mutation operator per failure class (overridden per probe where a
+#: sharper operator applies).
+OPERATOR_BY_CLASS = {
+    "hardcoded_expected": "HARD",
+    "overfit_to_tests": "OVF",
+    "spec_ambiguity": "AMB",
+    "silent_partial": "CR",
+    "semantic_equivalent": "EQUIV",
+    "resource": "STATE",
+}
+
+#: The mutation operators a probe record may carry (see the module docstring).
+OPERATORS = ("AOR", "ROR", "CR", "SDL", "TR", "OVF", "HARD", "STATE",
+             "NONDET", "INF", "EQUIV", "AMB")
+
+#: Bumped whenever a probe payload changes, so a result file can be traced to
+#: the sample that produced it.
+GENERATOR_VERSION = "3.0"
+
 
 @dataclass
 class Probe:
@@ -73,10 +150,13 @@ class Probe:
     task_id: str
     family: str
     failure_class: str
+    checklist_category: str
+    operator: str
     expectation: str
     payload: Any
     note: str
     basis: str
+    generator_version: str = GENERATOR_VERSION
 
     @property
     def label(self) -> Optional[str]:
@@ -86,6 +166,26 @@ class Probe:
         if self.expectation == "reject":
             return "incorrect"
         return None
+
+    @property
+    def attribution_kind(self) -> str:
+        """What a disagreement with the verifier would be evidence of.
+
+        ``verifier_too_strict``      a correct answer under the stated value is
+                                     rejected because of its spelling.
+        ``task_under_specified``     a defensible second reading is rejected;
+                                     the prompt, not the verifier, is incomplete.
+        ``true_defect``              the candidate really is wrong; a pass is a
+                                     verifier miss, a rejection is a correct catch.
+        ``observe``                  no policy in the verifier contract.
+        """
+        if self.expectation == "accept":
+            return ("task_under_specified" if self.failure_class == "spec_ambiguity"
+                    else "verifier_too_strict")
+        if self.expectation == "reject":
+            return "true_defect"
+        return "observe"
+
 
 
 # --------------------------------------------------------------------- helpers
@@ -137,11 +237,16 @@ def _digits(value: int, base: int) -> str:
 
 
 def _mk(task: Task, idx: int, cls: str, exp: str, payload: Any,
-        note: str, basis: str) -> Probe:
+        note: str, basis: str, category: Optional[str] = None,
+        operator: Optional[str] = None) -> Probe:
     assert cls in FAILURE_CLASSES and exp in EXPECTATIONS
+    cat = category or CATEGORY_BY_CLASS[cls]
+    op = operator or OPERATOR_BY_CLASS[cls]
+    assert cat in CHECKLIST_CATEGORIES, cat
     return Probe(probe_id=f"{task.task_id}-x{idx:02d}", task_id=task.task_id,
-                 family=task.family, failure_class=cls, expectation=exp,
-                 payload=payload, note=note, basis=basis)
+                 family=task.family, failure_class=cls, checklist_category=cat,
+                 operator=op, expectation=exp, payload=payload, note=note,
+                 basis=basis)
 
 
 def _record_key(task: Task) -> Dict[str, Dict[str, Any]]:
@@ -166,7 +271,7 @@ def _arith(task: Task, heavy: bool) -> List[Probe]:
             "own rational formatter; no call into fmt_num"),
         _mk(task, 1, "silent_partial", "reject", bad,
             f"first value moved by +1/2 ({_exact(vals[0])} -> {bad[0]})",
-            "reference value + an independent offset"),
+            "reference value + an independent offset", operator="CR"),
     ]
 
 
@@ -185,7 +290,7 @@ def _unit(task: Task, heavy: bool) -> List[Probe]:
             "defensible second reading of an under-specified prompt"),
         _mk(task, 2, "silent_partial", "reject", bad,
             "first conversion off by a factor of 1000",
-            "reference value scaled independently"),
+            "reference value scaled independently", operator="AOR"),
     ]
 
 
@@ -204,7 +309,7 @@ def _stats(task: Task, heavy: bool) -> List[Probe]:
             "own exact formatter; Python's math.sqrt is not reused for re-derivation"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "sample std rounded to a few decimals, violating the stated 1e-6 tolerance",
-            "independent rounding of the reference std"),
+            "independent rounding of the reference std", operator="CR"),
     ]
 
 
@@ -222,7 +327,7 @@ def _base(task: Task, heavy: bool) -> List[Probe]:
             "own base encoder + explicit padding"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "each value incremented by one in its own base",
-            "own base encoder; no shared helper with the family"),
+            "own base encoder; no shared helper with the family", operator="CR"),
     ]
 
 
@@ -242,7 +347,8 @@ def _matrix(task: Task, heavy: bool) -> List[Probe]:
             "own matrix reconstruction from row/col items"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "result transposed: valid matrix shape, wrong entry positions",
-            "own transpose, applied without consulting the operation label"),
+            "own transpose, applied without consulting the operation label",
+            operator="TR"),
     ]
 
 
@@ -258,7 +364,7 @@ def _date(task: Task, heavy: bool) -> List[Probe]:
             "own ISO rendering via datetime"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "last date advanced by one day (boundary wrong, rest right)",
-            "own date arithmetic"),
+            "own date arithmetic", operator="CR"),
     ]
 
 
@@ -276,7 +382,7 @@ def _json_extract(task: Task, heavy: bool) -> List[Probe]:
             "own re-serialisation of the field values"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "priority off by one, every other field correct",
-            "independent field perturbation"),
+            "independent field perturbation", operator="CR"),
     ]
 
 
@@ -319,7 +425,7 @@ def _log_extract(task: Task, heavy: bool) -> List[Probe]:
             "own timezone arithmetic (datetime.timedelta), not string replacement"),
         _mk(task, 3, "silent_partial", "reject", d,
             "first record code changed by +7; every other field correct",
-            "independent field perturbation"),
+            "independent field perturbation", operator="CR"),
     ]
 
 
@@ -375,7 +481,8 @@ def _template(task: Task, heavy: bool) -> List[Probe]:
             "own whitespace-only edit"),
         _mk(task, 2, "silent_partial", "reject", bad,
             'html-escaped with quote=False, so " in the note stays raw',
-            "stdlib html.escape with a different flag; only the escaping boundary moves"),
+            "stdlib html.escape with a different flag; only the escaping boundary moves",
+            operator="SDL"),
     ]
 
 
@@ -412,7 +519,8 @@ def _sql(task: Task, heavy: bool) -> List[Probe]:
         _mk(task, 1, "hardcoded_expected", "reject", consts,
             "constant SELECT ... UNION ALL rows copied from the visible primary result; "
             "the held-out probe dataset is ignored",
-            "built from the task fixture's primary result rows, as a memorising solver would"),
+            "built from the task fixture's primary result rows, as a memorising solver "
+            "would", operator="HARD"),
     ]
 
 
@@ -437,7 +545,7 @@ def _table(task: Task, heavy: bool) -> List[Probe]:
             "own exact formatter over the item values"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "mean column replaced by the median of the same group",
-            "own median from the raw rows; no shared aggregation helper"),
+            "own median from the raw rows; no shared aggregation helper", operator="AOR"),
     ]
 
 
@@ -449,7 +557,7 @@ def _sort(task: Task, heavy: bool) -> List[Probe]:
             "own JSON re-spelling of the id list"),
         _mk(task, 1, "silent_partial", "reject", list(reversed(ids)),
             "positions reversed: every id is present, none is in the right place",
-            "own permutation of the reference list"),
+            "own permutation of the reference list", operator="TR"),
     ]
 
 
@@ -472,7 +580,7 @@ def _interval(task: Task, heavy: bool) -> List[Probe]:
             "own re-typing of the reference pairs"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "touching endpoints merged (a <= end instead of a < end)",
-            "own half-open merge written with the wrong inequality"),
+            "own half-open merge written with the wrong inequality", operator="ROR"),
     ]
 
 
@@ -516,7 +624,7 @@ def _grid(task: Task, heavy: bool) -> List[Probe]:
             "own BFS (deque, fixed direction order) that shares no code with the family"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "first path stops one cell before the goal; other paths optimal",
-            "own path truncation"),
+            "own path truncation", operator="SDL"),
     ]
     if heavy and acc and acc[0]:
         huge = [acc[0][0]] * 5000
@@ -578,7 +686,7 @@ def _csp(task: Task, heavy: bool) -> List[Probe]:
             "own permutation argument, not the family's backtracking search"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "one edge given the same colour on both endpoints",
-            "own edge selection from the stated constraints"),
+            "own edge selection from the stated constraints", operator="SDL"),
     ]
 
 
@@ -635,7 +743,7 @@ def _schedule(task: Task, heavy: bool) -> List[Probe]:
             "own constraint check and search order (meeting ids reversed)"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "one meeting shifted into a conflict; the rest of the schedule stays valid",
-            "own perturb-and-check loop"),
+            "own perturb-and-check loop", operator="CR"),
     ]
 
 
@@ -666,7 +774,7 @@ def _topo(task: Task, heavy: bool) -> List[Probe]:
             "own Kahn implementation with a sorted queue, not the family's randomised one"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "order reversed: every node listed once, every edge violated",
-            "own reversal of the independent order"),
+            "own reversal of the independent order", operator="TR"),
     ]
 
 
@@ -693,7 +801,8 @@ def _life(task: Task, heavy: bool) -> List[Probe]:
             "own row re-spelling"),
         _mk(task, 1, "silent_partial", "reject", bad,
             "toroidal (wrapping) neighbourhood instead of a dead border",
-            "own Life step with wrap=True; boundary rule differs, interior usually agrees"),
+            "own Life step with wrap=True; boundary rule differs, interior usually agrees",
+            operator="ROR"),
     ]
 
 
@@ -753,39 +862,80 @@ def _code(task: Task, heavy: bool) -> List[Probe]:
     stateful = ("_calls = [0]\ndef solve(*args):\n    _calls[0] += 1\n"
                 "    if _calls[0] > 5:\n        return None\n    table = " + repr(table)
                 + "\n    return table.get(repr(args))\n")
+    # Variants below are built from the independent implementation, not from the
+    # fixture's own source, so their correct half is never shared with the verifier.
+    impl = alt_src.replace("def solve(", "def _impl(", 1)
+    second_call = (impl + "\n_calls = [0]\ndef solve(*args):\n"
+                   "    _calls[0] += 1\n    if _calls[0] >= 2:\n        return None\n"
+                   "    return _impl(*args)\n")
+    alternating = (impl + "\n_calls = [0]\ndef solve(*args):\n"
+                   "    _calls[0] += 1\n    if _calls[0] % 2 == 0:\n        return None\n"
+                   "    return _impl(*args)\n")
+    # A module-level memo keyed by call arity: the first answer for an arity is
+    # replayed for every later call with that arity.  Inside one task it corrupts
+    # a second case of the same arity; across tasks it would return the previous
+    # task's answer.  A one-shot verifier sees whichever case ordering it uses.
+    cross_task = (impl + "\n_memo = {}\ndef solve(*args):\n    key = len(args)\n"
+                  "    if key in _memo:\n        return _memo[key]\n"
+                  "    out = _impl(*args)\n    _memo[key] = out\n    return out\n")
 
     probes = [
         _mk(task, 0, "semantic_equivalent", "accept", alt_src,
             "independent correct implementation of the stated spec",
-            "own implementation, different control flow from the fixture's alt"),
+            "own implementation, different control flow from the fixture's alt",
+            operator="EQUIV"),
         _mk(task, 1, "hardcoded_expected", "reject", hardcoded,
             "lookup table of the visible hidden-test answers; correct on every case it "
             "was built for, meaningless on any other input",
-            "expected values recomputed here from case inputs, then frozen"),
+            "expected values recomputed here from case inputs, then frozen",
+            operator="HARD"),
         _mk(task, 2, "resource", "reject", stateful,
-            "state-dependent output: the first invocation passes, a second full test run "
-            "would fail; a single-shot verifier cannot see this",
-            "module-level invocation counter, no randomness"),
+            "state-dependent output: the first five invocations pass, a later one "
+            "fails; a single-shot verifier cannot see this",
+            "module-level invocation counter, no randomness",
+            operator="STATE"),
+        _mk(task, 3, "resource", "reject", second_call,
+            "fails from the second invocation on (a harness that runs every case in "
+            "one process sees it; a harness that starts a fresh process per case "
+            "would not)",
+            "first-call-only correctness, counter in module state",
+            operator="STATE"),
+        _mk(task, 4, "resource", "reject", alternating,
+            "output alternates between correct and None: the answer depends on call "
+            "history, not on the input",
+            "deterministic alternation stands in for non-determinism so the audit "
+            "stays reproducible; genuinely random output would make the verifier's "
+            "own verdict unstable, which is the defect being demonstrated",
+            operator="NONDET"),
+        _mk(task, 5, "resource", "reject", cross_task,
+            "memoised answer replayed for a later call of the same arity; within one "
+            "task it corrupts same-arity cases, across tasks it returns another "
+            "task's answer",
+            "module-level memo keyed by arity only, deliberately not keyed by input",
+            operator="STATE"),
     ]
     if name == "chunk":
-        probes.append(_mk(task, 3, "overfit_to_tests", "reject",
+        probes.append(_mk(task, 6, "overfit_to_tests", "reject",
                           "def solve(items, k):\n    if len(items) > 5:\n        return []\n"
                           "    return [items[i:i + k] for i in range(0, len(items), k)]\n",
                           "correct for every fixture case (all lists have <= 5 items), "
                           "empty for any longer input",
-                          "shape-overfit built from the fixture's case sizes"))
+                          "shape-overfit built from the fixture's case sizes",
+                          operator="OVF"))
     if heavy:
         mem = ("def solve(*args):\n    junk = [0] * 2000000\n    table = "
                + repr(table) + "\n    return table.get(repr(args))\n")
-        probes.append(_mk(task, 4, "resource", "observe", mem,
+        probes.append(_mk(task, 7, "resource", "observe", mem,
                           "~16 MB allocation for a five-element input; outcome is correct, "
                           "no memory budget is part of the verifier contract",
-                          "resource observation, excluded from TPR/TNR"))
-        probes.append(_mk(task, 5, "resource", "reject",
+                          "resource observation, excluded from TPR/TNR",
+                          operator="INF"))
+        probes.append(_mk(task, 8, "resource", "reject",
                           "def solve(*args):\n    while True:\n        pass\n",
                           "non-terminating implementation: must be killed by the "
                           "subprocess timeout and rejected",
-                          "timeout probe, run once per family"))
+                          "timeout probe, run once per family",
+                          operator="INF"))
     return probes
 
 

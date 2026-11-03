@@ -36,6 +36,15 @@ def parse_j(note: str, k: int) -> int:
         return 0
 
 
+def _first_evidence(evidence) -> str:
+    """The first failing check (or the first check if all passed), truncated."""
+    if not evidence:
+        return ""
+    first_bad = next((e for e in evidence if not e.get("ok")), None)
+    first = first_bad or evidence[0]
+    return str(first.get("detail", ""))[:160]
+
+
 def _verdict_record(fam, task, cand, source, expectation=None) -> Dict[str, Any]:
     verdict = fam.verify(task, cand)
     crashed = any(str(e.get("detail", "")).startswith("verifier exception")
@@ -53,6 +62,7 @@ def _verdict_record(fam, task, cand, source, expectation=None) -> Dict[str, Any]
         "payload": cand.payload,
         "source": source,
         "expectation": expectation,
+        "evidence": _first_evidence(verdict.evidence),
     }
 
 
@@ -63,8 +73,41 @@ def _probe_record(fam, task, probe) -> Dict[str, Any]:
                      defect=probe.failure_class, note=probe.note)
     rec = _verdict_record(fam, task, cand, "non_aligned", probe.expectation)
     rec["label"] = probe.label or "observe"
+    rec["family"] = fam.name
     rec["basis"] = probe.basis
+    rec["checklist_category"] = probe.checklist_category
+    rec["operator"] = probe.operator
+    rec["generator_version"] = probe.generator_version
+    rec["attribution_kind"] = probe.attribution_kind
+    rec["attribution"] = _attribute(probe, bool(rec["passed"]))
+    rec["attribution_detail"] = _attribution_detail(probe, bool(rec["passed"]))
     return rec
+
+
+def _attribute(probe, passed: bool) -> str:
+    """Bucket a probe's outcome for the attribution table.
+
+    Three buckets, as required by the round-3 brief:
+    ``verifier_too_strict`` (a correct spelling/form rejected although the stated
+    value is met), ``task_under_specified`` (a defensible reading rejected; the
+    prompt, not the verifier, is at fault) and ``true_defect`` (the candidate
+    really is wrong -- split into caught/missed in ``attribution_detail``).
+    """
+    if probe.expectation == "observe":
+        return "observe"
+    if probe.expectation == "accept":
+        if passed:
+            return "agreement"
+        return probe.attribution_kind  # verifier_too_strict | task_under_specified
+    return "true_defect"
+
+
+def _attribution_detail(probe, passed: bool) -> str:
+    if probe.expectation == "observe":
+        return "no_contract"
+    if probe.expectation == "accept":
+        return "accepted" if passed else "false_reject"
+    return "missed" if passed else "caught"
 
 
 def collect(fam, n_tasks: int, seed: int, with_probes: bool = True):
@@ -157,6 +200,103 @@ def _agreement(pairs, n_boot=0, seed=0):
     return {"value": kappa, "n": len(pairs), "po": po, "ci": [ci[0], ci[1]]}
 
 
+def _alpha_block(units, n_boot: int = 0, seed: int = 0) -> Dict[str, Any]:
+    """Krippendorff alpha (ordinal) for ``[human_or_oracle, verifier]`` units."""
+    got = M.krippendorff_alpha(units)
+    ci = (M.bootstrap_alpha(units, n_boot=n_boot, seed=seed)
+          if n_boot and units else (0.0, 1.0))
+    return {"value": got["value"], "n": got["n_values"],
+            "n_units": got["n_units"], "n_undecidable": got["n_undecidable"],
+            "do": got["do"], "de": got["de"], "ci": [ci[0], ci[1]]}
+
+
+def _category_table(probes) -> Dict[str, Dict[str, Any]]:
+    """TPR/TNR/FAR90 split by CheckList test type (Ribeiro et al. 2020).
+
+    A proportion with an empty denominator is reported as ``None``, never as
+    0.0: ``directional`` currently has no positive probe at all, so a literal
+    0.00 TPR would be read as "the verifier rejects every valid directional
+    answer" when in fact no valid directional answer was ever authored.
+    """
+    out: Dict[str, Dict[str, Any]] = {}
+    for cat in adversarial.CHECKLIST_CATEGORIES:
+        rs = [r for r in probes if r.get("checklist_category") == cat
+              and r["label"] in ("correct", "incorrect")]
+        op = M.operating_metrics(rs)
+        n_pos, n_neg = int(op["n_pos"]), int(op["n_neg"])
+        if n_pos and n_neg:
+            trust: Optional[float] = M.trust_score(op)
+        elif n_neg:
+            trust = op["tnr"]
+        elif n_pos:
+            trust = op["tpr"]
+        else:
+            trust = None
+        out[cat] = {"n": len(rs), "n_pos": n_pos, "n_neg": n_neg,
+                    "tpr": op["tpr"] if n_pos else None,
+                    "tnr": op["tnr"] if n_neg else None,
+                    "far90": op["far90"] if n_neg else None,
+                    "trust": trust}
+    return out
+
+
+def _attribution_rows(probes) -> list:
+    """One row per non-aligned probe, with the fields a reviewer can check.
+
+    ``attribution.csv`` is written from these rows, so it holds every probe --
+    not a sample.  The JSON summary keeps a capped ``examples`` list per bucket
+    so ``results.json`` does not grow with the probe count.
+    """
+    out = []
+    for r in probes:
+        out.append({
+            "family": r.get("family", ""),
+            "cand_id": r["cand_id"],
+            "task_id": r.get("task_id", ""),
+            "failure_class": r["defect"],
+            "checklist_category": r.get("checklist_category", ""),
+            "operator": r.get("operator", ""),
+            "generator_version": r.get("generator_version", ""),
+            "expectation": r.get("expectation") or "",
+            "label": r.get("label", ""),
+            "passed": bool(r["passed"]),
+            "score": round(float(r.get("score", 0.0)), 4),
+            "attribution": r.get("attribution", "observe"),
+            "attribution_detail": r.get("attribution_detail", ""),
+            "note": r["note"],
+            "basis": r.get("basis", ""),
+            "verifier_evidence": r.get("evidence", ""),
+        })
+    return out
+
+
+def _attribution_table(rows, max_examples: int = 6) -> Dict[str, Any]:
+    """Where a disagreement lands: verifier too strict / task under-specified /
+    a true defect (caught or missed).  One row per bucket, with reviewable
+    examples carrying the probe basis and the verifier's first failing check."""
+    buckets = ("verifier_too_strict", "task_under_specified", "true_defect",
+               "agreement", "observe")
+    out: Dict[str, Any] = {
+        b: {"n": 0, "caught": 0, "missed": 0, "false_reject": 0,
+            "accepted": 0, "examples": []} for b in buckets}
+    for r in rows:
+        b = r.get("attribution", "observe")
+        row = out.setdefault(b, {"n": 0, "caught": 0, "missed": 0,
+                                 "false_reject": 0, "accepted": 0,
+                                 "examples": []})
+        row["n"] += 1
+        detail = r.get("attribution_detail")
+        if detail in ("caught", "missed", "false_reject", "accepted"):
+            row[detail] += 1
+        if len(row["examples"]) < max_examples:
+            row["examples"].append({k: r[k] for k in (
+                "cand_id", "family", "failure_class", "operator",
+                "checklist_category", "generator_version", "expectation",
+                "label", "passed", "attribution_detail", "note", "basis",
+                "verifier_evidence")})
+    return out
+
+
 def _family_kappa(recs, probes, labels, retest=None, n_boot=0, seed=0) -> Dict[str, Any]:
     """Three agreement numbers, never merged into one headline.
 
@@ -192,6 +332,16 @@ def _family_kappa(recs, probes, labels, retest=None, n_boot=0, seed=0) -> Dict[s
                                      "ci": [0.0, 1.0]})
     stability["source"] = "human-test-retest"
     effective = human if human["n"] else synth
+    labelled_rows = [r for r in recs + probes if r["cand_id"] in labels]
+    alpha_human = _alpha_block([[labels[r["cand_id"]]["value"], r["passed"]]
+                                for r in labelled_rows], n_boot=n_boot, seed=seed + 4)
+    alpha_oracle = _alpha_block([[r["label"] == "correct", r["passed"]]
+                                 for r in probes
+                                 if r["label"] in ("correct", "incorrect")],
+                                n_boot=n_boot, seed=seed + 5)
+    alpha_synth = _alpha_block([[r["label"] == "correct", r["passed"]]
+                                for r in recs], n_boot=n_boot, seed=seed + 6)
+    alpha_effective = alpha_human if alpha_human["n"] else alpha_synth
     return {
         "value": effective["value"],
         "n": effective["n"],
@@ -202,6 +352,25 @@ def _family_kappa(recs, probes, labels, retest=None, n_boot=0, seed=0) -> Dict[s
         "synthetic": dict(synth, source="synthetic-upper-bound"),
         "oracle_non_aligned": dict(oracle, source="independent-probe-oracle"),
         "stability": stability,
+        # alpha is reported next to kappa, never instead of it.  With two coders
+        # and two labels the two coefficients answer the same question; they
+        # diverge when undecidable rows are present (kappa drops them, alpha
+        # keeps them as missing units) or when prevalence is extreme (kappa's
+        # expected agreement is fixed by the marginals, alpha's is estimated
+        # from the pooled distribution with a finite-sample correction).
+        "alpha": {
+            "value": alpha_effective["value"],
+            "n": alpha_effective["n"],
+            "n_units": alpha_effective["n_units"],
+            "n_undecidable": alpha_effective["n_undecidable"],
+            "ci": alpha_effective["ci"],
+            "level": "ordinal",
+            "source": "human" if alpha_human["n"] else "synthetic",
+            "human": dict(alpha_human, source="human" if alpha_human["n"] else "empty"),
+            "oracle_non_aligned": dict(alpha_oracle,
+                                       source="independent-probe-oracle"),
+            "synthetic": dict(alpha_synth, source="synthetic-upper-bound"),
+        },
     }
 
 
@@ -283,6 +452,8 @@ def evaluate_family(fam, n_tasks: int, seed: int, n_boot: int, labels,
         "metrics_non_aligned": op_non,
         "metrics_combined": comp["op"],
         "per_failure_class": _failure_table(probes),
+        "per_category": _category_table(probes),
+        "attribution": _attribution_table(_attribution_rows(probes)),
         "cheapness": comp["cheapness"],
         "trust": comp["trust"],
         "trust_aligned": comp["trust_aligned"],
@@ -302,6 +473,7 @@ def evaluate_family(fam, n_tasks: int, seed: int, n_boot: int, labels,
         "unreliable_reasons": verdict["reasons"],
         "unreliable_reasons_non_aligned": verdict_non["reasons"],
         "kappa": kappa_info,
+        "alpha": kappa_info["alpha"],
         "core_eligible": core,
         "core_human_backed": bool(core and human_backed),
         "_groups": groups,
@@ -396,6 +568,9 @@ def run_audit(families=None, n_tasks=25, seed=0, n_boot=500, labels_path=None,
     med_aligned_ci = M.bootstrap_ci(vcis_aligned, "median", n_boot=n_boot, seed=seed)
     class_pool = total_probes
     pooled_classes = _failure_table(class_pool)
+    pooled_categories = _category_table(class_pool)
+    pooled_attr_rows = _attribution_rows(class_pool)
+    pooled_attribution = _attribution_table(pooled_attr_rows)
     summary = {
         "vci_median": med,
         "vci_median_ci": list(med_ci),
@@ -420,7 +595,10 @@ def run_audit(families=None, n_tasks=25, seed=0, n_boot=500, labels_path=None,
         "n_probes": sum(r["n_probes"] for r in rows),
         "n_probes_scored": sum(r["n_probes_scored"] for r in rows),
         "pooled_failure_classes": pooled_classes,
+        "pooled_categories": pooled_categories,
+        "attribution": pooled_attribution,
         "kappa_pooled": pooled,
+        "alpha_pooled": pooled["alpha"],
         "kappa_sources": {
             "effective": pooled["source"],
             "human_rows": pooled["human"]["n"],
@@ -429,11 +607,16 @@ def run_audit(families=None, n_tasks=25, seed=0, n_boot=500, labels_path=None,
             "synthetic_upper_bound": pooled["synthetic"]["value"],
             "human": pooled["human"]["value"] if pooled["human"]["n"] else None,
             "stability": pooled["stability"]["value"],
+            "alpha_effective": pooled["alpha"]["value"],
+            "alpha_source": pooled["alpha"]["source"],
+            "alpha_human": pooled["alpha"]["human"]["value"],
+            "alpha_undecidable": pooled["alpha"]["n_undecidable"],
         },
     }
 
     manifest = {
-        "vci_version": "0.2.0",
+        "vci_version": "0.3.0",
+        "probe_generator_version": adversarial.GENERATOR_VERSION,
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "seed": seed,
@@ -471,11 +654,21 @@ def run_audit(families=None, n_tasks=25, seed=0, n_boot=500, labels_path=None,
                                          "units": t.units},
                                         ensure_ascii=False) + "\n")
 
-    return {"manifest": manifest, "config": {
-        "seed": seed, "n_tasks": n_tasks, "n_boot": n_boot,
-        "cheap_ms": 20.0, "costly_ms": 500.0,
-        "reliability_gate": {"tpr": 0.90, "tnr": 0.90, "far90": 0.20, "kappa": 0.60},
-    }, "summary": summary, "families": [_strip_private(r) for r in rows]}
+    payload = {
+        "manifest": manifest,
+        "config": {
+            "seed": seed, "n_tasks": n_tasks, "n_boot": n_boot,
+            "cheap_ms": 20.0, "costly_ms": 500.0,
+            "reliability_gate": {"tpr": 0.90, "tnr": 0.90,
+                                 "far90": 0.20, "kappa": 0.60},
+        },
+        "summary": summary,
+        "families": [_strip_private(r) for r in rows],
+        # Private: consumed by report.write_all for the full attribution.csv,
+        # then dropped before results.json is serialised.
+        "_attribution_rows": pooled_attr_rows,
+    }
+    return payload
 
 
 def annotation_sample(n_tasks=25, seed=0, families=None, per_family=3):

@@ -9,6 +9,16 @@ Commands: ``y`` pass, ``n`` fail, ``s`` undecidable, ``k`` skip, ``q`` save & qu
 Answers are appended to ``labels.csv`` immediately, so an interrupted session
 resumes where it stopped (already-labelled rows are filtered out).
 
+Round 3 adds three things:
+
+* ``--group-by-family``: present one family at a time, shuffled *within* the
+  family, so the annotator does not silently switch criteria every row.
+* ``--shuffle``: randomise the whole pending list (already available as
+  ``shuffle_seed``; the CLI exposes it).
+* qualifications: before the first answer, three calibration items with a
+  protocol-defined answer.  A wrong answer prints the expected ruling and why,
+  then continues -- the point is to surface a misread protocol, not to gate.
+
 Run a second, re-ordered pass into ``labels_retest.csv`` to measure annotator
 stability:
 
@@ -26,6 +36,38 @@ from typing import Any, Callable, Dict, List, Optional
 HEADER = ["row_id", "human_label", "round", "annotator", "timestamp"]
 _ANSWERS = {"y": True, "n": False, "s": None}
 _SHEET_FIELDS = ("row_id", "family", "task_prompt", "candidate")
+
+#: Three protocol-boundary checks.  They are *not* part of labels.csv and never
+#: touch the real sheet; they only calibrate the annotator on pass / fail /
+#: undecidable before the first real row.
+CALIBRATION: List[Dict[str, str]] = [
+    {
+        "id": "cal-1",
+        "prompt": "Task: return the sum of the list [1, 2, 3].",
+        "candidate": "6",
+        "correct": "y",
+        "why": "The answer is exactly the stated value; there is nothing to "
+               "interpret. This is a pass.",
+    },
+    {
+        "id": "cal-2",
+        "prompt": "Task: return the mean rounded to 2 decimals: [1, 2, 4].",
+        "candidate": "2.333",
+        "correct": "n",
+        "why": "The value is arithmetically right but violates the stated rounding "
+               "precision. A stated output contract is part of the task, so this "
+               "is a fail.",
+    },
+    {
+        "id": "cal-3",
+        "prompt": "Task: sort the records by score.",
+        "candidate": "sorted descending by score",
+        "correct": "s",
+        "why": "The prompt never states a direction, so ascending and descending "
+               "are both defensible. When the task text cannot decide the "
+               "question, the ruling is undecidable -- do not guess.",
+    },
+]
 
 
 def load_sheet(path: str) -> List[Dict[str, str]]:
@@ -74,6 +116,35 @@ def format_entry(index: int, total: int, row: Dict[str, str],
     ])
 
 
+def run_qualification(ask: Callable[[str], str] = input,
+                      say: Callable[[str], Any] = print) -> Dict[str, Any]:
+    """Ask the three calibration items.  Wrong answers warn but never block."""
+    say("qualification: 3 calibration items before the real sheet "
+        "(wrong answers warn, they do not stop the session)")
+    correct = 0
+    wrong: List[str] = []
+    for item in CALIBRATION:
+        say("\n" + "-" * 72)
+        say(item["prompt"])
+        say("Candidate:\n" + item["candidate"])
+        say("  y = pass   n = fail   s = undecidable")
+        while True:
+            key = (ask("> ") or "").strip().lower()
+            if key in _ANSWERS:
+                break
+            say("please answer y / n / s")
+        if key == item["correct"]:
+            correct += 1
+            say(f"correct ({key})")
+        else:
+            wrong.append(item["id"])
+            say(f"WRONG: expected '{item['correct']}', not '{key}'. "
+                f"{item['why']}")
+    say(f"\nqualification: {correct}/{len(CALIBRATION)} correct"
+        + (f"; revisit the protocol for {', '.join(wrong)}" if wrong else ""))
+    return {"correct": correct, "total": len(CALIBRATION), "wrong": wrong}
+
+
 def append_answer(path: str, row_id: str, value: Optional[bool],
                   round_no: int, annotator: str,
                   timestamp: Optional[str] = None) -> None:
@@ -93,22 +164,56 @@ def append_answer(path: str, row_id: str, value: Optional[bool],
         })
 
 
+def order_rows(rows: List[Dict[str, str]], shuffle_seed: Optional[int] = None,
+               group_by_family: bool = False) -> List[Dict[str, str]]:
+    """Order the pending rows.
+
+    ``group_by_family`` keeps one family together and shuffles *within* it, so
+    criteria change rarely; the family order is shuffled too.  Otherwise the
+    whole list is shuffled when a seed is given.  With no seed and no grouping
+    the sheet order is preserved (resume becomes a stable, resumable sequence).
+    """
+    if group_by_family:
+        rng = random.Random(0 if shuffle_seed is None else int(shuffle_seed))
+        groups: Dict[str, List[Dict[str, str]]] = {}
+        for r in rows:
+            groups.setdefault(r.get("family", ""), []).append(r)
+        names = sorted(groups)
+        rng.shuffle(names)
+        out: List[Dict[str, str]] = []
+        for name in names:
+            bucket = list(groups[name])
+            rng.shuffle(bucket)
+            out.extend(bucket)
+        return out
+    if shuffle_seed is not None:
+        out = list(rows)
+        random.Random(int(shuffle_seed)).shuffle(out)
+        return out
+    return list(rows)
+
+
 def run(sheet_path: str, out_path: str, round_no: int = 1,
         annotator: str = "anon", shuffle_seed: Optional[int] = None,
         limit: int = 0, redo: bool = False,
         ask: Callable[[str], str] = input,
-        say: Callable[[str], Any] = print) -> Dict[str, Any]:
+        say: Callable[[str], Any] = print,
+        group_by_family: bool = False,
+        qualification: bool = False) -> Dict[str, Any]:
     rows = load_sheet(sheet_path)
     if limit:
         rows = rows[:limit]
     done = load_answers(out_path)
     pending = [r for r in rows if redo or r["row_id"] not in done]
-    if shuffle_seed is not None:
-        random.Random(int(shuffle_seed)).shuffle(pending)
+    pending = order_rows(pending, shuffle_seed=shuffle_seed,
+                         group_by_family=group_by_family)
     total = len(rows)
     progress = total - len(pending)
     skipped = 0
     answered = 0
+    qual: Optional[Dict[str, Any]] = None
+    if qualification and pending:
+        qual = run_qualification(ask=ask, say=say)
 
     for row in pending:
         say(format_entry(progress + 1, total, row, skipped))
@@ -127,10 +232,12 @@ def run(sheet_path: str, out_path: str, round_no: int = 1,
                 say(f"stopped: {answered} answered, {skipped} skipped this session, "
                     f"{progress}/{total} covered. Answers are saved in {out_path}.")
                 return {"answered": answered, "skipped": skipped,
-                        "covered": progress, "total": total, "quit": True}
+                        "covered": progress, "total": total, "quit": True,
+                        "qualification": qual}
             say("please answer y / n / s (k=skip, q=quit)")
 
     say(f"done: {answered} answered, {skipped} skipped, {progress}/{total} covered "
         f"(existing answers in {out_path}: {len(load_answers(out_path))})")
     return {"answered": answered, "skipped": skipped,
-            "covered": progress, "total": total, "quit": False}
+            "covered": progress, "total": total, "quit": False,
+            "qualification": qual}

@@ -66,7 +66,7 @@ def test_skip_is_not_written_and_can_be_resumed(tmp_path):
     first = iter(["y", "k", "q"])
     s1 = labeler.run(sheet, out, ask=lambda _: next(first), say=lambda *_: None)
     assert s1 == {"answered": 1, "skipped": 1, "covered": 2, "total": 3,
-                  "quit": True}
+                  "quit": True, "qualification": None}
     assert _answers(out) == {"a-01": "1"}  # k and q write nothing
 
     second = iter(["n", "s"])
@@ -119,6 +119,53 @@ def test_limit_caps_the_session(tmp_path):
     stats = labeler.run(sheet, out, limit=2, ask=lambda _: next(inputs),
                         say=lambda *_: None)
     assert stats["total"] == 2 and stats["answered"] == 2
+
+
+def test_group_by_family_keeps_families_contiguous(tmp_path):
+    rows = [dict(r, row_id=f"{r['row_id']}-{f}", family=f)
+            for r in ROWS for f in ("zz_family", "regex_construct")]
+    sheet = _sheet(tmp_path, rows)
+    out = str(tmp_path / "labels.csv")
+    order = labeler.order_rows(rows, group_by_family=True, shuffle_seed=5)
+    seen = [r["family"] for r in order]
+    assert len(seen) == len(rows)
+    # Contiguous: no family reappears after another one has started.
+    blocks = [f for i, f in enumerate(seen) if i == 0 or seen[i - 1] != f]
+    assert len(blocks) == len(set(blocks))
+    # ... while the order is still randomised (row order changed, and each
+    # family's own order changed relative to the sheet).
+    assert [r["row_id"] for r in order] != [r["row_id"] for r in rows]
+    inputs = iter(["y"] * len(rows))
+    labeler.run(sheet, out, group_by_family=True, ask=lambda _: next(inputs),
+                say=lambda *_: None)
+    assert len(_answers(out)) == len(rows)
+
+
+def test_qualification_warns_but_never_blocks(tmp_path):
+    sheet = _sheet(tmp_path, ROWS[:1])
+    out = str(tmp_path / "labels.csv")
+    shown = []
+    asked: list = []
+
+    def ask(_prompt):
+        # Deliberately give the wrong key for every calibration item, then
+        # answer the real sheet correctly.
+        i = len(asked)
+        asked.append(_prompt)
+        if i < len(labeler.CALIBRATION):
+            expected = labeler.CALIBRATION[i]["correct"]
+            return "n" if expected != "n" else "y"
+        return "y"
+
+    stats = labeler.run(sheet, out, qualification=True, ask=ask,
+                        say=lambda s: shown.append(s))
+    assert shown[0].startswith("qualification: 3 calibration items")
+    verdicts = [s for s in shown if s.startswith(("correct (", "WRONG:"))]
+    assert len(verdicts) == len(labeler.CALIBRATION) == 3
+    assert all("WRONG" in s for s in verdicts)
+    assert stats["qualification"]["wrong"] == [c["id"] for c in labeler.CALIBRATION]
+    # Three wrong answers warn but never block: the sheet still ran.
+    assert _answers(out) == {"a-01": "1"}
 
 
 def test_load_answers_keeps_the_last_write(tmp_path):

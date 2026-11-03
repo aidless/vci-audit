@@ -13,7 +13,7 @@ Design notes
   the policy the wrong thing.
 """
 import math
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, Sequence, Tuple
 
 FULL_TOL = 1e-9
 
@@ -116,6 +116,100 @@ def bootstrap_kappa(y_true: Sequence[bool], y_pred: Sequence[bool],
         idx = [rng.randrange(n) for _ in range(n)]
         k, _po = cohen_kappa([y_true[i] for i in idx], [y_pred[i] for i in idx])
         vals.append(k)
+    vals.sort()
+    return vals[int(alpha / 2 * n_boot)], vals[int((1 - alpha / 2) * n_boot) - 1]
+
+
+def krippendorff_alpha(units: Sequence[Sequence[Any]],
+                       level: str = "ordinal") -> Dict[str, Any]:
+    """Krippendorff's alpha for ``units`` of coders' ratings (missing = None).
+
+    ``units`` is one sequence per judged item, holding one value per coder.
+    ``None`` means "missing": an ``undecidable`` human label is missing data, not
+    a third category, so it is excluded from both observed and expected
+    disagreement rather than treated as "no".  ``level="ordinal"`` uses
+    Krippendorff's ordinal distance
+
+        delta^2(c, k) = ( sum_{g=c..k} n_g - (n_c + n_k)/2 )^2
+
+    i.e. distance is measured in *cumulative frequencies*, not raw ranks: with
+    an unbalanced marginal, "0 -> 1" can be further than "1 -> 2".  With the
+    two-valued labels used here, ordinal and nominal differ only by a constant
+    factor, so alpha is unchanged; the ordinal branch matters as soon as the
+    label set has three levels (no / partial / yes).
+
+    Returns a dict instead of a bare float so the report can state how many
+    units were dropped as undecidable.  ``value`` is ``None`` when every unit is
+    missing.
+    """
+    decided_values = [v for u in units for v in u if v is not None]
+    n_missing = sum(1 for u in units for v in u if v is None)
+    out = {"value": None, "n_units": len(units), "n_values": len(decided_values),
+           "n_undecidable": n_missing, "do": 0.0, "de": 0.0, "level": level}
+    if not decided_values:
+        return out
+
+    ordered = sorted(set(decided_values))
+    rank = {v: i for i, v in enumerate(ordered)}
+    counts = {v: decided_values.count(v) for v in ordered}
+    by_rank = [counts[v] for v in ordered]
+
+    def delta(a, b) -> float:
+        if level == "nominal":
+            return 0.0 if a == b else 1.0
+        i, j = sorted((rank[a], rank[b]))
+        span = sum(by_rank[i:j + 1])
+        return float((span - (by_rank[i] + by_rank[j]) / 2.0) ** 2)
+
+    # Observed disagreement: within each unit, average over the m_u*(m_u-1)
+    # ordered pairs of distinct coders, then average over the n pairable values
+    # (Krippendorff 2011: n = sum_u m_u, not the number of units).
+    observed = 0.0
+    n_pairable = 0
+    n_pairs_units = 0
+    for u in units:
+        vals = [v for v in u if v is not None]
+        m = len(vals)
+        n_pairable += m
+        if m < 2:
+            continue
+        n_pairs_units += 1
+        pair_sum = sum(delta(a, b) for a in vals for b in vals)
+        observed += pair_sum / (m - 1)
+    if not n_pairs_units:
+        # Nothing was rated twice: agreement is undefined, not perfect.
+        return out
+    do = observed / n_pairable
+
+    # Expected disagreement: pair all pooled values (without replacement).
+    n = len(decided_values)
+    pair_sum = sum(counts[a] * counts[b] * delta(a, b) for a in ordered for b in ordered)
+    de = pair_sum / (n * (n - 1)) if n > 1 else 0.0
+    out["do"] = do
+    out["de"] = de
+    # de == 0 means every decided value has the same rank: no chance
+    # disagreement exists, so agreement is perfect by definition.
+    out["value"] = 1.0 if de <= 0 else max(-1.0, min(1.0, 1.0 - do / de))
+    return out
+
+
+def bootstrap_alpha(units: Sequence[Sequence[Any]], n_boot: int = 500,
+                    seed: int = 0, alpha: float = 0.05) -> Tuple[float, float]:
+    """Percentile bootstrap interval for :func:`krippendorff_alpha`.
+
+    Units (not values) are resampled, matching the unit-level definition.
+    """
+    import random
+
+    n = len(units)
+    if n < 3:
+        return 0.0, 1.0
+    rng = random.Random(seed)
+    vals = []
+    for _ in range(n_boot):
+        sample = [units[rng.randrange(n)] for _ in range(n)]
+        got = krippendorff_alpha(sample)
+        vals.append(1.0 if got["value"] is None else got["value"])
     vals.sort()
     return vals[int(alpha / 2 * n_boot)], vals[int((1 - alpha / 2) * n_boot) - 1]
 

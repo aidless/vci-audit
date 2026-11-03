@@ -119,6 +119,49 @@ def test_bootstrap_is_reproducible_for_a_fixed_seed():
     assert M.bootstrap_ci(wide, "median", n_boot=100, seed=3) == pytest.approx((0.5, 0.5))
 
 
+def test_alpha_uses_cumulative_frequencies_for_ordinal_distance():
+    """Hand computation on three levels with an unbalanced marginal.
+
+    counts: no=5, partial=4, yes=3, n=12.
+    delta^2(no,partial) = (5+4 - (5+4)/2)^2 = 20.25
+    delta^2(partial,yes) = (4+3 - (4+3)/2)^2 = 12.25
+    delta^2(no,yes)      = (12 - (5+3)/2)^2  = 64
+    """
+    units = [["no", "no"], ["no", "partial"], ["partial", "partial"],
+             ["partial", "yes"], ["yes", "yes"], ["no", "no"]]
+    a = M.krippendorff_alpha(units, level="ordinal")
+    de = (2 * 5 * 4 * 20.25 + 2 * 4 * 3 * 12.25 + 2 * 5 * 3 * 64) / (12 * 11)
+    do = (2 * 20.25 + 2 * 12.25) / 12
+    assert a["de"] == pytest.approx(de)          # 3024/132
+    assert a["do"] == pytest.approx(do)          # 65/12
+    assert a["value"] == pytest.approx(1.0 - do / de)
+    # Nominal: every disagreement counts 1, so de = 94/132 and do = 4/12.
+    nominal = M.krippendorff_alpha(units, "nominal")["value"]
+    assert nominal == pytest.approx(1.0 - (4 / 12) / (94 / 132))
+    # Adjacent-level disagreements weigh less than far ones.
+    assert a["value"] > nominal
+
+
+def test_alpha_perfect_agreement_and_singleton_units():
+    units = [["no", "no"], ["partial", "partial"], ["yes", "yes"]]
+    assert M.krippendorff_alpha(units)["value"] == pytest.approx(1.0)
+    # A unit with one decided rating is missing data, not a third category:
+    # it must not change the answer relative to dropping it.
+    with_none = [["no", "yes"], ["no", None], ["no", "no"]]
+    without = [["no", "yes"], ["no", "no"]]
+    a, b = M.krippendorff_alpha(with_none), M.krippendorff_alpha(without)
+    assert a["n_undecidable"] == 1 and a["n_values"] == 5
+    assert a["value"] == pytest.approx(b["value"])
+    assert a["value"] == pytest.approx(0.0)
+    assert M.krippendorff_alpha([["no", None]])["value"] is None
+
+
+def test_alpha_bootstrap_is_reproducible():
+    units = [["no", "no"], ["partial", "yes"], ["no", "yes"], ["yes", "yes"]] * 3
+    assert M.bootstrap_alpha(units, n_boot=50, seed=7) == \
+        M.bootstrap_alpha(units, n_boot=50, seed=7)
+
+
 def test_wilson_interval_brackets_the_estimate():
     lo, hi = M.wilson_interval(8, 10)
     assert 0.0 <= lo < 0.8 < hi <= 1.0
