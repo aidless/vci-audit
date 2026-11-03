@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "vci_version": "0.1.0",
+  "vci_version": "0.2.0",
   "python": "3.12.3",
   "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
   "seed": 0,
@@ -28,8 +28,10 @@
    "life_step",
    "code_patch"
   ],
-  "generated_at_utc": "2026-11-03T12:52:08Z",
-  "note": "Only latency (cost_ms) is hardware dependent; every other number is a pure function of the seed and the family set."
+  "labels_path": null,
+  "labels_retest_path": null,
+  "generated_at_utc": "2026-11-03T13:34:47Z",
+  "note": "Only latency (cost_ms) is hardware dependent; every other number is a pure function of the seed, the family set and the label sheets."
  },
  "config": {
   "seed": 0,
@@ -45,36 +47,175 @@
   }
  },
  "summary": {
-  "vci_median": 0.9832487769433395,
+  "vci_median": 0.9342295810400416,
   "vci_median_ci": [
+   0.9036020036098448,
+   1.0
+  ],
+  "vci_median_aligned": 0.97758641481744,
+  "vci_median_aligned_ci": [
    0.9125055615098754,
    1.0
   ],
-  "vci_mean": 0.9610356700090039,
-  "vci_min": 0.8144476398584994,
+  "vci_mean": 0.7566496338234374,
+  "vci_min": 0.0,
   "vci_max": 1.0,
-  "families_ge_0.7": 20,
-  "families_ge_0.5": 20,
+  "families_ge_0.7": 15,
+  "families_ge_0.5": 16,
+  "families_ge_0.7_aligned": 20,
   "families_reliable": 20,
   "families_reliable_human_kappa": 0,
+  "core_provisional": [
+   "arith_expression",
+   "stats_summary",
+   "base_convert",
+   "matrix_ops",
+   "date_arith",
+   "json_schema_extract",
+   "sql_result",
+   "table_aggregate",
+   "sort_multikey",
+   "interval_merge",
+   "grid_path",
+   "csp_assign",
+   "schedule_slots",
+   "topo_order",
+   "life_step"
+  ],
+  "core_human_backed": [],
+  "trust_median_aligned": 1.0,
+  "trust_median_non_aligned": 1.0,
   "n_families": 20,
   "n_tasks_per_family": 25,
   "n_candidates": 6849,
+  "n_probes": 1157,
+  "n_probes_scored": 1156,
+  "pooled_failure_classes": {
+   "hardcoded_expected": {
+    "n": 50,
+    "n_pos": 0,
+    "n_neg": 50,
+    "n_observe": 0,
+    "tpr": 0.0,
+    "tnr": 0.46,
+    "far90": 0.54,
+    "accept_rate": 0.54,
+    "trust": 0.46
+   },
+   "overfit_to_tests": {
+    "n": 54,
+    "n_pos": 0,
+    "n_neg": 54,
+    "n_observe": 0,
+    "tpr": 0.0,
+    "tnr": 0.46296296296296297,
+    "far90": 0.5370370370370371,
+    "accept_rate": 0.5370370370370371,
+    "trust": 0.46296296296296297
+   },
+   "spec_ambiguity": {
+    "n": 50,
+    "n_pos": 50,
+    "n_neg": 0,
+    "n_observe": 0,
+    "tpr": 0.0,
+    "tnr": 0.0,
+    "far90": 0.0,
+    "accept_rate": 0.0,
+    "trust": 0.0
+   },
+   "silent_partial": {
+    "n": 425,
+    "n_pos": 0,
+    "n_neg": 425,
+    "n_observe": 0,
+    "tpr": 0.0,
+    "tnr": 1.0,
+    "far90": 0.0,
+    "accept_rate": 0.0,
+    "trust": 1.0
+   },
+   "semantic_equivalent": {
+    "n": 550,
+    "n_pos": 550,
+    "n_neg": 0,
+    "n_observe": 0,
+    "tpr": 0.8636363636363636,
+    "tnr": 0.0,
+    "far90": 0.0,
+    "accept_rate": 0.8636363636363636,
+    "trust": 0.8636363636363636
+   },
+   "resource": {
+    "n": 28,
+    "n_pos": 0,
+    "n_neg": 27,
+    "n_observe": 1,
+    "tpr": 0.0,
+    "tnr": 0.07407407407407407,
+    "far90": 0.9259259259259259,
+    "accept_rate": 0.9259259259259259,
+    "trust": 0.07407407407407407
+   }
+  },
   "kappa_pooled": {
    "value": 1.0,
    "n": 6849,
    "po": 1.0,
-   "source": "synthetic",
-   "synthetic": {
-    "value": 1.0,
-    "n": 6849,
-    "po": 1.0
-   },
+   "ci": [
+    1.0,
+    1.0
+   ],
+   "source": "synthetic (no human labels yet)",
    "human": {
     "value": 0.0,
     "n": 0,
-    "po": 0.0
+    "po": 0.0,
+    "ci": [
+     0.0,
+     1.0
+    ],
+    "n_undecidable": 0
+   },
+   "synthetic": {
+    "value": 1.0,
+    "n": 6849,
+    "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "source": "synthetic-upper-bound"
+   },
+   "oracle_non_aligned": {
+    "value": 0.644114200999498,
+    "n": 1156,
+    "po": 0.8217993079584776,
+    "ci": [
+     0.5998309626139653,
+     0.688152866242038
+    ],
+    "source": "independent-probe-oracle"
+   },
+   "stability": {
+    "value": null,
+    "n": 0,
+    "po": 0.0,
+    "ci": [
+     0.0,
+     1.0
+    ],
+    "source": "human-test-retest"
    }
+  },
+  "kappa_sources": {
+   "effective": "synthetic (no human labels yet)",
+   "human_rows": 0,
+   "human_undecidable": 0,
+   "retest_rows": 0,
+   "synthetic_upper_bound": 1.0,
+   "human": null,
+   "stability": null
   }
  },
  "families": [
@@ -87,6 +228,9 @@
    "item_unit": "one expression",
    "n_tasks": 25,
    "n_candidates": 332,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 5.0,
    "metrics": {
     "n_pos": 75.0,
@@ -100,18 +244,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 257.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 282.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.8933333333333333,
    "vci": 0.9721950037160866,
+   "vci_aligned": 0.9721950037160866,
+   "vci_non_aligned": 0.9721950037160866,
    "vci_ci": [
     0.95352614706278,
     0.989846400767953
    ],
    "latency_ms": {
-    "p50": 0.06386847235262394,
-    "p95": 0.10660673142410813,
-    "mean": 0.06724891802632665
+    "p50": 0.03858399577438831,
+    "p95": 0.12120979372411964,
+    "mean": 0.05004158613821828
+   },
+   "probe_latency_ms": {
+    "p95": 0.09532907861284909
    },
    "per_defect": {
     "correct": {
@@ -166,24 +377,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 332,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 332,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 332,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 11
   },
   {
@@ -195,6 +445,9 @@
    "item_unit": "one conversion",
    "n_tasks": 25,
    "n_candidates": 309,
+   "n_probes": 75,
+   "n_probes_scored": 75,
+   "n_probes_observe": 0,
    "units_per_task": 3.0,
    "metrics": {
     "n_pos": 75.0,
@@ -208,18 +461,96 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 234.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 25.0,
+    "tpr": 0.5,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 0.0,
+    "far90": 1.0
+   },
+   "metrics_combined": {
+    "n_pos": 125.0,
+    "n_neg": 259.0,
+    "tpr": 0.8,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 0.0,
+    "far90": 1.0
+   },
+   "per_failure_class": {
+    "spec_ambiguity": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 0.0
+    },
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
-   "trust": 1.0,
+   "trust": 0.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.0,
    "density": 0.6933333333333332,
-   "vci": 0.9125055615098754,
+   "vci": 0.0,
+   "vci_aligned": 0.9125055615098754,
+   "vci_non_aligned": 0.0,
    "vci_ci": [
-    0.8650615454144222,
-    0.9496578070887317
+    0.0,
+    0.0
    ],
    "latency_ms": {
-    "p50": 0.049236929044127464,
-    "p95": 0.1029429724439978,
-    "mean": 0.05391539559732749
+    "p50": 0.0557989114895463,
+    "p95": 0.10832918342202898,
+    "mean": 0.06040748326306783
+   },
+   "probe_latency_ms": {
+    "p95": 0.10756748961284755
    },
    "per_defect": {
     "correct": {
@@ -274,24 +605,66 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": false,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [
+    "TPR 0.50 < 0.90 (valid variants rejected)",
+    "FAR90 1.00 > 0.20 (tolerance admits wrong answers)"
+   ],
    "kappa": {
     "value": 1.0,
     "n": 309,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 309,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 309,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.39999999999999986,
+     "n": 75,
+     "po": 0.6666666666666666,
+     "ci": [
+      0.2515875415784699,
+      0.5614035087719298
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": false,
+   "core_human_backed": false,
    "seed": 108
   },
   {
@@ -303,6 +676,9 @@
    "item_unit": "one statistic",
    "n_tasks": 25,
    "n_candidates": 325,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 5.0,
    "metrics": {
     "n_pos": 75.0,
@@ -316,18 +692,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 250.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 275.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.05335803143680096,
-    "p95": 0.10175604838877919,
-    "mean": 0.058326952231044955
+    "p50": 0.04001602064818144,
+    "p95": 0.053438195027410984,
+    "mean": 0.04053688823030545
+   },
+   "probe_latency_ms": {
+    "p95": 0.03893692046403885
    },
    "per_defect": {
     "correct": {
@@ -377,24 +820,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 325,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 325,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 325,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 205
   },
   {
@@ -406,6 +888,9 @@
    "item_unit": "one integer",
    "n_tasks": 25,
    "n_candidates": 342,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 5.0,
    "metrics": {
     "n_pos": 75.0,
@@ -419,18 +904,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 267.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 292.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.92,
    "vci": 0.9793703613355593,
+   "vci_aligned": 0.9793703613355593,
+   "vci_non_aligned": 0.9793703613355593,
    "vci_ci": [
     0.9648571584702385,
     0.9932656102288296
    ],
    "latency_ms": {
-    "p50": 0.015155063010752201,
-    "p95": 0.025333499070256945,
-    "mean": 0.015776378391256108
+    "p50": 0.013408483937382698,
+    "p95": 0.027627090457826846,
+    "mean": 0.015553982236711254
+   },
+   "probe_latency_ms": {
+    "p95": 0.022563600214198225
    },
    "per_defect": {
     "correct": {
@@ -485,24 +1037,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 342,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 342,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 342,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 302
   },
   {
@@ -514,6 +1105,9 @@
    "item_unit": "one matrix cell",
    "n_tasks": 25,
    "n_candidates": 390,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 9.0,
    "metrics": {
     "n_pos": 50.0,
@@ -527,18 +1121,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 340.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 365.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.020392995793372393,
-    "p95": 0.049275526544079185,
-    "mean": 0.02404682618828538
+    "p50": 0.018506543710827827,
+    "p95": 0.04413937567733225,
+    "mean": 0.020472211942363244
+   },
+   "probe_latency_ms": {
+    "p95": 0.052506121573969715
    },
    "per_defect": {
     "correct": {
@@ -593,24 +1254,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 390,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 390,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 390,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 399
   },
   {
@@ -622,6 +1322,9 @@
    "item_unit": "one date",
    "n_tasks": 25,
    "n_candidates": 323,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 4.0,
    "metrics": {
     "n_pos": 75.0,
@@ -635,18 +1338,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 248.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 273.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.8666666666666667,
    "vci": 0.9648571584702385,
+   "vci_aligned": 0.9648571584702385,
+   "vci_non_aligned": 0.9648571584702385,
    "vci_ci": [
     0.9457416090031758,
     0.9793703613355593
    ],
    "latency_ms": {
-    "p50": 0.009428011253476143,
-    "p95": 0.015713972970843315,
-    "mean": 0.01004735914696204
+    "p50": 0.009078066796064377,
+    "p95": 0.01269609201699495,
+    "mean": 0.009534009025884856
+   },
+   "probe_latency_ms": {
+    "p95": 0.019791739759966714
    },
    "per_defect": {
     "correct": {
@@ -701,24 +1471,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 323,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 323,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 323,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 496
   },
   {
@@ -730,6 +1539,9 @@
    "item_unit": "one schema field",
    "n_tasks": 25,
    "n_candidates": 375,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 6.0,
    "metrics": {
     "n_pos": 75.0,
@@ -743,18 +1555,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 300.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 325.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.0307989539578557,
-    "p95": 0.05932170897722245,
-    "mean": 0.03574922742942969
+    "p50": 0.03631401341408491,
+    "p95": 0.05873199552297592,
+    "mean": 0.03828318106631438
+   },
+   "probe_latency_ms": {
+    "p95": 0.0661479716654867
    },
    "per_defect": {
     "correct": {
@@ -809,24 +1688,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 375,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 375,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 375,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 593
   },
   {
@@ -838,6 +1756,9 @@
    "item_unit": "one record field",
    "n_tasks": 25,
    "n_candidates": 535,
+   "n_probes": 100,
+   "n_probes_scored": 100,
+   "n_probes_observe": 0,
    "units_per_task": 10.0,
    "metrics": {
     "n_pos": 75.0,
@@ -851,18 +1772,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 460.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 25.0,
+    "tpr": 0.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 0.0,
+    "n_equiv": 75.0,
+    "tau90": 0.8,
+    "far90": 1.0
+   },
+   "metrics_combined": {
+    "n_pos": 150.0,
+    "n_neg": 485.0,
+    "tpr": 0.5,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 0.4,
+    "n_equiv": 125.0,
+    "tau90": 0.8,
+    "far90": 0.488659793814433
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 75,
+     "n_pos": 75,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 0.0
+    }
+   },
    "cheapness": 1.0,
-   "trust": 1.0,
+   "trust": 0.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.0,
    "density": 1.0,
-   "vci": 1.0,
+   "vci": 0.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 0.0,
    "vci_ci": [
-    1.0,
-    1.0
+    0.0,
+    0.0
    ],
    "latency_ms": {
-    "p50": 0.03044994082301855,
-    "p95": 0.05581596633419393,
-    "mean": 0.03292940221900973
+    "p50": 0.02821406815201044,
+    "p95": 0.04690197529271244,
+    "mean": 0.031245320983161438
+   },
+   "probe_latency_ms": {
+    "p95": 0.04866180825047195
    },
    "per_defect": {
     "correct": {
@@ -917,24 +1905,66 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": false,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [
+    "TPR 0.00 < 0.90 (valid variants rejected)",
+    "FAR90 1.00 > 0.20 (tolerance admits wrong answers)"
+   ],
    "kappa": {
     "value": 1.0,
     "n": 535,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 535,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 535,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.0,
+     "n": 100,
+     "po": 0.25,
+     "ci": [
+      -8.045094381341715e-17,
+      8.28524645242654e-17
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": false,
+   "core_human_backed": false,
    "seed": 690
   },
   {
@@ -946,6 +1976,9 @@
    "item_unit": "one regex specification",
    "n_tasks": 25,
    "n_candidates": 328,
+   "n_probes": 75,
+   "n_probes_scored": 75,
+   "n_probes_observe": 0,
    "units_per_task": 4.0,
    "metrics": {
     "n_pos": 75.0,
@@ -959,18 +1992,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 253.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 50.0,
+    "tpr": 1.0,
+    "tnr": 0.5,
+    "fa_full": 0.5,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.5
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 303.0,
+    "tpr": 1.0,
+    "tnr": 0.9174917491749175,
+    "fa_full": 0.08250825082508251,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.08250825082508251
+   },
+   "per_failure_class": {
+    "overfit_to_tests": {
+     "n": 50,
+     "n_pos": 0,
+     "n_neg": 50,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.5,
+     "far90": 0.5,
+     "accept_rate": 0.5,
+     "trust": 0.5
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
-   "trust": 1.0,
+   "trust": 0.5,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.5,
    "density": 0.9066666666666667,
-   "vci": 0.9758024682993207,
+   "vci": 0.6899965424330207,
+   "vci_aligned": 0.9758024682993207,
+   "vci_non_aligned": 0.6899965424330207,
    "vci_ci": [
-    0.9573479717381596,
-    0.989846400767953
+    0.6769472427712399,
+    0.6999271023161167
    ],
    "latency_ms": {
-    "p50": 0.30233548022806644,
-    "p95": 0.4553187231067568,
-    "mean": 0.3087578260442015
+    "p50": 0.24948851205408573,
+    "p95": 0.3447927825618535,
+    "mean": 0.25642894012512774
+   },
+   "probe_latency_ms": {
+    "p95": 0.6671965122222899
    },
    "per_defect": {
     "correct": {
@@ -1025,24 +2125,66 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": false,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [
+    "TNR 0.50 < 0.90 (wrong answers accepted)",
+    "FAR90 0.50 > 0.20 (tolerance admits wrong answers)"
+   ],
    "kappa": {
     "value": 1.0,
     "n": 328,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 328,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 328,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.39999999999999986,
+     "n": 75,
+     "po": 0.6666666666666666,
+     "ci": [
+      0.24511545293072823,
+      0.5460659045057162
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": false,
+   "core_human_backed": false,
    "seed": 787
   },
   {
@@ -1054,6 +2196,9 @@
    "item_unit": "one rendered line",
    "n_tasks": 25,
    "n_candidates": 350,
+   "n_probes": 75,
+   "n_probes_scored": 75,
+   "n_probes_observe": 0,
    "units_per_task": 5.0,
    "metrics": {
     "n_pos": 75.0,
@@ -1067,18 +2212,96 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 275.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 25.0,
+    "tpr": 0.5,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 0.8,
+    "far90": 1.0
+   },
+   "metrics_combined": {
+    "n_pos": 125.0,
+    "n_neg": 300.0,
+    "tpr": 0.8,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 0.8,
+    "far90": 0.6666666666666666
+   },
+   "per_failure_class": {
+    "spec_ambiguity": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 0.0
+    },
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
-   "trust": 1.0,
+   "trust": 0.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.0,
    "density": 1.0,
-   "vci": 1.0,
+   "vci": 0.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 0.0,
    "vci_ci": [
-    1.0,
-    1.0
+    0.0,
+    0.0
    ],
    "latency_ms": {
-    "p50": 0.009846989996731281,
-    "p95": 0.01806396176107228,
-    "mean": 0.011278818627553326
+    "p50": 0.009497511200606823,
+    "p95": 0.01749751972965896,
+    "mean": 0.011016441442604576
+   },
+   "probe_latency_ms": {
+    "p95": 0.014413683675229548
    },
    "per_defect": {
     "correct": {
@@ -1133,24 +2356,66 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": false,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [
+    "TPR 0.50 < 0.90 (valid variants rejected)",
+    "FAR90 1.00 > 0.20 (tolerance admits wrong answers)"
+   ],
    "kappa": {
     "value": 1.0,
     "n": 350,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 350,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 350,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.39999999999999986,
+     "n": 75,
+     "po": 0.6666666666666666,
+     "ci": [
+      0.2622950819672132,
+      0.5641025641025641
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": false,
+   "core_human_backed": false,
    "seed": 884
   },
   {
@@ -1162,6 +2427,9 @@
    "item_unit": "one query",
    "n_tasks": 25,
    "n_candidates": 258,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 2.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1175,18 +2443,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 208.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 0.92,
+    "fa_full": 0.08,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.08
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 233.0,
+    "tpr": 1.0,
+    "tnr": 0.9914163090128756,
+    "fa_full": 0.008583690987124463,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.008583690987124463
+   },
+   "per_failure_class": {
+    "hardcoded_expected": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.92,
+     "far90": 0.08,
+     "accept_rate": 0.08,
+     "trust": 0.92
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
-   "trust": 1.0,
+   "trust": 0.92,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.92,
    "density": 0.44,
-   "vci": 0.8144476398584994,
+   "vci": 0.7811907330642073,
+   "vci_aligned": 0.8144476398584994,
+   "vci_non_aligned": 0.7811907330642073,
    "vci_ci": [
-    0.788558983339814,
-    0.8436854963800713
+    0.7164136220334271,
+    0.8380793022482116
    ],
    "latency_ms": {
-    "p50": 1.1488600284792483,
-    "p95": 1.8711636657826596,
-    "mean": 1.1976854519218265
+    "p50": 1.1552245123311877,
+    "p95": 1.7450607614591718,
+    "mean": 1.1727363466783318
+   },
+   "probe_latency_ms": {
+    "p95": 1.6964339942205695
    },
    "per_defect": {
     "correct": {
@@ -1241,24 +2576,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 258,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 258,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 258,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.9199999999999999,
+     "n": 50,
+     "po": 0.96,
+     "ci": [
+      0.8,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 981
   },
   {
@@ -1270,6 +2644,9 @@
    "item_unit": "one group-metric cell",
    "n_tasks": 25,
    "n_candidates": 498,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 12.0,
    "metrics": {
     "n_pos": 75.0,
@@ -1283,18 +2660,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 423.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 448.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.07382000330835581,
-    "p95": 0.14223504695110023,
-    "mean": 0.08002314347227714
+    "p50": 0.08013652404770255,
+    "p95": 0.14589030179195106,
+    "mean": 0.08528135870265434
+   },
+   "probe_latency_ms": {
+    "p95": 0.13516036560758946
    },
    "per_defect": {
     "correct": {
@@ -1349,24 +2793,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 498,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 498,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 498,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1078
   },
   {
@@ -1378,6 +2861,9 @@
    "item_unit": "one output position",
    "n_tasks": 25,
    "n_candidates": 413,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 8.0,
    "metrics": {
     "n_pos": 75.0,
@@ -1391,18 +2877,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 75.0,
+    "n_neg": 338.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 100.0,
+    "n_neg": 363.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 75.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.029821996577084064,
-    "p95": 0.06110956892371177,
-    "mean": 0.03312808798612535
+    "p50": 0.023813918232917786,
+    "p95": 0.05127359181642531,
+    "mean": 0.02667798940317827
+   },
+   "probe_latency_ms": {
+    "p95": 0.06988794775679708
    },
    "per_defect": {
     "correct": {
@@ -1457,24 +3010,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 413,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 413,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 413,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1175
   },
   {
@@ -1486,6 +3078,9 @@
    "item_unit": "one merged interval",
    "n_tasks": 25,
    "n_candidates": 321,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 5.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1499,18 +3094,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 271.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 296.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.023255939595401287,
-    "p95": 0.04197296220809221,
-    "mean": 0.02470967574538286
+    "p50": 0.03247393760830164,
+    "p95": 0.054333009757101536,
+    "mean": 0.03456940977454093
+   },
+   "probe_latency_ms": {
+    "p95": 0.08888327865861353
    },
    "per_defect": {
     "correct": {
@@ -1565,24 +3227,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 321,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 321,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 321,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1272
   },
   {
@@ -1594,6 +3295,9 @@
    "item_unit": "one start/goal pair",
    "n_tasks": 25,
    "n_candidates": 275,
+   "n_probes": 51,
+   "n_probes_scored": 51,
+   "n_probes_observe": 0,
    "units_per_task": 3.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1607,18 +3311,96 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 26.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 251.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    },
+    "resource": {
+     "n": 1,
+     "n_pos": 0,
+     "n_neg": 1,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.6666666666666665,
    "vci": 0.9036020036098448,
+   "vci_aligned": 0.9036020036098448,
+   "vci_non_aligned": 0.9036020036098448,
    "vci_ci": [
     0.9036020036098448,
     0.9036020036098448
    ],
    "latency_ms": {
-    "p50": 0.024234061129391193,
-    "p95": 0.04153371555730701,
-    "mean": 0.025143504396758297
+    "p50": 0.019483966752886772,
+    "p95": 0.034869019873440266,
+    "mean": 0.02060007938945835
+   },
+   "probe_latency_ms": {
+    "p95": 0.035720993764698505
    },
    "per_defect": {
     "correct": {
@@ -1673,24 +3455,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 275,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 275,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 51,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1369
   },
   {
@@ -1702,6 +3523,9 @@
    "item_unit": "one colouring problem",
    "n_tasks": 25,
    "n_candidates": 275,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 3.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1715,18 +3539,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 250.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.6666666666666665,
    "vci": 0.9036020036098448,
+   "vci_aligned": 0.9036020036098448,
+   "vci_non_aligned": 0.9036020036098448,
    "vci_ci": [
     0.9036020036098448,
     0.9036020036098448
    ],
    "latency_ms": {
-    "p50": 0.03575801383703947,
-    "p95": 0.06138210883364082,
-    "mean": 0.03906236030161381
+    "p50": 0.050421920605003834,
+    "p95": 0.07269240450114013,
+    "mean": 0.05254071375185793
+   },
+   "probe_latency_ms": {
+    "p95": 0.07424254436045885
    },
    "per_defect": {
     "correct": {
@@ -1781,24 +3672,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 275,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 275,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1466
   },
   {
@@ -1810,6 +3740,9 @@
    "item_unit": "one meeting set",
    "n_tasks": 25,
    "n_candidates": 275,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 3.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1823,18 +3756,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 250.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.6666666666666665,
    "vci": 0.9036020036098448,
+   "vci_aligned": 0.9036020036098448,
+   "vci_non_aligned": 0.9036020036098448,
    "vci_ci": [
     0.9036020036098448,
     0.9036020036098448
    ],
    "latency_ms": {
-    "p50": 0.02416502684354782,
-    "p95": 0.04674299852922559,
-    "mean": 0.027184563434936783
+    "p50": 0.021580024622380733,
+    "p95": 0.0417481060139835,
+    "mean": 0.024452512999149887
+   },
+   "probe_latency_ms": {
+    "p95": 0.04128320724703371
    },
    "per_defect": {
     "correct": {
@@ -1889,24 +3889,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 275,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 275,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1563
   },
   {
@@ -1918,6 +3957,9 @@
    "item_unit": "one DAG",
    "n_tasks": 25,
    "n_candidates": 275,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 3.0,
    "metrics": {
     "n_pos": 50.0,
@@ -1931,18 +3973,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 225.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 250.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 0.6666666666666665,
    "vci": 0.9036020036098448,
+   "vci_aligned": 0.9036020036098448,
+   "vci_non_aligned": 0.9036020036098448,
    "vci_ci": [
     0.9036020036098448,
     0.9036020036098448
    ],
    "latency_ms": {
-    "p50": 0.010406016372144222,
-    "p95": 0.01813000999391079,
-    "mean": 0.011622803285717964
+    "p50": 0.011871918104588985,
+    "p95": 0.0204620067961514,
+    "mean": 0.013491811908104202
+   },
+   "probe_latency_ms": {
+    "p95": 0.02007089788094163
    },
    "per_defect": {
     "correct": {
@@ -1997,24 +4106,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 275,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 275,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 275,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1660
   },
   {
@@ -2026,6 +4174,9 @@
    "item_unit": "one output row",
    "n_tasks": 25,
    "n_candidates": 342,
+   "n_probes": 50,
+   "n_probes_scored": 50,
+   "n_probes_observe": 0,
    "units_per_task": 6.0,
    "metrics": {
     "n_pos": 50.0,
@@ -2039,18 +4190,85 @@
     "tau90": 1.0,
     "far90": 0.0
    },
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 292.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 25.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 317.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "per_failure_class": {
+    "silent_partial": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 1.0,
+     "far90": 0.0,
+     "accept_rate": 0.0,
+     "trust": 1.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    }
+   },
    "cheapness": 1.0,
    "trust": 1.0,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 1.0,
    "density": 1.0,
    "vci": 1.0,
+   "vci_aligned": 1.0,
+   "vci_non_aligned": 1.0,
    "vci_ci": [
     1.0,
     1.0
    ],
    "latency_ms": {
-    "p50": 0.012815464287996292,
-    "p95": 0.029741530306637284,
-    "mean": 0.01475225272179957
+    "p50": 0.011453055776655674,
+    "p95": 0.02388394786976278,
+    "mean": 0.01369689166415156
+   },
+   "probe_latency_ms": {
+    "p95": 0.020786281675100323
    },
    "per_defect": {
     "correct": {
@@ -2105,24 +4323,63 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": true,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [],
    "kappa": {
     "value": 1.0,
     "n": 342,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 342,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 342,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 1.0,
+     "n": 50,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": true,
+   "core_human_backed": false,
    "seed": 1757
   },
   {
@@ -2134,6 +4391,9 @@
    "item_unit": "one unit test",
    "n_tasks": 25,
    "n_candidates": 308,
+   "n_probes": 81,
+   "n_probes_scored": 80,
+   "n_probes_observe": 1,
    "units_per_task": 4.0,
    "metrics": {
     "n_pos": 50.0,
@@ -2147,18 +4407,107 @@
     "tau90": 1.0,
     "far90": 0.0
    },
-   "cheapness": 0.9494945201246688,
-   "trust": 1.0,
+   "metrics_aligned": {
+    "n_pos": 50.0,
+    "n_neg": 258.0,
+    "tpr": 1.0,
+    "tnr": 1.0,
+    "fa_full": 0.0,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.0
+   },
+   "metrics_non_aligned": {
+    "n_pos": 25.0,
+    "n_neg": 55.0,
+    "tpr": 1.0,
+    "tnr": 0.01818181818181818,
+    "fa_full": 0.9818181818181818,
+    "tpr_canonical": 0.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 25.0,
+    "tau90": 1.0,
+    "far90": 0.9818181818181818
+   },
+   "metrics_combined": {
+    "n_pos": 75.0,
+    "n_neg": 313.0,
+    "tpr": 1.0,
+    "tnr": 0.8274760383386581,
+    "fa_full": 0.17252396166134185,
+    "tpr_canonical": 1.0,
+    "tpr_equiv": 1.0,
+    "n_equiv": 50.0,
+    "tau90": 1.0,
+    "far90": 0.17252396166134185
+   },
+   "per_failure_class": {
+    "hardcoded_expected": {
+     "n": 25,
+     "n_pos": 0,
+     "n_neg": 25,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.0,
+     "far90": 1.0,
+     "accept_rate": 1.0,
+     "trust": 0.0
+    },
+    "overfit_to_tests": {
+     "n": 4,
+     "n_pos": 0,
+     "n_neg": 4,
+     "n_observe": 0,
+     "tpr": 0.0,
+     "tnr": 0.0,
+     "far90": 1.0,
+     "accept_rate": 1.0,
+     "trust": 0.0
+    },
+    "semantic_equivalent": {
+     "n": 25,
+     "n_pos": 25,
+     "n_neg": 0,
+     "n_observe": 0,
+     "tpr": 1.0,
+     "tnr": 0.0,
+     "far90": 0.0,
+     "accept_rate": 1.0,
+     "trust": 1.0
+    },
+    "resource": {
+     "n": 27,
+     "n_pos": 0,
+     "n_neg": 26,
+     "n_observe": 1,
+     "tpr": 0.0,
+     "tnr": 0.038461538461538464,
+     "far90": 0.9615384615384616,
+     "accept_rate": 0.9615384615384616,
+     "trust": 0.038461538461538464
+    }
+   },
+   "cheapness": 0.890178683900255,
+   "trust": 0.01818181818181818,
+   "trust_aligned": 1.0,
+   "trust_non_aligned": 0.01818181818181818,
    "density": 1.0,
-   "vci": 0.9871271925511196,
+   "vci": 0.1309748630102573,
+   "vci_aligned": 0.9713355809042318,
+   "vci_non_aligned": 0.1309748630102573,
    "vci_ci": [
-    0.9862999484010602,
-    0.9886128421362754
+    0.0,
+    0.22251705952355896
    ],
    "latency_ms": {
-    "p50": 33.56419346528128,
-    "p95": 44.24263034015894,
-    "mean": 33.847854156334364
+    "p50": 47.34167706919834,
+    "p95": 72.71423172787762,
+    "mean": 47.02184401571981
+   },
+   "probe_latency_ms": {
+    "p95": 73.93812681548297
    },
    "per_defect": {
     "correct": {
@@ -2213,24 +4562,66 @@
     }
    },
    "verifier_errors": 0,
+   "probe_errors": 0,
    "reliable": true,
+   "reliable_non_aligned": false,
    "unreliable_reasons": [],
+   "unreliable_reasons_non_aligned": [
+    "TNR 0.02 < 0.90 (wrong answers accepted)",
+    "FAR90 0.98 > 0.20 (tolerance admits wrong answers)"
+   ],
    "kappa": {
     "value": 1.0,
     "n": 308,
     "po": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
     "source": "synthetic",
-    "synthetic": {
-     "value": 1.0,
-     "n": 308,
-     "po": 1.0
-    },
     "human": {
      "value": 0.0,
      "n": 0,
-     "po": 0.0
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "n_undecidable": 0
+    },
+    "synthetic": {
+     "value": 1.0,
+     "n": 308,
+     "po": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "source": "synthetic-upper-bound"
+    },
+    "oracle_non_aligned": {
+     "value": 0.011441647597254086,
+     "n": 80,
+     "po": 0.325,
+     "ci": [
+      0.0,
+      0.039106145251396614
+     ],
+     "source": "independent-probe-oracle"
+    },
+    "stability": {
+     "value": null,
+     "n": 0,
+     "po": 0.0,
+     "ci": [
+      0.0,
+      1.0
+     ],
+     "source": "human-test-retest"
     }
    },
+   "core_eligible": false,
+   "core_human_backed": false,
    "seed": 1854
   }
  ]

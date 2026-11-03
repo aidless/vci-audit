@@ -66,8 +66,11 @@ def operating_metrics(records: List[Dict]) -> Dict[str, float]:
     """TPR / TNR / FAR90 from per-candidate records.
 
     Each record needs ``score`` (float), ``passed`` (bool) and ``label``
-    (``"correct"`` / ``"incorrect"``) plus optional ``defect``.
+    (``"correct"`` / ``"incorrect"``) plus optional ``defect``.  Records whose
+    label is ``"observe"`` are skipped: they are resource observations with no
+    stated verification policy, so they must not move TPR/TNR.
     """
+    records = [r for r in records if r["label"] in ("correct", "incorrect")]
     pos = [r for r in records if r["label"] == "correct"]
     neg = [r for r in records if r["label"] == "incorrect"]
     out: Dict[str, float] = {}
@@ -91,6 +94,30 @@ def operating_metrics(records: List[Dict]) -> Dict[str, float]:
     out["tau90"] = tau
     out["far90"] = (sum(1.0 for r in neg if r["score"] >= tau - FULL_TOL) / len(neg)) if neg else 0.0
     return out
+
+
+def trust_score(op: Dict[str, float]) -> float:
+    """T = min(TPR, TNR, 1 - FAR90), clamped to [0, 1]."""
+    return max(0.0, min(1.0, min(op["tpr"], op["tnr"], 1.0 - op["far90"])))
+
+
+def bootstrap_kappa(y_true: Sequence[bool], y_pred: Sequence[bool],
+                    n_boot: int = 500, seed: int = 0,
+                    alpha: float = 0.05) -> Tuple[float, float]:
+    """Percentile bootstrap interval for Cohen's kappa (rows resampled)."""
+    import random
+
+    n = len(y_true)
+    if n < 3:
+        return 0.0, 1.0
+    rng = random.Random(seed)
+    vals = []
+    for _ in range(n_boot):
+        idx = [rng.randrange(n) for _ in range(n)]
+        k, _po = cohen_kappa([y_true[i] for i in idx], [y_pred[i] for i in idx])
+        vals.append(k)
+    vals.sort()
+    return vals[int(alpha / 2 * n_boot)], vals[int((1 - alpha / 2) * n_boot) - 1]
 
 
 def cheapness(p95_ms: float, cheap_ms: float = 20.0, costly_ms: float = 500.0) -> float:

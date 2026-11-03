@@ -23,6 +23,18 @@ arith_expression-003-c13,arith_expression,"Evaluate each expression exactly.  An
  ""1.5"",
  ""2.75""
 ]",
+arith_expression-003-x00,arith_expression,"Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.
+  1. (1 + 1) / 2
+  2. (13 + 13 * 14) / 5
+  3. (3 + 10 - 11) / 2
+  4. (8 + 4) / 8
+  5. (18 - 7) / 4","[""q1"", ""q2"", ""q3"", ""q4"", ""q5""]","[
+ ""1"",
+ ""72.8"",
+ ""1"",
+ ""1.5"",
+ ""2.75""
+]",
 unit_convert-003-c01,unit_convert,"Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).
   1. 333.5437 mi -> mm
   2. 12.3504 kg -> mg
@@ -47,6 +59,18 @@ unit_convert-003-c13,unit_convert,"Convert each quantity into the target unit.  
  ""134527.6674150948"",
  ""30.9870911523532151608053429148409921048631680383652549014203""
 ]",
+unit_convert-003-x00,unit_convert,"Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).
+  1. 333.5437 mi -> mm
+  2. 12.3504 kg -> mg
+  3. 58.9238 yd -> mm
+  4. 355.3845 gal_us -> mL
+  5. 117.2989 L -> gal_us","[""q1"", ""q2"", ""q3"", ""q4"", ""q5""]","[
+ ""536786552.3328"",
+ ""12350400"",
+ ""53879.92272"",
+ ""1345276.674150948"",
+ ""14662362500/473176473""
+]",
 stats_summary-003-c01,stats_summary,"Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.
   data = [10, 11, 13, 35, 38, 41, 42, 65, 80, 97]","[""mean"", ""median"", ""std_sample"", ""q1"", ""q3""]","{
  ""mean"": 43.2,
@@ -62,6 +86,14 @@ stats_summary-003-c12,stats_summary,"Given the sample below compute mean, median
  ""std_sample"": ""29.581525766374302"",
  ""q1"": ""18.5"",
  ""q3"": ""64.25""
+}",
+stats_summary-003-x00,stats_summary,"Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.
+  data = [10, 11, 13, 35, 38, 41, 42, 65, 80, 97]","[""mean"", ""median"", ""std_sample"", ""q1"", ""q3""]","{
+ ""mean"": ""43.2"",
+ ""median"": ""39.5"",
+ ""std_sample"": ""29.581525766374302"",
+ ""q1"": ""18.5"",
+ ""q3"": ""59.25""
 }",
 base_convert-003-c01,base_convert,"Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).
   1. 4007 -> base 16
@@ -82,6 +114,16 @@ base_convert-003-c12,base_convert,"Represent each decimal integer in the request
  ""101011011110"",
  ""138"",
  ""7476""
+]",
+base_convert-003-x00,base_convert,"Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).
+  1. 4007 -> base 16
+  2. 2782 -> base 2
+  3. 311 -> base 16
+  4. 3902 -> base 8","[""q1"", ""q2"", ""q3"", ""q4""]","[
+ ""00000FA7"",
+ ""00000000000000101011011110"",
+ ""00000137"",
+ ""0000007476""
 ]",
 matrix_ops-003-c01,matrix_ops,"Given A = [[-1, -7, 1], [-7, -7, 8], [-9, -7, 9]] and B = [[5, 5, 2], [9, 9, 4], [0, -2, 8]], multiply the two 3x3 matrices A and B.  Reply with a JSON array of rows of integers.","[""r0c0"", ""r0c1"", ""r0c2"", ""r1c0"", ""r1c1"", ""r1c2"", ""r2c0"", ""r2c1"", ""r2c2""]","[
  [
@@ -117,6 +159,23 @@ matrix_ops-003-c16,matrix_ops,"Given A = [[-1, -7, 1], [-7, -7, 8], [-9, -7, 9]]
   26
  ]
 ]",
+matrix_ops-003-x00,matrix_ops,"Given A = [[-1, -7, 1], [-7, -7, 8], [-9, -7, 9]] and B = [[5, 5, 2], [9, 9, 4], [0, -2, 8]], multiply the two 3x3 matrices A and B.  Reply with a JSON array of rows of integers.","[""r0c0"", ""r0c1"", ""r0c2"", ""r1c0"", ""r1c1"", ""r1c2"", ""r2c0"", ""r2c1"", ""r2c2""]","[
+ [
+  ""-68"",
+  ""-70"",
+  ""-22""
+ ],
+ [
+  ""-98"",
+  ""-114"",
+  ""22""
+ ],
+ [
+  ""-108"",
+  ""-126"",
+  ""26""
+ ]
+]",
 date_arith-003-c01,date_arith,"Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.
   1. 2024-08-06 -24 days
   2. 2024-02-14 +40 days
@@ -136,6 +195,16 @@ date_arith-003-c12,date_arith,"Shift each date by the given amount.  Month shift
  ""2024-03-25"",
  ""2023-06-13"",
  ""2024-02-29""
+]",
+date_arith-003-x00,date_arith,"Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.
+  1. 2024-08-06 -24 days
+  2. 2024-02-14 +40 days
+  3. 2023-08-13 -2 months
+  4. 2024-01-31 +1 months","[""d1"", ""d2"", ""d3"", ""d4""]","[
+ ""2024-07-13T00:00:00"",
+ ""2024-03-25T00:00:00"",
+ ""2023-06-13T00:00:00"",
+ ""2024-02-29T00:00:00""
 ]",
 json_schema_extract-003-c01,json_schema_extract,"Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.
 
@@ -185,6 +254,30 @@ steps: pack > verify
   ""verify""
  ]
 }",
+json_schema_extract-003-x00,json_schema_extract,"Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.
+
+ORDER #2127
+customer: Ada Lovelace
+priority: 3
+total_usd: 670.53
+tags: gift, fragile, bulk, urgent
+steps: pack > verify
+","[""id"", ""customer"", ""priority"", ""total_usd"", ""tags"", ""steps""]","{
+ ""id"": 2127,
+ ""customer"": ""Ada Lovelace"",
+ ""priority"": 3,
+ ""total_usd"": ""670.5300"",
+ ""tags"": [
+  ""urgent"",
+  ""bulk"",
+  ""fragile"",
+  ""gift""
+ ],
+ ""steps"": [
+  ""pack"",
+  ""verify""
+ ]
+}",
 log_field_extraction-003-c01,log_field_extraction,"Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id ""1"", ""2"", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.
 
 2024-05-03T06:39:18Z level=INFO service=api code=I774 msg=""connection reset by peer""
@@ -223,6 +316,25 @@ log_field_extraction-003-c18,log_field_extraction,"Parse each log line into the 
   ""msg"": ""quota exceeded""
  }
 }",
+log_field_extraction-003-x00,log_field_extraction,"Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id ""1"", ""2"", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.
+
+2024-05-03T06:39:18Z level=INFO service=api code=I774 msg=""connection reset by peer""
+2024-05-11T23:07:29Z level=ERROR service=billing code=W680 msg=""quota exceeded""","[""L1.ts"", ""L1.level"", ""L1.service"", ""L1.code"", ""L1.msg"", ""L2.ts"", ""L2.level"", ""L2.service"", ""L2.code"", ""L2.msg""]","{
+ ""1"": {
+  ""ts"": ""2024-05-03T06:39:18.000Z"",
+  ""level"": ""INFO"",
+  ""service"": ""api"",
+  ""code"": ""I774"",
+  ""msg"": ""connection reset by peer""
+ },
+ ""2"": {
+  ""ts"": ""2024-05-11T23:07:29.000Z"",
+  ""level"": ""ERROR"",
+  ""service"": ""billing"",
+  ""code"": ""W680"",
+  ""msg"": ""quota exceeded""
+ }
+}",
 regex_construct-003-c01,regex_construct,"For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.
   1. four-digit year, two-digit month and day, dash separated
      match:     2024-11-25 | 2024-12-02 | 2024-08-28
@@ -251,6 +363,20 @@ regex_construct-003-c11,regex_construct,"For each specification write a regular 
  ""^[0-9a-f]{2}(?: [0-9a-f]{2})*$"",
  ""^[A-Za-z0-9_.-]+\\.py$""
 ]",
+regex_construct-003-x00,regex_construct,"For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.
+  1. four-digit year, two-digit month and day, dash separated
+     match:     2024-11-25 | 2024-12-02 | 2024-08-28
+     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x
+  2. space-separated pairs of lower-case hex digits
+     match:     0a 1b 2c | ff 00 7e | aa bb
+     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00
+  3. ends in .py, base name from [A-Za-z0-9_.-]
+     match:     main.py | my_script.py | lib-2.py
+     must not:  main.pyc | main.PY | x | main.py.bak","[""r1"", ""r2"", ""r3""]","[
+ ""^[0-9]{4}-[0-9]{2}-[0-9]{2}$"",
+ ""^[0-9a-f]{2}(?: [0-9a-f]{2})*$"",
+ ""^(?:[A-Za-z0-9_.-]+)\\.py$""
+]",
 template_render-003-c01,template_render,"Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, "" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.
   NAME: {v:upper}
   TOTAL: {v:money}
@@ -277,6 +403,19 @@ template_render-003-c13,template_render,"Render each template line.  Filters: up
  ""C-155"",
  ""UNKNOWN""
 ]",
+template_render-003-x00,template_render,"Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, "" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.
+  NAME: {v:upper}
+  TOTAL: {v:money}
+  NOTE: {v:html}
+  CODE: {v:raw}
+  STATUS: {v:default:UNKNOWN}
+  data = {'name': 'Katherine', 'amount': 370.83, 'note': '<b>fast & ""safe""</b>', 'code': 'C-155'}","[""s1"", ""s2"", ""s3"", ""s4"", ""s5""]","[
+ ""KATHERINE"",
+ ""$370.83"",
+ ""&lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;"",
+ ""C-155"",
+ ""UNKNOWN""
+]",
 sql_result-003-c01,sql_result,"Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.
   1. the two departments with the highest total amount, ordered by total descending (result order matters)
   2. number of orders with status 'paid' (result order matters)
@@ -292,6 +431,14 @@ sql_result-003-c10,sql_result,"Write one SQL query per question for the schema o
  ""SELECT 1"",
  ""SELECT COUNT(*) FROM orders WHERE status = 'paid'"",
  ""SELECT dept, SUM(amount) FROM orders GROUP BY dept ORDER BY dept ASC""
+]",
+sql_result-003-x00,sql_result,"Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.
+  1. the two departments with the highest total amount, ordered by total descending (result order matters)
+  2. number of orders with status 'paid' (result order matters)
+  3. total amount per department, ordered by department ascending (result order matters)","[""q1"", ""q2"", ""q3""]","[
+ ""SELECT dept, SUM(amount) FROM orders GROUP BY dept ORDER BY 2 DESC LIMIT 2"",
+ ""SELECT COUNT(*) FROM orders WHERE status IN ('paid')"",
+ ""SELECT dept AS d, SUM(amount) AS s FROM orders GROUP BY dept ORDER BY 1""
 ]",
 table_aggregate-003-c01,table_aggregate,"Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.
   (dept, region, amount)
@@ -373,6 +520,46 @@ table_aggregate-003-c20,table_aggregate,"Aggregate the table below by department
   ""mean"": ""2297/4""
  }
 }",
+table_aggregate-003-x00,table_aggregate,"Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.
+  (dept, region, amount)
+  ('HR', 'EU', 792)
+  ('SLS', 'EU', 539)
+  ('SLS', 'NA', 150)
+  ('ENG', 'NA', 757)
+  ('ENG', 'NA', 111)
+  ('ENG', 'APAC', 225)
+  ('SLS', 'EU', 51)
+  ('HR', 'APAC', 723)
+  ('ENG', 'NA', 408)
+  ('OPS', 'EU', 423)
+  ('SLS', 'NA', 786)
+  ('HR', 'NA', 473)
+  ('HR', 'APAC', 309)
+  ('ENG', 'NA', 298)
+  ('OPS', 'APAC', 690)
+  ('OPS', 'EU', 886)
+  ('OPS', 'APAC', 89)","[""ENG.count"", ""ENG.sum"", ""ENG.mean"", ""SLS.count"", ""SLS.sum"", ""SLS.mean"", ""OPS.count"", ""OPS.sum"", ""OPS.mean"", ""HR.count"", ""HR.sum"", ""HR.mean""]","{
+ ""ENG"": {
+  ""count"": 5,
+  ""sum"": 1799,
+  ""mean"": ""359.8""
+ },
+ ""SLS"": {
+  ""count"": 4,
+  ""sum"": 1526,
+  ""mean"": ""381.5""
+ },
+ ""OPS"": {
+  ""count"": 4,
+  ""sum"": 2088,
+  ""mean"": ""522""
+ },
+ ""HR"": {
+  ""count"": 4,
+  ""sum"": 2297,
+  ""mean"": ""574.25""
+ }
+}",
 sort_multikey-003-c01,sort_multikey,"Sort the records below by ts ascending (case-insensitive); score descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.
   records = [{'id': 1, 'name': 'Linus', 'dept': 'ENG', 'score': 80, 'ts': 5}, {'id': 2, 'name': 'alan', 'dept': 'SLS', 'score': 90, 'ts': 1}, {'id': 3, 'name': 'Ada', 'dept': 'OPS', 'score': 90, 'ts': 5}, {'id': 4, 'name': 'grace', 'dept': 'SLS', 'score': 80, 'ts': 1}, {'id': 5, 'name': 'Linus', 'dept': 'SLS', 'score': 80, 'ts': 2}, {'id': 6, 'name': 'grace', 'dept': 'ENG', 'score': 80, 'ts': 4}]","[""p1"", ""p2"", ""p3"", ""p4"", ""p5"", ""p6""]","[
  ""2"",
@@ -390,6 +577,15 @@ sort_multikey-003-c14,sort_multikey,"Sort the records below by ts ascending (cas
  6,
  3,
  1
+]",
+sort_multikey-003-x00,sort_multikey,"Sort the records below by ts ascending (case-insensitive); score descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.
+  records = [{'id': 1, 'name': 'Linus', 'dept': 'ENG', 'score': 80, 'ts': 5}, {'id': 2, 'name': 'alan', 'dept': 'SLS', 'score': 90, 'ts': 1}, {'id': 3, 'name': 'Ada', 'dept': 'OPS', 'score': 90, 'ts': 5}, {'id': 4, 'name': 'grace', 'dept': 'SLS', 'score': 80, 'ts': 1}, {'id': 5, 'name': 'Linus', 'dept': 'SLS', 'score': 80, 'ts': 2}, {'id': 6, 'name': 'grace', 'dept': 'ENG', 'score': 80, 'ts': 4}]","[""p1"", ""p2"", ""p3"", ""p4"", ""p5"", ""p6""]","[
+ ""2"",
+ ""4"",
+ ""5"",
+ ""6"",
+ ""3"",
+ ""1""
 ]",
 interval_merge-003-c01,interval_merge,"Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.
   input = [(0, 2), (2, 4), (14, 16), (15, 17), (89, 91), (66, 72)]","[""m1"", ""m2"", ""m3"", ""m4"", ""m5""]","[
@@ -435,6 +631,29 @@ interval_merge-003-c12,interval_merge,"Merge the half-open intervals [start, end
  [
   94,
   97
+ ]
+]",
+interval_merge-003-x00,interval_merge,"Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.
+  input = [(0, 2), (2, 4), (14, 16), (15, 17), (89, 91), (66, 72)]","[""m1"", ""m2"", ""m3"", ""m4"", ""m5""]","[
+ [
+  0.0,
+  2.0
+ ],
+ [
+  2.0,
+  4.0
+ ],
+ [
+  14.0,
+  17.0
+ ],
+ [
+  66.0,
+  72.0
+ ],
+ [
+  89.0,
+  91.0
  ]
 ]",
 grid_path-003-c01,grid_path,"Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.
@@ -721,6 +940,152 @@ grid_path-003-c10,grid_path,"Find a shortest 4-connected path from S to G on eac
   ]
  ]
 ]",
+grid_path-003-x00,grid_path,"Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.
+  grid = ['.#.....', '..###..', '.......', '...#..#', '..#####', '...###.', '#..#...']
+  pairs = [{'start': [0, 4], 'goal': [5, 0]}, {'start': [5, 0], 'goal': [0, 6]}, {'start': [4, 1], 'goal': [0, 6]}]","[""p1"", ""p2"", ""p3""]","[
+ [
+  [
+   0,
+   4
+  ],
+  [
+   0,
+   5
+  ],
+  [
+   1,
+   5
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   2,
+   3
+  ],
+  [
+   2,
+   2
+  ],
+  [
+   3,
+   2
+  ],
+  [
+   3,
+   1
+  ],
+  [
+   4,
+   1
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   5,
+   0
+  ]
+ ],
+ [
+  [
+   5,
+   0
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   4,
+   1
+  ],
+  [
+   3,
+   1
+  ],
+  [
+   3,
+   2
+  ],
+  [
+   2,
+   2
+  ],
+  [
+   2,
+   3
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   2,
+   6
+  ],
+  [
+   1,
+   6
+  ],
+  [
+   0,
+   6
+  ]
+ ],
+ [
+  [
+   4,
+   1
+  ],
+  [
+   3,
+   1
+  ],
+  [
+   3,
+   2
+  ],
+  [
+   2,
+   2
+  ],
+  [
+   2,
+   3
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   2,
+   6
+  ],
+  [
+   1,
+   6
+  ],
+  [
+   0,
+   6
+  ]
+ ]
+]",
 csp_assign-003-c01,csp_assign,"Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.
   problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'D'), ('B', 'C'), ('C', 'D')], 'pins': {'B': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'D'), ('B', 'E'), ('C', 'D'), ('C', 'E')], 'pins': {'E': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('C', 'D')], 'pins': {'B': 2}, 'colors': 3}]","[""g1"", ""g2"", ""g3""]","[
  {
@@ -765,6 +1130,28 @@ csp_assign-003-c10,csp_assign,"Colour each graph with colours 1, 2, 3 so that ad
   ""D"": 2
  }
 ]",
+csp_assign-003-x00,csp_assign,"Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.
+  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'D'), ('B', 'C'), ('C', 'D')], 'pins': {'B': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'D'), ('B', 'E'), ('C', 'D'), ('C', 'E')], 'pins': {'E': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('C', 'D')], 'pins': {'B': 2}, 'colors': 3}]","[""g1"", ""g2"", ""g3""]","[
+ {
+  ""D"": 3,
+  ""C"": 2,
+  ""B"": 1,
+  ""A"": 2
+ },
+ {
+  ""E"": 2,
+  ""D"": 3,
+  ""C"": 1,
+  ""B"": 3,
+  ""A"": 2
+ },
+ {
+  ""D"": 3,
+  ""C"": 2,
+  ""B"": 2,
+  ""A"": 3
+ }
+]",
 schedule_slots-003-c01,schedule_slots,"Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.
   problems = [{'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob']}, {'id': 'm2', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm3', 'dur': 2, 'who': ['ann', 'cy']}], 'busy': {'ann': [10, 13], 'bob': [3, 7, 12], 'cy': [1, 9, 12]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['bob']}, {'id': 'm2', 'dur': 1, 'who': ['cy']}], 'busy': {'ann': [4, 6, 9], 'bob': [7, 11], 'cy': [0, 2, 7, 14]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm2', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm3', 'dur': 1, 'who': ['ann', 'cy']}], 'busy': {'ann': [9, 13], 'bob': [5, 6, 8, 15], 'cy': [9, 14]}}]","[""s1"", ""s2"", ""s3""]","[
  {
@@ -797,6 +1184,23 @@ schedule_slots-003-c10,schedule_slots,"Schedule each meeting set into 30-minute 
   ""m1"": 1,
   ""m2"": 2,
   ""m3"": 4
+ }
+]",
+schedule_slots-003-x00,schedule_slots,"Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.
+  problems = [{'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob']}, {'id': 'm2', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm3', 'dur': 2, 'who': ['ann', 'cy']}], 'busy': {'ann': [10, 13], 'bob': [3, 7, 12], 'cy': [1, 9, 12]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['bob']}, {'id': 'm2', 'dur': 1, 'who': ['cy']}], 'busy': {'ann': [4, 6, 9], 'bob': [7, 11], 'cy': [0, 2, 7, 14]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm2', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm3', 'dur': 1, 'who': ['ann', 'cy']}], 'busy': {'ann': [9, 13], 'bob': [5, 6, 8, 15], 'cy': [9, 14]}}]","[""s1"", ""s2"", ""s3""]","[
+ {
+  ""m3"": 2,
+  ""m2"": 0,
+  ""m1"": 4
+ },
+ {
+  ""m2"": 1,
+  ""m1"": 2
+ },
+ {
+  ""m3"": 0,
+  ""m2"": 1,
+  ""m1"": 3
  }
 ]",
 topo_order-003-c01,topo_order,"Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.
@@ -852,6 +1256,34 @@ topo_order-003-c10,topo_order,"Return one topological order per directed acyclic
   ""C"",
   ""E"",
   ""B"",
+  ""D""
+ ]
+]",
+topo_order-003-x00,topo_order,"Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.
+  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('C', 'E'), ('C', 'F'), ('E', 'A'), ('A', 'B'), ('A', 'F')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'edges': [('B', 'F'), ('B', 'C'), ('E', 'F'), ('C', 'D')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('A', 'C'), ('A', 'E'), ('F', 'C'), ('F', 'B'), ('F', 'D'), ('C', 'D'), ('E', 'B'), ('E', 'D'), ('B', 'D')]}]","[""d1"", ""d2"", ""d3""]","[
+ [
+  ""C"",
+  ""D"",
+  ""E"",
+  ""A"",
+  ""B"",
+  ""F""
+ ],
+ [
+  ""A"",
+  ""B"",
+  ""C"",
+  ""D"",
+  ""E"",
+  ""F"",
+  ""G""
+ ],
+ [
+  ""A"",
+  ""E"",
+  ""F"",
+  ""B"",
+  ""C"",
   ""D""
  ]
 ]",
@@ -915,6 +1347,15 @@ life_step-003-c13,life_step,"Apply one generation of Conway's Game of Life (B3/S
  ""111010"",
  ""111101""
 ]",
+life_step-003-x00,life_step,"Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.
+  board = ['100010', '101001', '010010', '010000', '110101', '000001']","[""r1"", ""r2"", ""r3"", ""r4"", ""r5"", ""r6""]","[
+ ""0 1 0 0 0 0"",
+ ""1 0 0 1 1 1"",
+ ""1 1 1 0 0 0"",
+ ""0 1 0 0 1 0"",
+ ""1 1 1 0 1 0"",
+ ""0 0 0 0 1 0""
+]",
 code_patch-003-c01,code_patch,"Fix the function below so that it satisfies: remove duplicates while preserving first-occurrence order.  Return the full module source defining solve.
 
 def solve(xs):
@@ -925,3 +1366,8 @@ code_patch-003-c11,code_patch,"Fix the function below so that it satisfies: remo
 def solve(xs):
     return sorted(set(xs))
 ","[""t1"", ""t2"", ""t3"", ""t4""]","""def solve(*args):\n    table = {\n    '([3, 1, 3, 2, 1],)': [3, 1, 2],\n    '([0, 5, 0],)': [0, 5],\n    '([4, 4, 4],)': [4]\n    }\n    return table.get(repr(args), '__wrong__')\n""",
+code_patch-003-x00,code_patch,"Fix the function below so that it satisfies: remove duplicates while preserving first-occurrence order.  Return the full module source defining solve.
+
+def solve(xs):
+    return sorted(set(xs))
+","[""t1"", ""t2"", ""t3"", ""t4""]","""def solve(xs):\n    out = []\n    for i, x in enumerate(xs):\n        if x not in xs[:i]:\n            out.append(x)\n    return out\n""",

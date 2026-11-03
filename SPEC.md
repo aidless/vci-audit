@@ -1,9 +1,14 @@
-# VCI Specification (v0.1)
+# VCI Specification (v0.2)
 
 This document is the normative definition of the Verification Coverage Index as
 implemented in this repository. Every quantity below is computed by
-`vci/metrics.py`; if this document and the code disagree, the code is the
-authority and the document is a bug.
+`vci/metrics.py` and `vci/audit.py`; if this document and the code disagree, the
+code is the authority and the document is a bug.
+
+v0.2 changes the trust term: `T` is now measured twice, on the round-1 aligned
+mutants and on a round-2 sample constructed independently of the verifier
+(§3.4), and the headline `T` is the weaker of the two. κ gains human and
+human-stability sources (§7). The VCI formula itself is unchanged.
 
 ---
 
@@ -94,6 +99,25 @@ T     = min(TPR, TNR, 1 - FAR90)
 `semantic_equivalent` candidates. This is the failure mode verifiers most often
 have, and it must not be hidden inside the aggregate TPR.
 
+`T` is computed on two disjoint sample sources and then combined conservatively:
+
+```
+T_aligned     = T over round-1 mutants (generator and verifier share code)
+T_non_aligned = T over round-2 probes  (labels decided outside the verifier, §3.4)
+T             = min(T_aligned, T_non_aligned)
+```
+
+Round-1 mutants are authored next to the verifier, so `T_aligned` is an optimistic
+upper bound by construction. `T_non_aligned` is the honest term. `min` is used
+because a verifier that looks perfect on its own mutants and leaks on
+independently built ones is only as trustworthy as the stress test shows; no
+weighted average is taken, since averaging would let a perfect aligned score hide
+a collapsing non-aligned one.
+
+When one side has no usable sample (all probes are `observe`, or a family has no
+probe builder), that side falls back to the other and the row records which
+regime supplied the number.
+
 ### 3.3 Density `D`
 
 Density measures how much of a task's quality a check can see. A single
@@ -118,6 +142,36 @@ Consequences:
 * A verifier that ignores partial credit (`score` always 0 or 1) gets `f ≈ 0`
   and therefore `D ≈ 0`, even on a 10-unit task.
 
+### 3.4 Non-aligned probes
+
+`vci/adversarial.py` builds a second candidate source whose expected treatment is
+fixed **before** the verifier is called. The independence contract, enforced by
+`tests/test_adversarial.py` via AST inspection, is:
+
+1. It never calls `verify`, `grade_item`, `canonical`, `equivalents`, `wrongs`,
+   `corrupt_item`, `extract_answers`, `mutate` or `partial`.
+2. Expected values are recomputed from the prompt rule and the task's public
+   fixture data by reference implementations written inside the module (own
+   rational formatter, own BFS, own scheduler, own formatter), not by the
+   family's own "correct" answer string.
+3. The only cross-module import is the code-patch fixture *table* (inputs and
+   function names); the expected values come from `adversarial._CODE_IMPL`.
+4. `expectation` is a measurement target, not a fallback. A probe whose
+   expectation is `reject` and which the verifier accepts is reported as a leak.
+
+Each probe carries `failure_class ∈ {hardcoded_expected, overfit_to_tests,
+spec_ambiguity, silent_partial, semantic_equivalent, resource}` and
+`expectation ∈ {accept, reject, observe}`.
+
+`observe` is used where the verifier contract has no policy — an allocation that
+costs ~16 MB, but no memory budget is specified. Observe rows are recorded
+(note, basis, latency) and **excluded from TPR, TNR and FAR90**, because counting
+them as either pass or fail would manufacture a trust number the contract never
+promised. They are reported in `per_failure_class` with `n_observe`.
+
+A task therefore contributes `records` (aligned) and `probes` (non-aligned),
+never mixed into one pool except for the pooled κ in §7.
+
 ## 4. VCI
 
 ```
@@ -140,14 +194,21 @@ perfectly trustworthy but only gives binary credit caps at `D ** 0.25`.
   to 100 needs no code change, only a longer run.
 * **Candidates.** Every task emits 1 canonical answer, 1–2 semantic
   equivalents, 7 wrong classes, and `K-1` partials. All are graded.
+* **Probes.** Every task also emits 2–6 non-aligned probes (§3.4). The expensive
+  ones (a `while True` timeout, a ~16 MB allocation) run once per family, on its
+  first task, so the extra cost is O(families) rather than O(tasks).
 * **Task-level bootstrap.** For a family, resample its tasks with replacement
-  `n_boot` times (default 500), recompute every component from scratch on the
-  resample, and report the 2.5/97.5 percentiles of the resulting VCI.
+  `n_boot` times (default 500), recompute **every component including both trust
+  regimes** from scratch on the resample, and report the 2.5/97.5 percentiles of
+  the resulting VCI. Task resampling is the correct unit because aligned mutants
+  and probes of the same task share one prompt.
 * **Family-level interval.** The median-VCI interval resamples the family
   values themselves, because families are the unit of analysis.
 * **Proportions** (TPR, TNR, FAR90, κ) are reported with Wilson intervals at
   95% where a proportion is the headline; the family VCI interval is the
-  bootstrap above.
+  bootstrap above. κ additionally gets a row-level bootstrap interval, because
+  the annotation sample is small and a point estimate alone would overstate
+  precision.
 
 `--seed` changes every generated task and every mutant. The run manifest
 records the seed, task count, family list and Python version, and the
@@ -179,7 +240,7 @@ generator bug, not a verifier result.
 
 ## 7. Annotation consistency κ
 
-Cohen's κ between the author's blind labels and the verifier's `passed`:
+Cohen's κ between a label source and the verifier's `passed`:
 
 ```
 po = (a + d) / n                      # observed agreement
@@ -187,29 +248,47 @@ pe = ((a + b)/n) * ((a + c)/n) + ((c + d)/n) * ((b + d)/n)
 κ  = (po - pe) / (1 - pe)             # 0 if pe == 1
 ```
 
-where `a` = both accept, `b` = verifier accepts / human rejects,
-`c` = verifier rejects / human accepts, `d` = both reject.
+where `a` = both accept, `b` = verifier accepts / label rejects, `c` = verifier
+rejects / label accepts, `d` = both reject. Every κ carries a row-level bootstrap
+interval (2.5/97.5 percentiles over `n_boot` resamples of the rows), because the
+annotation sample is small and a bare point estimate invites over-reading.
 
-The sample is produced by `python -m vci annotate`: two rows per family, the
-semantic equivalent and the highest-scoring partial (i.e. exactly the two cases
-where a mechanical verifier is most likely to disagree with a person). The
-defect label is withheld; the canonical answer is shown as a reference. With
-`n = 2` per family, per-family κ is not estimable, so the gate uses the pooled
-κ over all 40 rows and each family is marked `kappa.source = pooled-human` with
-its borrowed count.
+### 7.1 Three sources, never merged
 
-If no sheet exists, the audit falls back to the labels produced by the mutant
-generator itself and marks every row `kappa.source = synthetic`. That value is
-**an upper bound and must never be reported as independent validation**: §6
-requires the generator and the verifier to agree completely, so the synthetic
-agreement is 1.00 by construction whenever `selfcheck` is clean. `results.json`
-therefore carries both numbers (`kappa.synthetic`, `kappa.human`) and the source
-flag, and the memo must quote the flag alongside the value.
+| source | labels come from | when it is the effective source | what it can and cannot show |
+|---|---|---|---|
+| `synthetic` | the mutant generator's own `defect` field | only when no `labels.csv` exists | an **upper bound**: §6 forces generator/verifier agreement, so `selfcheck clean` makes this 1.00 by construction. It can only reveal an accidental verifier bug, never a verifier blind spot. |
+| `human` | `annotations/labels.csv`, filled blind via `python -m vci label` | whenever at least one decided human row exists | whether a person reading the same prompt agrees with the verifier. Single annotator, so it is not inter-annotator agreement. |
+| `human-stability` | the same annotator's second pass, `annotations/labels_retest.csv`, re-ordered | reported always, used never as a headline | whether the **annotator** is consistent; a low value invalidates the human κ for that family, it does not improve the verifier's score. |
+
+`results.json` carries all three (`kappa.human`, `kappa.synthetic`,
+`kappa.stability`) plus the `source` flag and the row counts. A synthetic κ is
+**never** reported as if it were human. When a family has fewer than
+`per_family` labelled rows it borrows the pooled human κ and the row is marked
+`kappa.source = pooled-human` with the borrowed `n`; that is a borrowing flag, not
+evidence of per-family stability.
+
+`undecidable` rows are stored (`labels.csv` value `undecidable`) and counted in
+`n_undecidable`, but excluded from κ: they are a finding about the prompt, and
+folding them into either class would turn a specification gap into fake
+disagreement.
+
+### 7.2 Sample sizes and what they support
+
+`python -m vci annotate` emits three rows per family (an aligned paraphrase, the
+highest-scoring partial, and preferably a `semantic_equivalent` or
+`spec_ambiguity` probe) — 60 rows for 20 families. That is enough for a pooled κ
+with a usable interval, **not** enough to certify a single family: the per-family
+bootstrap interval will often span most of [0, 1]. The audit therefore keeps
+`core_human_backed` separate from `core_provisional`, and the memo may only place
+a family in the human-backed list when its own sheet is dense enough that the
+interval excludes 0.60, or when several families share one pooled value quoted as
+pooled.
 
 Single annotator: the author. This measures whether the written spec and the
 written verifier agree with a human reading of the same prompt. It is **not**
-inter-annotator agreement, and cannot detect a bias shared by the author and
-the verifier.
+inter-annotator agreement, and it cannot detect a bias shared by the author and
+the verifier. That limitation survives this round.
 
 ## 8. Reliability gate
 
@@ -219,10 +298,34 @@ A family is *reliable* iff all four hold:
 TPR >= 0.90, TNR >= 0.90, FAR90 <= 0.20, κ >= 0.60
 ```
 
+The gate is evaluated twice and both verdicts are published:
+
+* `reliable` — on the aligned mutants. This is the round-1 gate; it is
+  reproducible without an annotation sheet and is what the VCI `C`/`D` terms are
+  scaled against.
+* `reliable_non_aligned` — on the independent probes, when both classes exist.
+  This is the gate that can actually fail for a real reason.
+
+`trust = min(T_aligned, T_non_aligned)` feeds VCI, but the gate is **not** re-run
+on the min; each regime is reported with its own reasons. A family that passes
+aligned and fails non-aligned keeps its VCI and is listed as unreliable in the
+non-aligned column — that discrepancy is the finding, and suppressing it by
+gating only on aligned numbers is exactly the self-flattery this audit exists to
+prevent.
+
 Otherwise the family is reported with an explicit reason list. A family that
 fails is not deleted and not patched into passing; it keeps its VCI and is
 labelled untrustworthy, because a high VCI built on an unreliable verifier is
 the exact failure mode this audit exists to catch.
+
+## 8b. Core family list
+
+A family is *core-provisional* iff `VCI >= 0.70`, `trust >= 0.90` and `density > 0`.
+It is *core-human-backed* iff it is core-provisional **and** its κ source is
+`human`/`pooled-human` with a non-zero human `n`. The two lists are published
+separately (`summary.core_provisional`, `summary.core_human_backed`) so that a
+clean checkout cannot advertise a family as validated when only synthetic labels
+exist.
 
 ## 9. Family inclusion criteria
 
@@ -240,16 +343,31 @@ A task family may enter the registry only if:
 
 ## 10. Known limitations
 
-* **Synthetic mutants are easy.** Mutants are authored alongside the verifier,
-  so they share its notion of "wrong". TPR/TNR measured this way are an
-  optimistic upper bound. The audit therefore reports `tp_equiv` separately and
-  treats `κ` as the only outside check on the labels.
+* **Aligned mutants are easy.** Round-1 mutants are authored alongside the
+  verifier, so they share its notion of "wrong"; `T_aligned` is an optimistic
+  upper bound. This is why round 2 adds §3.4 and takes `min`.
+* **Non-aligned probes are still hand-written.** They come from a different
+  module with a different code path, but the same author wrote both. They are
+  more honest than the aligned mutants — they include hard-coded answers,
+  test-only overfits, ambiguity, silent partials and resource failures — but they
+  are not a sample of real model failures, and they cannot detect a blind spot
+  shared by the author and the verifier. Only the human sheet, and eventually an
+  independent annotator, can.
+* **`spec_ambiguity` probes are two-sided.** A probe whose expectation is
+  `accept` records that the prompt admits a second defensible reading. If the
+  verifier rejects it, that is a TPR loss caused by *wording*, not necessarily by
+  a verifier bug; the memo must say which reading it thinks is right instead of
+  silently reclassifying the probe.
 * **Small seeds.** 25 tasks per family gives wide bootstrap intervals; the
   median across 20 families is more stable than any single family's number.
+* **Small annotation sample.** 60 rows pooled. Per-family κ intervals are wide
+  and per-family `core_human_backed` is therefore usually empty; the pooled value
+  is the honest headline.
 * **Latency is hardware dependent.** Only `cost_ms` depends on the machine;
-  every other number is a pure function of `(seed, family set)`.
-* **Semantic equivalence is only sampled.** Each family has 1–2 paraphrase
-  forms; a verifier could accept those and still reject a third spelling.
+  every other number is a pure function of `(seed, family set, label sheets)`.
+* **Semantic equivalence is only sampled.** Each family has 1–2 aligned
+  paraphrase forms plus the probe rewrites; a verifier could accept those and
+  still reject a third spelling.
 * **`D` is a proxy.** Units per task is a design choice, not a property of the
   domain; a family with `K = 3` is penalised relative to `K = 5` even if both
   are equally checkable in principle.

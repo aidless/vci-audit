@@ -2,8 +2,12 @@
 
     python -m vci audit --families all --out outputs/
     python -m vci list-families
-    python -m vci annotate --per-family 2 --out annotations/blind.csv
+    python -m vci annotate --per-family 3 --out annotations/blind.csv
+    python -m vci label --sheet annotations/blind.csv --out annotations/labels.csv
+    python -m vci label --sheet annotations/blind.csv \
+        --out annotations/labels_retest.csv --round 2 --shuffle-seed 99
     python -m vci selfcheck
+    python -m vci score-annotations
 """
 import argparse
 import csv
@@ -24,21 +28,32 @@ def cmd_audit(args):
     fams = registry.resolve(args.families)
     payload = audit.run_audit(
         families=fams, n_tasks=args.tasks, seed=args.seed, n_boot=args.bootstrap,
-        labels_path=args.labels,
+        labels_path=args.labels, labels_retest_path=args.labels_retest,
         keep_raw=True, work_dir=args.work,
     )
     report.write_all(payload, args.out)
     s = payload["summary"]
-    print(f"families={s['n_families']}  candidates={s['n_candidates']}  "
-          f"median VCI={s['vci_median']:.3f} "
+    print(f"families={s['n_families']}  aligned candidates={s['n_candidates']}  "
+          f"probes={s['n_probes']} ({s['n_probes_scored']} scored)")
+    print(f"median VCI={s['vci_median']:.3f} "
           f"[{s['vci_median_ci'][0]:.3f}-{s['vci_median_ci'][1]:.3f}]  "
-          f">=0.70: {s['families_ge_0.7']}/{s['n_families']}  "
-          f"reliable: {s['families_reliable']}/{s['n_families']} "
-          f"(kappa source: {s['kappa_pooled']['source']})")
+          f"(aligned-only {s['vci_median_aligned']:.3f} "
+          f"[{s['vci_median_aligned_ci'][0]:.3f}-{s['vci_median_aligned_ci'][1]:.3f}])  "
+          f">=0.70: {s['families_ge_0.7']}/{s['n_families']}")
+    print(f"median trust aligned={s['trust_median_aligned']:.3f}  "
+          f"non-aligned={s['trust_median_non_aligned']:.3f}  "
+          f"reliable(aligned gate)={s['families_reliable']}/{s['n_families']}  "
+          f"core(provisional)={len(s['core_provisional'])}  "
+          f"core(human-backed)={len(s['core_human_backed'])}")
+    print(f"kappa source: {s['kappa_pooled']['source']}  "
+          f"human rows={s['kappa_pooled']['human']['n']} "
+          f"undecidable={s['kappa_pooled']['human']['n_undecidable']}  "
+          f"synthetic upper bound={s['kappa_pooled']['synthetic']['value']:.3f} "
+          f"(n={s['kappa_pooled']['synthetic']['n']})")
     if not s["kappa_pooled"]["human"]["n"]:
-        print("note: no human annotation sheet found; kappa is measured against the "
-              "mutant generator and is therefore an upper bound. Run "
-              "'python -m vci annotate' to emit a blind sheet.", file=sys.stderr)
+        print("note: no human labels found, so kappa is measured against the mutant "
+              "generator and is an upper bound. Run 'python -m vci label' on "
+              "annotations/blind.csv to obtain a human kappa.", file=sys.stderr)
     print("wrote " + ", ".join(os.path.join(args.out, n) for n in
                                ("results.json", "coverage.csv", "coverage.md",
                                 "dashboard.html")))
@@ -83,26 +98,48 @@ def cmd_selfcheck(args):
     return 1
 
 
+def cmd_label(args):
+    from .labeler import run
+
+    stats = run(args.sheet, args.out, round_no=args.round, annotator=args.user,
+                shuffle_seed=args.shuffle_seed, limit=args.limit, redo=args.redo)
+    return 0 if stats["quit"] or stats["total"] else 2
+
+
 def cmd_score(args):
-    """Recompute kappa only, from an existing results.json plus a label sheet."""
+    """Recompute agreement only, from an existing results.json plus label sheets."""
     import json
-    labels = audit._load_labels(args.labels)
+
+    labels = audit._load_label_rows(args.labels)
+    retest = audit._load_label_rows(args.labels_retest)
     if not labels:
         print(f"no labels found in {args.labels}", file=sys.stderr)
         return 2
     with open(os.path.join(args.out, "results.json"), encoding="utf-8") as fh:
         payload = json.load(fh)
-    from . import metrics as M
-    scored = []
+    recs, probes = [], []
     for r in payload["families"]:
         fam = registry.by_name(r["family"])
         groups = audit.collect(fam, payload["manifest"]["n_tasks"],
                                audit.family_seed(payload["manifest"]["seed"],
                                                  registry.INDEX[fam.name]))
-        scored += [(labels[x["cand_id"]], x["passed"]) for g in groups
-                   for x in g["records"] if x["cand_id"] in labels]
-    k, po = M.cohen_kappa([a for a, _ in scored], [b for _, b in scored])
-    print(f"rows={len(scored)}  kappa={k:.3f}  observed agreement={po:.3f}")
+        recs += [x for g in groups for x in g["records"]]
+        probes += [x for g in groups for x in g["probes"]]
+    info = audit._family_kappa(recs, probes, labels, retest,
+                               n_boot=args.bootstrap, seed=0)
+    human, synth = info["human"], info["synthetic"]
+    oracle, stab = info["oracle_non_aligned"], info["stability"]
+    stab_txt = f"{stab['value']:.3f}" if stab["value"] is not None else "n/a"
+    print(f"sheet rows: {len(labels)} (undecidable {human['n_undecidable']})  "
+          f"retest rows: {len(retest)}")
+    print(f"human vs verifier      : n={human['n']:4d}  kappa={human['value']:.3f}  "
+          f"CI[{human['ci'][0]:.3f}-{human['ci'][1]:.3f}]  po={human['po']:.3f}")
+    print(f"human test-retest      : n={stab['n']:4d}  kappa={stab_txt}")
+    print(f"synthetic upper bound  : n={synth['n']:4d}  kappa={synth['value']:.3f}  "
+          f"(NOT a substitute for human)")
+    print(f"independent probe judge: n={oracle['n']:4d}  kappa={oracle['value']:.3f}  "
+          f"CI[{oracle['ci'][0]:.3f}-{oracle['ci'][1]:.3f}]")
+    print(f"effective source       : {info['source']}")
     return 0
 
 
@@ -117,6 +154,8 @@ def build_parser():
     a.add_argument("--work", default="work")
     a.add_argument("--bootstrap", type=int, default=500)
     a.add_argument("--labels", default="annotations/labels.csv")
+    a.add_argument("--labels-retest", default="annotations/labels_retest.csv",
+                   dest="labels_retest", help="second-pass sheet for annotator stability")
     a.set_defaults(fn=cmd_audit)
 
     l = sub.add_parser("list-families", help="print the registry")
@@ -125,9 +164,21 @@ def build_parser():
     n = sub.add_parser("annotate", help="emit a blind human-adjudication sheet")
     _add_common(n)
     n.add_argument("--out", default="annotations/blind.csv")
-    n.add_argument("--per-family", type=int, default=2, dest="per_family")
+    n.add_argument("--per-family", type=int, default=3, dest="per_family")
     n.add_argument("--limit", type=int, default=0, help="0 = no limit")
     n.set_defaults(fn=cmd_annotate)
+
+    b = sub.add_parser("label", help="blind-label the sheet from the terminal")
+    b.add_argument("--sheet", default="annotations/blind.csv")
+    b.add_argument("--out", default="annotations/labels.csv")
+    b.add_argument("--round", type=int, default=1,
+                   help="1 = first pass, 2 = test-retest pass")
+    b.add_argument("--user", default="anon")
+    b.add_argument("--shuffle-seed", type=int, default=None, dest="shuffle_seed",
+                   help="shuffle pending rows deterministically (use a fresh seed for the retest)")
+    b.add_argument("--limit", type=int, default=0, help="0 = no limit")
+    b.add_argument("--redo", action="store_true", help="ignore existing answers")
+    b.set_defaults(fn=cmd_label)
 
     s = sub.add_parser("selfcheck", help="find mutants that contradict their own label")
     _add_common(s)
@@ -135,7 +186,10 @@ def build_parser():
 
     c = sub.add_parser("score-annotations", help="recompute kappa from labels")
     c.add_argument("--labels", default="annotations/labels.csv")
+    c.add_argument("--labels-retest", default="annotations/labels_retest.csv",
+                   dest="labels_retest")
     c.add_argument("--out", default="outputs")
+    c.add_argument("--bootstrap", type=int, default=500)
     c.set_defaults(fn=cmd_score)
     return ap
 
