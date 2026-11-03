@@ -1,4 +1,4 @@
-# VCI audit — round 2
+# VCI audit — round 3
 
 A runnable, re-runnable measurement of **VCI** (Verification Coverage Index): the fraction of an
 open-ended task distribution that can be checked *cheaply*, *trustworthily* and *densely*, and
@@ -20,8 +20,15 @@ VCI = (C * T^2 * D) ** 0.25
 
 Round 1 measured trust only on mutants that shared the verifier's own code, so TPR/TNR were
 saturated at 1.0. Round 2 adds a second, independently constructed candidate source (§3.4 of SPEC)
-and reports `T_aligned` and `T_non_aligned` side by side. A family keeps its VCI and is listed as
+and reports `T_aligned` and `T_non_aligned` side by side. Round 3 adds no formula: it labels every
+probe with a CheckList category (`minimum_functionality` / `invariance` / `directional`) and a
+mutation operator (§3.5), publishes a three-way attribution of every disagreement in
+`attribution.csv`, and reports Krippendorff's α beside κ. A family keeps its VCI and is listed as
 unreliable rather than being patched into passing.
+
+**Read `outputs/first-run-memo.md` §7 before quoting any number**: probes are synthetic mutants,
+so TPR/TNR are an upper bound on real behaviour (Just et al., FSE 2014), and κ/α are currently
+synthetic because no human sheet exists.
 
 ## Install
 
@@ -30,7 +37,7 @@ Standard library only. Python 3.9+.
 ```bash
 git clone <repo-url> vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate     # optional but recommended
-python -m pytest -q                                # 71 tests, ~3 s
+python3 -m pytest -q                                # 79 tests, ~2 s
 ```
 
 No `pip install` is required to run the audit; `pyproject.toml` exists so `pip install -e .[dev]`
@@ -39,34 +46,35 @@ also works. (On systems where the interpreter is only available as `python3`, us
 ## Run the whole audit
 
 ```bash
-python -m vci audit --families all --out outputs/
+python3 -m vci audit --families all --out outputs/
 ```
 
-Prints one summary line and writes four deliverables into `outputs/`:
+Prints one summary line and writes five deliverables into `outputs/`:
 
 | file | content |
 |---|---|
-| `results.json` | every number, including per-defect accept rates and per-family CIs |
-| `coverage.csv` | one row per family, spreadsheet-friendly |
-| `coverage.md` | the same table plus the reason for each gate failure |
+| `results.json` | every number, including per-defect accept rates, per-category TPR/TNR and per-family CIs |
+| `coverage.csv` | one row per family, spreadsheet-friendly (VCI, κ, α, per-category rates) |
+| `coverage.md` | the same table plus the CheckList-category and attribution tables |
+| `attribution.csv` | **one row per non-aligned probe**: category, operator, generator version, expected verdict, true label, attribution bucket, basis |
 | `dashboard.html` | self-contained static dashboard, **no network requests**, open by double-click |
 
 Useful switches:
 
 ```bash
-python -m vci audit --seed 3 --tasks 25 --bootstrap 500
-python -m vci audit --families arith_expression,sql_result --out work/slice
-python -m vci list-families
-python -m vci selfcheck                 # mutants that contradict their own label (must be clean)
-python -m vci annotate --per-family 3   # 60-row blind adjudication sheet
-python -m vci label                     # blind-label it in the terminal (y/n/s/k/q)
-python -m vci score-annotations         # recompute kappa from labels.csv without a full rerun
+python3 -m vci audit --seed 3 --tasks 25 --bootstrap 500
+python3 -m vci audit --families arith_expression,sql_result --out work/slice
+python3 -m vci list-families
+python3 -m vci selfcheck                 # mutants that contradict their own label (must be clean)
+python3 -m vci annotate --per-family 3   # 60-row blind adjudication sheet
+python3 -m vci label --qualification --group-by-family --shuffle-seed 7
+python3 -m vci score-annotations         # recompute kappa from labels.csv without a full rerun
 ```
 
 One command reproduces every deliverable in `outputs/`:
 
 ```bash
-python -m vci audit --families all --out outputs
+python3 -m vci audit --families all --out outputs
 ```
 
 It picks up `annotations/labels.csv` and `annotations/labels_retest.csv` automatically when they

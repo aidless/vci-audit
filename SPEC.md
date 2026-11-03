@@ -1,4 +1,4 @@
-# VCI Specification (v0.2)
+# VCI Specification (v0.3)
 
 This document is the normative definition of the Verification Coverage Index as
 implemented in this repository. Every quantity below is computed by
@@ -9,6 +9,17 @@ v0.2 changes the trust term: `T` is now measured twice, on the round-1 aligned
 mutants and on a round-2 sample constructed independently of the verifier
 (§3.4), and the headline `T` is the weaker of the two. κ gains human and
 human-stability sources (§7). The VCI formula itself is unchanged.
+
+v0.3 adds no formula. It adds bookkeeping the earlier rounds lacked:
+
+1. every probe carries a CheckList category, a mutation operator, a generator
+   version and a *verdict basis*, so TPR/TNR are reported per category (§3.5)
+   instead of only pooled;
+2. a three-way attribution table separates "verifier too strict" from "task
+   under-specified" from "true defect", published as one row per probe in
+   `attribution.csv` (§3.5.2);
+3. Krippendorff's α (ordinal, `undecidable` = missing) is reported beside κ, and
+   §7.3 states when the two must diverge.
 
 ---
 
@@ -161,7 +172,8 @@ fixed **before** the verifier is called. The independence contract, enforced by
 
 Each probe carries `failure_class ∈ {hardcoded_expected, overfit_to_tests,
 spec_ambiguity, silent_partial, semantic_equivalent, resource}` and
-`expectation ∈ {accept, reject, observe}`.
+`expectation ∈ {accept, reject, observe}`, plus the round-3 bookkeeping fields
+`checklist_category`, `operator`, `generator_version` and `basis` (§3.5).
 
 `observe` is used where the verifier contract has no policy — an allocation that
 costs ~16 MB, but no memory budget is specified. Observe rows are recorded
@@ -171,6 +183,63 @@ promised. They are reported in `per_failure_class` with `n_observe`.
 
 A task therefore contributes `records` (aligned) and `probes` (non-aligned),
 never mixed into one pool except for the pooled κ in §7.
+
+### 3.5 CheckList categories, operators and attribution
+
+#### 3.5.1 Categories
+
+Each probe is assigned the CheckList test type it corresponds to (Ribeiro et al.,
+ACL 2020), because a verifier can be good at one type and blind to another, and
+a pooled TPR/TNR hides exactly that.
+
+| category | the question it asks | failure classes mapped to it |
+|---|---|---|
+| `minimum_functionality` | does the answer do the stated job on an input it was not authored against? | `hardcoded_expected`, `overfit_to_tests`, `spec_ambiguity` |
+| `invariance` | does an irrelevant change (spelling, call count, task order) leave the verdict unchanged? | `semantic_equivalent`, `resource` |
+| `directional` | does the required perturbation flip the verdict in the stated direction? | `silent_partial` |
+
+The mapping is an authored judgment, one `CATEGORY_BY_CLASS` table in
+`vci/adversarial.py`; it is not derived. In particular `spec_ambiguity` sits in
+`minimum_functionality` because it asks whether the stated minimum job is
+accepted under a second defensible reading — even though the defect it reveals
+is in the prompt (§3.5.2). `directional` currently has **no positive probe**, so
+its TPR is reported as undefined (`-`) rather than as `0.00`; an unmeasured rate
+is not a measured zero.
+
+#### 3.5.2 Attribution table
+
+Every non-aligned probe is classified once, from fields fixed before the
+verifier is called:
+
+| attribution | condition | what it means |
+|---|---|---|
+| `verifier_too_strict` | `expectation == accept` and the verifier rejected it, on a `semantic_equivalent` probe | a false reject caused by the verifier |
+| `task_under_specified` | `expectation == accept` and the verifier rejected it, on a `spec_ambiguity` probe | a false reject caused by the prompt, not the verifier |
+| `true_defect`, detail `caught` / `missed` | `expectation == reject` | the verifier rejected / accepted a genuine defect |
+| `agreement` | `expectation == reject` and rejected | true negative |
+| `observe` | `expectation == observe` | measured, excluded from TPR/TNR/FAR90 |
+
+The rule is mechanical: the bucket is a function of `(failure_class,
+expectation, passed)`, never of a post-hoc judgement. `attribution.csv` holds
+**one row per probe** (`family`, `cand_id`, `category`, `operator`,
+`generator_version`, `expectation`, `label`, `passed`, `attribution`, `basis`,
+`verifier_evidence`), so any row can be re-derived by re-running the verifier on
+the recorded probe. `results.json` keeps only capped `examples` per bucket, so
+the JSON does not grow with the probe count.
+
+#### 3.5.3 Operators
+
+`vci/adversarial.py` holds the normative operator table (`OPERATORS`), each with
+the real defect it stands for and its representative weakness. The operator set
+is `AOR, ROR, CR, SDL, TR, OVF, HARD, STATE, NONDET, INF, EQUIV, AMB`; a test
+fails if the table and the code drift apart.
+
+**Synthetic mutants are not real defects.** Just et al. (FSE 2014) show mutants
+correlate with real faults but are easier to kill and their distribution is not
+the distribution of real faults. TPR/TNR in this repository are therefore an
+optimistic upper bound on deployment behaviour and never an estimate of it. This
+is a validity ceiling on the whole round, not a caveat on one probe class; §10
+restates it and the memo must state it without softening.
 
 ## 4. VCI
 
@@ -290,6 +359,38 @@ written verifier agree with a human reading of the same prompt. It is **not**
 inter-annotator agreement, and it cannot detect a bias shared by the author and
 the verifier. That limitation survives this round.
 
+### 7.3 Krippendorff's α, and when it disagrees with κ
+
+κ is computed on a two-class collapsed label (accept / reject) and is blind to
+the third label. α is computed on the three-level ordinal scale
+`fail < partial < yes`, using Krippendorff's ordinal distance
+
+```
+delta^2(c, k) = ( sum_{g=c..k} n_g - (n_c + n_k)/2 )^2
+α = 1 - D_o / D_e
+```
+
+`undecidable` is **missing data**, not a category: it is dropped from both
+`D_o` and `D_e` and counted in `n_undecidable`. Units with a single decided
+rating are not pairable; when nothing is pairable α is `None`, not 1.
+
+The two must diverge in exactly these cases, and the report states which one it
+is looking at:
+
+| situation | κ | α | why |
+|---|---|---|---|
+| many `undecidable` rows | unchanged, they are simply excluded | falls sharply (`n` shrinks, agreement is over fewer units) | κ cannot see how much was thrown away; α reports it |
+| disagreement between adjacent levels (fail vs partial) | counted as full disagreement | down-weighted | κ collapses the scale, α keeps the distance |
+| label skew (e.g. 90% accept) | collapses toward 0 and can go negative even with high raw agreement | also corrected for chance, but the ordinal marginal is smoother | κ's expected agreement is unstable when one cell dominates |
+| fewer than ~30 decided rows | wide bootstrap interval | wider still, and `None` if unpairable | neither supports a per-family claim; only the pooled value does |
+| perfect two-class agreement | 1.00 | 1.00 | identical by construction: with two values the ordinal distance is a constant multiple of the nominal one |
+
+α is reported **beside** κ and never instead of it: κ is the gate quantity
+(§8) because it is the one the round-1/2 protocol defined, and changing the
+gate metric mid-audit would silently move the threshold. `results.json` carries
+`summary.alpha_pooled` (effective, human, synthetic, oracle-on-probes,
+undecidable count, unit count and CI) and each family's `alpha` block.
+
 ## 8. Reliability gate
 
 A family is *reliable* iff all four hold:
@@ -371,3 +472,12 @@ A task family may enter the registry only if:
 * **`D` is a proxy.** Units per task is a design choice, not a property of the
   domain; a family with `K = 3` is penalised relative to `K = 5` even if both
   are equally checkable in principle.
+* **Validity ceiling: synthetic mutants are not real defects.** Just et al.
+  (FSE 2014, "Are mutants a valid substitute for real faults?") find mutants
+  correlate with real faults, but are easier to kill and do not reproduce the
+  fault distribution. Every TPR/TNR here is therefore an optimistic upper bound,
+  and `T = min(T_aligned, T_non_aligned)` is still a bound over two synthetic
+  sources, not a measurement of deployed behaviour. `directional` has no
+  positive probe, so one third of the category table is only half measured.
+  Removing this ceiling requires a sample of *observed* graded failures (§ memo
+  "next round"), not more authored probes.

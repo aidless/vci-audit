@@ -1,259 +1,228 @@
-# VCI audit — round 2 memo
+# VCI audit — round 3 memo
 
-**Run**: `python -m vci audit --families all --out outputs` · seed `0` · 25 tasks/family ·
-6,849 aligned candidates · **1,157 non-aligned probes (1,156 scored, 1 `observe`)**
-· 500 bootstrap resamples · 20 families · Python 3.x on Linux.
-Raw numbers: `outputs/results.json`; per-family table: `outputs/coverage.md`.
-Round-1 memo is preserved in git history (`git show <round-1-sha>:outputs/first-run-memo.md`).
+**Run**: `python3 -m vci audit --families all --out outputs` · seed `0` · 25 tasks/family · 20 families ·
+6,849 aligned candidates · **1,232 non-aligned probes (1,231 scored, 1 `observe`)** · probe generator
+`v3.0` · 500 bootstrap resamples · Linux / Python 3.
+Numbers: `outputs/results.json`; per-family table: `outputs/coverage.md`; every probe with its verdict
+and basis: `outputs/attribution.csv`; dashboard: `outputs/dashboard.html`.
+Round-1 and round-2 memos are preserved in git history.
 
 ---
 
-## 1. headline
+## 1. Headline
 
-| quantity | round 1 | **round 2** |
+| quantity | round 1 | round 2 | **round 3** |
+|---|---|---|---|
+| Median VCI (all evidence) | 0.983 | 0.934 | **0.934** (95% bootstrap CI 0.904 – 1.000) |
+| Median VCI (aligned mutants only) | 0.983 | 0.978 | 0.978 |
+| Families ≥ 0.70 | 20 / 20 | 15 / 20 | **16 / 20** |
+| Families failing the aligned gate | 0 | 0 | 0 |
+| Families failing the non-aligned gate | *not measured* | 5 | **4** |
+| Core list (provisional) | 20 | 15 | **15** |
+| Core list (human-backed) | 0 | 0 | **0** |
+| κ source | synthetic | synthetic | **synthetic (no human sheet)** |
+| α source | — | synthetic (value was wrong, §5) | **synthetic** |
+
+The median did not move. Only `code_patch` moved (0.131 → 0.760), and that movement is a
+*measurement* change, not a verifier improvement: round 2 probed it with two resource probes per
+task and both were invisible to a one-shot harness. Round 3 added three and two of them are caught.
+
+## 2. Why `code_patch` moved, and what it means
+
+Round-2's `code_patch` VCI 0.131 came from `T_non_aligned = 0.018`: 25/25 hardcoded answers
+accepted, 25/25 stateful answers accepted. The stateful ones were a single probe, "answer is
+correct on the first call and `None` afterwards". A verifier that runs all cases in one import
+process sees only the first call, so the probe was *structurally* invisible, not a sign that the
+verifier was weak. Round 3 adds three state probes per task, a repeated-call non-determinism probe,
+and two non-termination probes for the family (156 probes in total):
+
+| probe | defect | round 3 verdict |
 |---|---|---|
-| Median VCI (all evidence) | 0.983 | **0.934** (95% bootstrap CI 0.904 – 1.000) |
-| Median VCI (aligned mutants only) | 0.983 | 0.978 (0.913 – 1.000) |
-| Median VCI (non-aligned probes only) | *not measured* | see §3 (3 families at 0) |
-| Families ≥ 0.70 | 20 / 20 | **15 / 20** |
-| Families passing the aligned gate | 20 / 20 | 20 / 20 (still saturated; §2.1) |
-| Families passing the **non-aligned** gate | *not measured* | **15 / 20** |
-| Core family list (provisional) | 20 (implicit) | **15** |
-| Core family list (**human-backed**) | 0 | **0** (§5) |
-| κ effective source | synthetic | synthetic, **no human sheet yet** (§5) |
-| Wrong non-aligned candidates accepted | — | see failure-class table in §4 |
+| `x02` correct for calls 1-5, `None` after | one-shot correctness | **still accepted** (known leak) |
+| `x03` fails from the second invocation | repeated use | rejected |
+| `x04` alternates correct / `None` | non-determinism (NONDET) | rejected |
+| `x05` memoised by arity | cross-call contamination | rejected |
+| `x08` unbounded loop | non-termination | rejected (subprocess timeout) |
+| `x07` 16 MB for a 5-element input | resource use | observed, excluded from TPR/TNR |
 
-The headline moved because **T is no longer a single number**. `trust = min(T_aligned, T_non_aligned)`
-and the second term was measured for the first time: `code_patch` 0.018, `log_field_extraction`
-0.000, `unit_convert` 0.000, `template_render` 0.000, `regex_construct` 0.500. The other 15 families
-kept `T_non_aligned = 1.00` and their VCI did not move at all.
+Consequence: 0.131 was partly an artifact of the probe sample, not of the verifier. That is a
+warning about round-2's headline as well — a VCI built on a thin probe set reports the probe
+set as much as the verifier. `tests/test_adversarial.py` now registers the surviving leak by
+probe id, so fixing it shows up as a test change rather than a silent improvement.
 
-## 2. where the movement came from
+`unit_convert`, `template_render` and `log_field_extraction` remain at 0.000, and the attribution
+table (§4) says their zeros are **not** verifier blindness: 125 of their 126 scored probes are
+rejected correct answers (75 equivalent timestamps + 50 defensible second readings). Those are
+prompt problems (§4). `regex_construct` (0.690) and `sql_result` (0.781) are the two genuine
+verifier-side gaps below 0.80.
 
-### 2.1 Movement table (round 1 → round 2)
+## 3. Per category (CheckList): TPR / TNR / FAR90
 
-| family | VCI old | VCI new | Δ | driver (probe failure class) |
+| category | n | pos | neg | TPR | TNR | FAR90 |
+|---|---|---|---|---|---|---|
+| minimum functionality | 154 | 50 | 104 | **0.00** | 0.46 | 1.00 |
+| invariance | 652 | 550 | 102 | 0.86 | 0.75 | 0.25 |
+| directional | 425 | 0 | 425 | **–** | 1.00 | 0.00 |
+
+Three honest readings:
+
+1. **`minimum_functionality` is the weak category.** It accepts 56 of 104 wrong answers (TNR 0.46)
+   and at 90 % true-positive operating point it accepts every negative (FAR90 1.00). The TPR 0.00
+   is *entirely* the 50 `spec_ambiguity` probes: no positive minimum-functionality probe other than
+   those was authored. Under §4 those 50 rejections are charged to the prompt, not the verifier —
+   so handle this category's TPR and TNR separately; they measure different objects.
+2. **`invariance` is measured best and still leaks.** TPR 0.86 (79 of 550 equivalent answers
+   rejected), TNR 0.75 (26 of 102 invariance negatives accepted). The negative side is where the
+   cost is.
+3. **`directional` has no positive probe at all.** Its TNR 1.00 means every silent-partial defect
+   was rejected; its TPR is `-`, not 0.00. Reporting it as 0.00 would claim "the verifier rejects
+   every correct directional answer" — a claim no data supports. This is a structural gap, listed
+   in §7 as a must-fix.
+
+The most leaky family by category is `code_patch` (minimum-functionality TNR **0.00**: all 25
+hardcoded and all 4 overfit answers accepted), then `regex_construct` (0.50, 25/50 accepted).
+
+## 4. Attribution: where each disagreement lands
+
+Rule (fixed before the verifier is called, never post-hoc):
+`verifier_too_strict` = accept-expected `semantic_equivalent` probe rejected;
+`task_under_specified` = accept-expected `spec_ambiguity` probe rejected;
+`true_defect` = reject-expected probe (`caught` / `missed`); `agreement` = true negative;
+`observe` = measured, excluded from TPR/TNR/FAR90.
+
+| bucket | n | caught | missed | false-reject | accepted |
+|---|---|---|---|---|---|
+| verifier too strict | 75 | – | – | **75** | – |
+| task under-specified | 50 | – | – | **50** | – |
+| true defect | 631 | 550 | **81** | – | – |
+| agreement | 475 | – | – | – | 475 |
+| observe | 1 | – | – | – | – |
+
+Split by operator (miss rate = accepted true defects / true-defect probes):
+
+| operator | caught | missed | miss rate | where |
 |---|---|---|---|---|
-| `log_field_extraction` | 1.000 | **0.000** | −1.000 | `semantic_equivalent`: 75/75 equivalent timestamps rejected (strict string equality) |
-| `template_render` | 1.000 | **0.000** | −1.000 | `spec_ambiguity`: 25/25 defensible `$`-prefix readings rejected |
-| `unit_convert` | 0.913 | **0.000** | −0.913 | `spec_ambiguity`: 25/25 six-significant-digit readings rejected |
-| `code_patch` | 0.987 | **0.131** | −0.856 | `hardcoded_expected` 25/25 + `resource` (stateful) 25/25 accepted; only the `while True` timeout is caught |
-| `regex_construct` | 0.976 | **0.690** | −0.286 | `overfit_to_tests`: 25/25 positive-sample-only regexes accepted |
-| `sql_result` | 0.814 | 0.781 | −0.033 | 2/25 `hardcoded_expected` accepted |
-| other 14 families | unchanged | unchanged | 0.000 | `T_non_aligned = 1.00` |
+| `HARD` | 23 | 27 | 54.0 % | `code_patch` 25, `sql_result` 2 |
+| `OVF` | 25 | 29 | 53.7 % | `regex_construct` 25, `code_patch` 4 |
+| `STATE` | 51 | 25 | 32.9 % | `code_patch` 25 (first-call-only) |
+| `CR` | 175 | 0 | 0 % | – |
+| `SDL` | 75 | 0 | 0 % | – |
+| `TR` | 75 | 0 | 0 % | – |
+| `AOR`, `ROR` | 100 | 0 | 0 % | – |
+| `NONDET` | 25 | 0 | 0 % | – |
+| `INF` | 1 | 0 | 0 % | – |
 
-Two distinct reasons hide behind "T fell":
+The attribution is stark: **all 81 missed defects are `HARD`, `OVF` or `STATE`** — the three defect
+classes that ask "does the answer generalise beyond the fixtures it was checked against". Every
+loud operator (wrong formula, boundary, constant, deleted step, transposition, non-determinism,
+non-termination) is caught 100 %. The verifier is not bad at checking values; it is bad at
+checking *generalisation*, which is exactly what a fixture-replaying harness cannot check.
 
-* **Representation vs semantics** (`log_field`): the verifier compares timestamps as strings, so
-  three spellings of the *same instant* (`.000Z`, lowercase `t`/`z`, `+08:00`) all fail. This is
-  a genuine verifier defect, and the probe label is unambiguous: a correct answer was rejected.
-* **Prompt under-specification** (`unit_convert`, `template_render`): the prompt never states a
-  precision rule or what `$` means in the template, so the probe exercises a *defensible second
-  reading*. The verifier rejects it, which costs TPR. Here the finding is about the **task text**,
-  not (only) the verifier; the memo refuses to call the verifier "wrong" without also saying the
-  prompt is incomplete. Both are reported as they fell: TPR 0.50 → FAR90 = 1.0 → T = 0.
+## 5. κ and α: sources and n
 
-### 2.2 Why FAR90 = 1.0 whenever TPR = 0.50
-
-`FAR90` is defined at the threshold that recovers 90 % of positives. If a family accepts only
-half of the correct answers, no threshold above the accepted half reaches 90 % recall, so the
-term is set to 1.0 and `T = min(TPR, TNR, 1 − FAR90) = 0`. That is the formula doing what it
-says, not an artefact: VCI = 0 for these families because *an RL loop cannot recover enough
-correct rollouts at that acceptance rule*. A one-line verifier fix (`normalise timestamp before
-comparing`, `accept 6-sig-digit output inside the stated tolerance`) would restore them.
-
-## 3. per-family result (VCI + CI + D + K + T)
-
-`T_al` = aligned mutants, `T_na` = non-aligned probes, `TPR/TNR/FAR90` are the non-aligned values.
-Families with no non-aligned positives or negatives are marked (the aligned value is used, flagged).
-
-| family | VCI | 95% CI | D | K | T_al | T_na | TPR_na | TNR_na | FAR90_na |
-|---|---|---|---|---|---|---|---|---|---|
-| `unit_convert` | 0.000 | 0.000–0.000 | 0.69 | 3 | 1.00 | **0.00** | 0.50 | 1.00 | 1.00 |
-| `log_field_extraction` | 0.000 | 0.000–0.000 | 1.00 | 10 | 1.00 | **0.00** | 0.00 | 1.00 | 1.00 |
-| `template_render` | 0.000 | 0.000–0.000 | 1.00 | 5 | 1.00 | **0.00** | 0.50 | 1.00 | 1.00 |
-| `code_patch` | 0.131 | 0.000–0.223 | 1.00 | 4 | 1.00 | **0.02** | 1.00 | 0.02 | 0.98 |
-| `regex_construct` | 0.690 | 0.677–0.700 | 0.91 | 4 | 1.00 | **0.50** | 1.00 | 0.50 | 0.50 |
-| `sql_result` | 0.781 | 0.716–0.838 | 0.44 | 2 | 1.00 | 0.92 | 1.00 | 0.92 | 0.08 |
-| `arith_expression` | 0.972 | 0.954–0.990 | 0.89 | 5 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `stats_summary` | 1.000 | 1.000–1.000 | 1.00 | 5 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `base_convert` | 0.979 | 0.965–0.993 | 0.92 | 5 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `matrix_ops` | 1.000 | 1.000–1.000 | 1.00 | 9 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `date_arith` | 0.965 | 0.946–0.979 | 0.87 | 4 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `json_schema_extract` | 1.000 | 1.000–1.000 | 1.00 | 6 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `table_aggregate` | 1.000 | 1.000–1.000 | 1.00 | 12 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `sort_multikey` | 1.000 | 1.000–1.000 | 1.00 | 8 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `interval_merge` | 1.000 | 1.000–1.000 | 1.00 | 5 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `grid_path` | 0.904 | 0.904–0.904 | 0.67 | 3 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `csp_assign` | 0.904 | 0.904–0.904 | 0.67 | 3 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `schedule_slots` | 0.904 | 0.904–0.904 | 0.67 | 3 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `topo_order` | 0.904 | 0.904–0.904 | 0.67 | 3 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| `life_step` | 1.000 | 1.000–1.000 | 1.00 | 6 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-
-*Degenerate intervals* (`0.904–0.904`, `1.000–1.000`) are not precision claims: every task in
-those families has the same T and the same `D`, so every bootstrap resample reproduces the same
-VCI. They mean "no between-task variance in the components", not "this number is exact to 0.001".
-
-### 3.1 The three worst families, and the exact failure they exhibit
-
-1. **`code_patch` — T_na = 0.02 (TNR 0.02).** 25/25 hard-coded lookup tables and 25/25
-   stateful implementations (`_calls > 5 → None`) pass a one-shot subprocess check; only the
-   `while True` timeout is caught. The verifier executes the candidate against 4 hidden cases;
-   it cannot see that the answer was memorised, and it cannot see a second-run failure.
-   This is the sharpest blind spot in the set and it is a *design* limit, not a bug: detecting it
-   needs input mutation or repeated invocation, which the current contract does not include.
-2. **`log_field_extraction` — T_na = 0.00 (TPR 0.00).** 75/75 independently formatted but
-   equivalent timestamps are rejected. Strict string equality is too strict: the task asks for
-   "the timestamp field", not "the exact byte string".
-3. **`regex_construct` — T_na = 0.50 (TNR 0.50).** 25/25 regexes that match only the shipped
-   positive samples (and none of the negatives) are accepted. The verifier is correct against
-   its labelled examples and blind to the generalisation the task actually asks for.
-
-`unit_convert` and `template_render` are T = 0 for a different reason (§2.1): defensible
-readings of an incomplete prompt are rejected. `sql_result` is nearly robust (T 0.92, no
-false rejects) but accepts 2/25 hard-coded result sets because the probe databases happen to
-match the visible ones.
-
-### 3.2 Where the verifier is genuinely robust (do not force T down)
-
-14 families returned `T_non_aligned = 1.00` **and** `TNR_na = 1.00` with 50–100 probes each:
-`arith_expression`, `stats_summary`, `base_convert`, `matrix_ops`, `date_arith`,
-`json_schema_extract`, `table_aggregate`, `sort_multikey`, `interval_merge`, `grid_path`,
-`csp_assign`, `schedule_slots`, `topo_order`, `life_step`. On these, the independent probes
-include alternate valid colourings/schedules/topological orders, alternate shortest paths,
-merged-interval rewrites, exact-fraction spelling of every statistic, and a silent partial
-off by a factor of 1000 — all correctly rejected or accepted. The honest statement is: **these
-verifiers survived an adversarial sample built outside their own code, and no defect was found
-in this round.** `sql_result` joins them at 0.92 but with 2 accepted hard-coded probes.
-
-## 4. Failure-class breakdown (pooled, 1,156 scored probes)
-
-| class | n | pos | neg | TPR | TNR | accept rate | reading |
-|---|---|---|---|---|---|---|---|
-| `hardcoded_expected` | 50 | 0 | 50 | — | 0.46 | 0.54 | half of all memorised answers are accepted (`code_patch`, `sql_result`) |
-| `overfit_to_tests` | 54 | 0 | 54 | — | 0.46 | 0.54 | half of all test-only overfits are accepted (`regex_construct`, `code_patch`) |
-| `spec_ambiguity` | 50 | 50 | 0 | **0.00** | — | 0.00 | every defensible second reading is rejected (`unit_convert`, `template_render`) |
-| `silent_partial` | 425 | 0 | 425 | — | **1.00** | 0.00 | no boundary error slipped through — the strongest positive result |
-| `semantic_equivalent` | 550 | 550 | 0 | **0.86** | — | 0.86 | 75 misses, all `log_field` timestamps |
-| `resource` | 28 | 0 | 27 (+1 observe) | — | **0.07** | 0.93 | only timeouts are caught; state and memory are invisible |
-
-The `silent_partial` line is the reassuring one: 425 independently constructed "runs fine,
-locally right, wrong at the boundary" candidates, **zero** accepted. The `resource` line is the
-warning: 27/27 stateful candidates and 1/1 memory-`observe` were invisible, and only the
-non-terminating one was killed by the 3 s timeout.
-
-## 5. κ: source, size, interval
-
-| source | n | κ | 95% CI | status |
+| coefficient | effective source | n | value | CI |
 |---|---|---|---|---|
-| **synthetic** (generator's own labels) | 6,849 | **1.000** | 1.000–1.000 | **upper bound by construction**; not human |
-| **human** (`annotations/labels.csv`) | **0** | — | — | **no sheet exists in this checkout** |
-| **human-stability** (`labels_retest.csv`) | 0 | — | — | needs a second pass |
-| **independent probe oracle** (`expectation`, not a human) | 1,156 | **0.644** | 0.600–0.688 | the only *outside* agreement number this round |
+| κ (two-class accept/reject) | synthetic — **no human sheet exists** | 6,849 rows (6,849 units) | 1.000 | 1.000 – 1.000 |
+| κ on non-aligned probes | independent probe oracle (not human) | 1,231 | 0.664 | – |
+| α (ordinal, 3 levels) | synthetic | 13,698 ratings / 6,849 units, 0 undecidable | 1.000 | 1.000 – 1.000 |
+| α on non-aligned probes | independent probe oracle | 2,462 ratings / 1,231 units | 0.664 | – |
+| human κ / human α | none | 0 | `None` | – |
 
-How to read it:
+Both are **synthetic**. `annotations/blind.csv` exists but `annotations/labels.csv` does not, so the
+human path has never been exercised; the report prints `n/a` for human κ rather than the
+synthetic 1.000, and `core_human_backed` is empty. Any sentence of the form "agreement is 1.0"
+would be a statement about the generator agreeing with itself, not about two annotators.
 
-* The effective κ for every family is still **`synthetic`**. I am **not** substituting the
-  synthetic 1.000 for a human value, and the audit prints this warning on every run.
-* The synthetic 1.000 is a tautology: `selfcheck` rejects any mutant that contradicts its own
-  label before the audit runs, so that number can only detect an accidental verifier bug.
-* The probe oracle κ (0.644) is the first non-tautological agreement figure in the project. It
-  compares the verifier against labels fixed *before* it runs. It is **not** human and it is
-  reported under its own name, never as "κ from humans".
-* To produce the human number, one command each (protocol: `annotations/PROTOCOL.md`):
+**Alpha correction.** Round 2 reported probe-oracle α = 0.328. That number was wrong: `D_o` was
+divided by the number of *units* instead of the number of *pairable values*, doubling `D_o` for
+two-coder units, and the ordinal distance was a plain rank gap. With Krippendorff's ordinal
+distance on cumulative frequencies and the correct denominator, the same 1,231 probes give
+**α = 0.664**, matching κ = 0.664 on the same pool — as it must, because with two label values the
+ordinal distance is a constant multiple of the nominal one. The round-2 value must not be quoted.
 
-```bash
-python -m vci label --out annotations/labels.csv           # 60 rows, y/n/s, resumable
-python -m vci label --out annotations/labels_retest.csv \
-    --round 2 --shuffle-seed 99                            # stability pass
-python -m vci score-annotations                            # prints human / stability / synthetic / oracle
-python -m vci audit --families all --out outputs            # effective kappa switches to "human"
+When κ and α disagree the report says which one is being read: κ keeps a fixed marginal-based
+expectation and collapses the 3-level scale, α keeps the scale distance and reports `undecidable`
+as missing (`None`) rather than folding it into "accept". With no human labels, neither supports a
+per-family claim: 25–154 probes per category is a diagnosis, not a certification.
+
+## 6. Operators: what each one stands for
+
+| operator | real defect it stands for | representative weakness |
+|---|---|---|
+| `AOR` | wrong formula | loud; acceptance says nothing, rejection says little |
+| `ROR` | boundary error | one inequality per family; happy-path checks are blind |
+| `CR` | stale constant / off-by-one | easy to kill with exact fixtures; over-weights small numeric errors |
+| `SDL` | missing step / dropped functionality | needs the verifier to assert that step at all |
+| `TR` | transposed operands or emission order | looks equivalent when the checker sorts or compares sets |
+| `OVF` | rule that only holds on labelled examples | one per family: cannot represent the space of overfitting |
+| `HARD` | lookup table instead of an algorithm | obviously wrong in principle, invisible to fixture replay |
+| `STATE` | answer depends on history, not input | needs a second invocation; one-shot verifiers cannot see it |
+| `NONDET` | same input, different answer | needs repeated calls; most harnesses call once |
+| `INF` | non-termination / unbounded resources | watchdog-detectable, but the cost is wall-clock: observed, not scored |
+| `EQUIV` | not a defect: same meaning, different spelling | authored, not decided; only measures false rejects where the author is right |
+| `AMB` | not a defect: defensible second reading of an underspecified prompt | a rejection here blames the task text, not the verifier |
+
+Coverage is uneven by design: 12 operators over 20 families means several classes rest on a
+single family (`OVF` is 50 probes from two families, `STATE` 76 from one). A category table built
+on one family per operator inherits that family's quirks.
+
+Generator/verifier independence: probes are built from `Probe` payloads in `vci/adversarial.py`
+and scored by the family's own `verify()` in `vci/families/`. They share the *task spec* (which is
+what makes "correct" meaningful) but not the *oracle*: probe inputs, expected verdicts and
+acceptance bases never call the verifier, and `expectation`/`attribution` are fixed before
+`verify()` runs. Probe payloads are byte-identical across rounds, tracked by
+`adversarial.GENERATOR_VERSION`, and `results.json.manifest` records it.
+
+## 7. Validity ceiling — read before quoting any number here
+
+**Synthetic mutants are not real defects.** Just et al. (FSE 2014) test whether mutants substitute
+for real faults: they correlate, but mutants are *easier to kill* and their distribution does not
+match the distribution of real faults. Every TPR/TNR in this memo is therefore an **optimistic
+upper bound** on behaviour in deployment, never an estimate of it. Two concrete consequences:
+
+1. `T = min(T_aligned, T_non_aligned)` takes the minimum of two synthetic sources. Both are capped
+   at 1.000 by construction in the aligned case (round-1 selfcheck forces generator/verifier
+   agreement), so a family that scores 1.000 here has not been "validated" — its harness agrees
+   with its fixtures.
+2. The 81 missed defects are our authored idea of what a defect looks like. Real failures will
+   include partial correctness, plausible-but-wrong summaries, and wrong answers that pass weak
+   assertions — none of which this probe set creates.
+
+This ceiling is not softened by the round-3 additions. The category table, the attribution table
+and α all improve *bookkeeping*; none of them samples real model output.
+
+## 8. What the next round must do to raise validity
+
+In priority order — each removes one of the ceilings above, and none is a cosmetic addition:
+
+1. **Sample real failures.** Run each family's verifier against output from an actual model that
+   produces wrong answers (a cheap local model is enough), then grade 20 *observed* wrong answers
+   per family by hand. Recompute TPR/TNR against those. This is the only step that lifts the
+   Just et al. ceiling; until it is done, "verification coverage" is coverage of authored probes
+   only. The purpose-built sample is a diagnostic, not an estimate.
+2. **Human labels.** Fill `annotations/labels.csv` (3-level scale, `undecidable` allowed) with the
+   round-3 labeler (`--qualification --group-by-family --shuffle-seed 7`) and rerun the retest at
+   `--round 2 --shuffle-seed 99` for stability. Until a human sheet exists, κ and α stay synthetic
+   and `core_human_backed` stays empty.
+3. **Author positive directional probes** (25 per family: correct answer to the perturbed input).
+   Without them `directional` TPR remains unmeasured and one third of the category table is half
+   studied.
+4. **Close the `STATE/x02` leak.** Run the code_patch verifier in a subprocess per case, or run all
+   cases twice and require identical output. Then the stateful probe set stops being a measure of
+   the harness's process model.
+5. **Widen `OVF` and `STATE` beyond their single-family origin.** `OVF` currently rests on
+   `regex_construct` and `code_patch`; a generalising probe (answer fits a random 20 % holdout)
+   would cover all 20.
+
+## 9. Reproduce
+
+```
+python3 -m pytest -q                       # 79 tests
+python3 -m vci audit --families all --out outputs
+python3 -m vci label --sheet annotations/blind.csv --out annotations/labels.csv \
+    --qualification --group-by-family --shuffle-seed 7
+python3 -m vci audit --families all --out outputs     # with human labels present
 ```
 
-Until that exists, `core_human_backed` is empty and any sentence of the form "the verifier agrees
-with a human" remains **unmeasured**. This is the one item round 2 was asked to close and could
-not: the tooling is done and tested (`tests/test_labeler.py`), the labels require a person.
-
-## 6. Three kinds of conclusion, kept apart
-
-### (a) supported by labels decided outside the verifier
-
-*(probe-derived, author-written — independent of the verifier's code, **not** human)*
-
-1. `code_patch` accepts hard-coded and stateful answers (TNR 0.02). This is the strongest single
-   finding of the round and it is reproducible: `python -m vci audit --families code_patch`.
-2. `log_field_extraction` rejects semantically equivalent timestamps (TPR 0.00).
-3. `regex_construct` accepts positive-sample-only regexes (TNR 0.50).
-4. `unit_convert` / `template_render` reject defensible readings of an under-specified prompt
-   (TPR 0.50 each) — a wording defect at least as much as a verifier defect.
-5. `sql_result` accepts 2/25 hard-coded result sets.
-6. 14 families show **no** defect under 50–100 independent probes and are described as robust.
-
-### (b) supported only by synthetic (aligned) samples
-
-1. The aligned TPR/TNR of all 20 families are 1.00. That number says the verifier is self-consistent,
-   not that it is correct; §3.1–3.2 are where the real quality claims live.
-2. The VCI *ranking* among families that survived both regimes is driven almost entirely by
-   **D and K** (authoring choices), not by verification quality: `sql_result` 0.78 (D 0.44, K 2),
-   the four K = 3 structural families 0.904, `matrix_ops`/`table_aggregate` 1.00 (K 9/12).
-3. The claim "partial credit is tracked faithfully" rests on 425 independent `silent_partial`
-   probes — **not** on the aligned partials, which is why I place it here with the probe caveat
-   rather than in (a).
-
-### (c) not resolved this round, needs the next one
-
-1. **Human κ.** Zero rows labelled. Everything about "agrees with a person" is open. The CLI, resume,
-   retest and reporting paths are built and tested; only the human pass is missing.
-2. **Second annotator.** Even a filled sheet measures one author's reading; a bias shared by
-   author and verifier stays invisible. Inter-annotator agreement needs a second person.
-3. **Real model failures.** Both sample sources are hand-authored. Neither is a sample of how
-   models actually fail, so FAR/TNR here remain optimistic relative to deployment.
-4. **Memory policy.** 1 `observe` probe is recorded (16 MB for a five-element input) and scored
-   nowhere. Deciding whether a verifier *should* enforce a memory budget is a contract question,
-   deliberately left out rather than silently counted.
-5. **Prompt repair.** `unit_convert` and `template_render` need a stated precision/format rule;
-   until then their T = 0 is a correct measurement of an incomplete task, not a verifier bug.
-6. **`D` is still a proxy** (granularity × partial-credit fidelity), and the K = 3 families are
-   penalised for an authoring choice.
-7. **Difficulty vs checkability.** VCI still measures checkability only; no training was run, so
-   whether raising VCI raises absorbed experience remains the untested half of the hypothesis.
-
-## 7. shrunk core list and verdict
-
-**Core (provisional, 15)** — `VCI ≥ 0.70`, `trust ≥ 0.90`, `D > 0`:
-`arith_expression`, `stats_summary`, `base_convert`, `matrix_ops`, `date_arith`,
-`json_schema_extract`, `sql_result`, `table_aggregate`, `sort_multikey`, `interval_merge`,
-`grid_path`, `csp_assign`, `schedule_slots`, `topo_order`, `life_step`.
-
-**Core (human-backed, 0)** — empty, because human κ is 0 rows.
-
-**Dropped from the core**: `unit_convert`, `template_render` (T 0 — prompt under-specified),
-`log_field_extraction` (T 0 — timestamp equivalence), `code_patch` (T 0.02 — hard-coded/stateful),
-`regex_construct` (T 0.50 — test-only overfit).
-
-**Verdict: continue, narrowed to the 15, with three named repairs and one missing measurement.**
-
-* The instrument is now able to fail a family for a real reason, which is what round 1 could not
-  do. That is the substantive gain: five families moved from "reliable, 1.00" to "unreliable, 0.00".
-* The 15 survivors are not merely untested — they passed an adversarial sample built in a
-  different module, and `silent_partial` (the most common real RL failure) leaked 0/425.
-* Priority order for round 3:
-  1. Human sheet (60 rows) + a second annotator; quote human κ with its CI, drop synthetic from
-     any headline.
-  2. Repair `log_field` normalisation and pronounce a precision/format rule for `unit_convert`,
-     `template_render`; re-measure — expect those three to return to the core.
-  3. Add mutation/repeat-invocation to `code_patch` (or declare it a family whose T cannot exceed
-     ~0.02 without a new contract) and add a held-out-string set to `regex_construct`.
-  4. Only then re-index; keep reporting per-family VCI + CI + D + K, never the median alone.
-
-## 8. limits of this memo
-
-* 25 tasks/family, 1,157 probes total. Enough to rank and to detect a 0.5 TPR drop; not enough
-  to certify a verifier at T = 1.00 to ±0.01 — 1.00 here means "no counterexample in 50–100
-  probes", not "correct".
-* Probe labels are author-written and testable; the module's independence is enforced structurally
-  (AST test), not by a third party.
-* Latency, and therefore `C`, is measured on one machine. Only `code_patch` sits near the 20 ms
-  cheapness knee.
-* No training was run. Nothing here shows that repairing a VCI gap increases what an RL loop
-  absorbs.
+Bootstrap intervals are seeded per block (`seed + 1 … seed + 6`), so a rerun reproduces the
+same CI; only latency (`p95 ms`) depends on the machine.
