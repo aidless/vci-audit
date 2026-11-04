@@ -544,3 +544,96 @@ on a paired design, not a probe artifact.  The residual MFT leak is 2/25 in `sql
 (degenerate held-out data) and the 50 AMB false rejects (under-specified tasks); the
 undecidable parts are cross-task contamination and unbounded call budgets, which need task
 interface guarantees rather than tighter verifiers.
+
+# Round 10 (2026-11-04): real traces, SQL second dataset, directional coverage
+
+## 1. Real model traces (highest priority)
+
+A real local model was sampled, not simulated: **qwen2.5:7b** through ollama 0.33.3
+(digest `845dbda0ea48…` in the manifest), temperature **0.0**, seed **20261104**, one
+greedy sample per task, `num_predict=512`, timeout 180 s.  The run covers **all 20
+families × 5 tasks = 100 tasks**; 100 scored, 0 transport errors.  Every record stores the
+**verbatim prompt**, raw reply, decoding parameters and wall time in
+`outputs/realfail-real.json` (215 KB); `outputs/realfail-real-sheet.jsonl` (529 unit rows)
+splits each task into units with the model answer, the gold reference and the per-unit
+verdict.  One record (`regex_construct`) failed to produce parseable JSON.
+
+Results: **10/100 tasks accepted by the verifier, 89 real failures** (1 parse failure, 88
+semantic/format failures).  Against the strict gold reference at unit level, **131/131
+correct real answers were accepted** and **0/303 wrong real answers were accepted**.  The
+labels in that sentence are gold-checked, **not human**; the raw replies are archived for
+review.  `sql_result` was re-sampled after the second-dataset change and the manifest
+records the two segments.  These traces are deliberately **not merged into the VCI
+headline**: without a human sheet, mixing them into TPR/TNR would grade the verifier
+against itself.  They are the external-validity evidence and the seed for the next blind
+label sheet.
+
+## 2. SQL: a provably discriminating second dataset
+
+`PROBE_DEPTS` is a second `depts` table with different rows (MKT/Turing joins, ENG 950,
+SLS 650), the visible orders cover only two of three regions while the held-out rows add
+the third (four rows per region, four paid), and `top2_depts` gets one decisive row outside
+the visible top two.  `make_one` asserts `expected_probe != expected_primary` for every
+item, and the verifier executes the probe on the held-out `depts` table.  Result:
+
+| family | MFT TNR before | after | n | VCI |
+|---|---|---|---|---|
+| `sql_result` | 0.920 | **1.000** | 25 | 0.798 → 0.844 |
+
+Only the two previously degenerate HARD probes (`sql_result-020/021`, `x01`) flipped;
+the other 23 HARD and all equivalence probes did not.
+
+## 3. Directional positives
+
+The round-3 premise "directional has no positives" was stale: round 5 already had 75
+accept probes (TPR 1.000, `code_patch`/`regex_construct`/`sql_result`).  This round adds
+**98 more** in four constraint-shaped families whose verifiers re-derive truth from the
+task data, by changing the data and independently recomputing the answer: `grid_path`
+(obstacles moved, 23 positives), `csp_assign` (node appended, 25), `schedule_slots`
+(availability changed, 25), `topo_order` (node inserted, 25).
+
+| directional | before | after |
+|---|---|---|
+| positives | 75 | **173** |
+| TPR | 1.000 | **1.000** [0.978, 1.000] |
+| TNR (stale answers) | 1.000 | **1.000** [0.994, 1.000] |
+
+Each accept payload is rejected when checked against the *unshifted* task (vacuous-override
+test), so the TPR is not produced by an override that accepts everything.
+
+## 4. Rerun and artifact self-check
+
+Full rerun, same seed: median **VCI 0.969** [0.904, 1.000] (aligned 0.986), 17/20 families
+≥ 0.70, 20/20 reliable.  Pooled categories:
+
+| category | n | n_pos | n_neg | TPR | TNR |
+|---|---|---|---|---|---|
+| minimum functionality | 204 | 50 | 154 | 0.000 [0, 0.071] | **1.000** [0.976, 1.000] |
+| directional | 771 | 173 | 598 | **1.000** [0.978, 1.000] | **1.000** [0.994, 1.000] |
+| invariance | 652 | 550 | 102 | 0.864 [0.832, 0.890] | 1.000 [0.964, 1.000] |
+
+MFT TNR is now 1.000 (154/154), up from 0.987.  MFT TPR remains 0 because its only
+positives are the 50 `spec_ambiguity` tasks that the verifier correctly rejects; invariance
+TPR is unchanged at 0.864 (75 pre-existing false rejects, out of scope here).
+
+Labels: κ and α are still **synthetic self-agreement**, upper bound 1.000, n = 6,854
+aligned units / 13,708 decisions, **human rows = 0**; the non-aligned oracle gives
+α = κ = 0.844 (n = 1,627).  The synthetic κ is not evidence of label quality.
+
+Self-check (paired, same seed): the only probe verdicts that flipped were the two SQL HARD
+probes fixed by the second dataset; no untouched probe flipped on its own; 14/15 untouched
+families have identical verdict-derived metrics.  `code_patch`'s VCI moved 0.7799 → 0.7776
+**only through latency** (`cheapness` 0.9794 → 0.9678, probe p95 30.9 → 34.3 ms); its
+metrics and every verdict are identical.  No verifier code was changed for the SQL,
+directional or real-sample work — the SQL gain comes from the data, and the directional
+probes are new inputs, not a new accept rule.
+
+## Verdict
+
+The headline VCI did **not** rise (0.969 → 0.969).  What improved is coverage and
+specificity at the bottom: MFT TNR closed to 1.000, SQL's last 2 leaks are gone, and
+directional positives more than doubled with TPR 1.000.  The validity ceiling is still
+**capped by label provenance** — every TPR/TNR denominator is synthetic or gold-derived,
+human κ/α is 0 rows — and by the 50 AMB / 75 invariance false rejects.  Real traces now
+exist in the repo, but a blind human sheet on them is what would raise the ceiling; no
+model access was the blocker this round.

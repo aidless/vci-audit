@@ -83,6 +83,24 @@ It picks up `annotations/labels.csv` and `annotations/labels_retest.csv` automat
 exist and switches κ to `human`; with no sheet it prints a warning that κ is a synthetic upper
 bound.
 
+## Real model traces (separate from the synthetic probe pool)
+
+Round 10 samples an actual local model through ollama.  The archived run stores the **verbatim
+prompt**, the raw reply, the decoding parameters (temperature 0.0, fixed seed, one greedy sample)
+and the model digest; it is reproducible and auditable, not synthetic:
+
+```bash
+python3 -m vci realfail --families all --tasks 5 --seed 20261104 \
+    --model qwen2.5:7b --max-tokens 512 --out outputs/realfail-real.json
+python3 -m vci realfail-sheet --run outputs/realfail-real.json \
+    --out outputs/realfail-real-sheet.jsonl
+```
+
+`realfail-real-sheet.jsonl` is one row per task unit with the model's answer, the gold reference
+and the verifier's per-unit verdict.  These traces are **not** merged into the VCI headline:
+without human labels, mixing them into TPR/TNR would grade the verifier against itself.  They
+are the external-validity check and the input to a future blind human sheet.
+
 ## Reproducibility
 
 * Every random process is a seeded `random.Random`. The per-family stream is

@@ -43,19 +43,22 @@ cannot see.
 | `AMB` | not a defect: a defensible second reading of an under-specified prompt | a rejection here blames the task text, not the verifier |
 | `DIR` | input changed, so the correct answer changed | only measurable where the verifier derives truth by executing the candidate against task-carried data; on fixture-replay verifiers a perturbed pair is accepted by construction and is therefore not authored |
 
-Round-5 additions
------------------
+Round-5/10 additions
+--------------------
 ``directional_shift`` probes carry a ``task_override``: a perturbed copy of the
 task whose input data changed in a known way.  ``audit._probe_record`` verifies
 the candidate against the override, not the original task.  Positive probes
 submit the independently recomputed correct answer to the perturbed input
 (expectation ``accept``); negative probes submit the answer that was correct
-*before* the change (expectation ``reject``).  They exist only for the three
-families whose verifier re-derives truth by execution (``sql_result``,
-``regex_construct``, ``code_patch``).  For the remaining seventeen the verifier
-compares against expected values stored in the task, so a perturbed
-(input, truth) pair would be accepted by construction and would manufacture a
-meaningless TPR -- no such probe is authored.
+*before* the change (expectation ``reject``).  They exist only for families
+whose verifier re-derives truth from task-carried data instead of replaying a
+stored expected value: round 5 covered ``sql_result``, ``regex_construct`` and
+``code_patch``; round 10 added the constraint-shaped families
+``grid_path`` (obstacles moved), ``csp_assign`` (node appended),
+``schedule_slots`` (availability changed) and ``topo_order`` (node inserted).
+For the remaining thirteen fixture-replay families a perturbed (input, truth)
+pair would be accepted by construction and would manufacture a meaningless
+TPR -- no such probe is authored.
 
 Representative weakness of the whole sample (Just et al., FSE 2014): mutants are
 correlated with real faults but their *distribution* is not the distribution of
@@ -158,7 +161,7 @@ OPERATORS = ("AOR", "ROR", "CR", "SDL", "TR", "OVF", "HARD", "STATE",
 
 #: Bumped whenever a probe payload changes, so a result file can be traced to
 #: the sample that produced it.
-GENERATOR_VERSION = "5.0"
+GENERATOR_VERSION = "5.1"
 
 
 @dataclass
@@ -637,7 +640,8 @@ _SQL_DEPTS = [("ENG", "Ada", 900), ("SLS", "Grace", 700),
               ("OPS", "Linus", 500), ("HR", "Maria", 300)]
 
 
-def _sql_ref(key: str, rows: List[List[Any]]) -> List[List[Any]]:
+def _sql_ref(key: str, rows: List[List[Any]],
+             depts: Optional[List[Tuple[str, str, int]]] = None) -> List[List[Any]]:
     """Pure-Python reference results for the six question templates."""
     if key == "sum_by_dept":
         tot: Dict[str, int] = {}
@@ -658,7 +662,8 @@ def _sql_ref(key: str, rows: List[List[Any]]) -> List[List[Any]]:
             cnt[r[2]] = cnt.get(r[2], 0) + 1
         return [[g] for g in sorted(cnt) if cnt[g] > 3]
     if key == "rich_depts":
-        return [[n, h, b] for n, h, b in sorted(_SQL_DEPTS) if b > 600]
+        table = _SQL_DEPTS if depts is None else depts
+        return [[n, h, b] for n, h, b in sorted(table) if b > 600]
     if key == "avg_by_region":
         sums: Dict[str, List[int]] = {}
         for r in rows:
@@ -721,7 +726,8 @@ def _sql_shifted_task(task: Task) -> Optional[Task]:
         items, changed = [], False
         for it in task.items:
             exp = {"primary": _sql_ref(it["key"], rows),
-                   "probe": _sql_ref(it["key"], probe)}
+                   "probe": _sql_ref(it["key"], probe,
+                                     task.meta.get("probe_depts"))}
             old = it["expected"]
             if exp["primary"] != old["primary"] or exp["probe"] != old["probe"]:
                 changed = True
@@ -732,6 +738,7 @@ def _sql_shifted_task(task: Task) -> Optional[Task]:
                       "\n[directional probe: dataset shifted -- amounts scaled, "
                       "dept/region/status relabelled]")
             meta = {"rows": rows, "probe": probe,
+                    "probe_depts": task.meta.get("probe_depts"),
                     "questions": task.meta["questions"]}
             return Task(family=task.family, task_id=task.task_id + "-dir",
                         prompt=prompt, items=items, meta=meta)
@@ -826,6 +833,50 @@ def _grid_bfs(grid: Sequence[str], start: Sequence[int], goal: Sequence[int]) ->
     return list(reversed(path))
 
 
+def _grid_directional(task: Task) -> Optional[Tuple[List[Dict[str, Any]], Dict[str, Any],
+                                                   List[Any], List[Any]]]:
+    """Move the obstacles, then recompute every shortest path here.
+
+    A wall is placed on each old path, so the old answer is wrong on the new
+    grid while the independently recomputed answer is right.  Returns
+    ``(items, meta, positive_payload, stale_payload)`` or ``None`` if the shift
+    would disconnect a pair.
+    """
+    old_paths = [list(it["path"]) for it in task.items]
+    protected = {tuple(it["expected"][k]) for it in task.items
+                 for k in ("start", "goal")}
+
+    def attempt(indices: Sequence[int]):
+        grid = [list(row) for row in task.meta["grid"]]
+        for i in indices:
+            cell = next((c for c in old_paths[i][1:-1]
+                         if tuple(c) not in protected and grid[c[0]][c[1]] == "."),
+                        None)
+            if cell is None:
+                return None
+            grid[cell[0]][cell[1]] = "#"
+        shifted = ["".join(row) for row in grid]
+        items, acc = [], []
+        for it in task.items:
+            path = _grid_bfs(shifted, it["expected"]["start"], it["expected"]["goal"])
+            if not path:
+                return None
+            acc.append(path)
+            items.append({"unit": it["unit"],
+                          "expected": {"start": it["expected"]["start"],
+                                       "goal": it["expected"]["goal"],
+                                       "len": len(path)}})
+        return items, {"grid": shifted}, acc, old_paths
+
+    # Wall every old path when possible; otherwise wall a subset, which still
+    # makes the stale answer wrong as long as one old path is blocked.
+    for indices in ((0, 1, 2), (0,), (1,), (2,), (0, 1), (1, 2), (0, 2)):
+        got = attempt(indices)
+        if got is not None:
+            return got
+    return None
+
+
 def _grid(task: Task, heavy: bool) -> List[Probe]:
     grid = task.meta["grid"]
     acc = [_grid_bfs(grid, it["expected"]["start"], it["expected"]["goal"])
@@ -846,6 +897,23 @@ def _grid(task: Task, heavy: bool) -> List[Probe]:
                           "oversized path payload (5000 cells): must be rejected by the "
                           "length check without allocating an unbounded structure",
                           "payload-size probe; cost is measured separately"))
+    shifted = _grid_directional(task)
+    if shifted is not None:
+        items, meta, acc_new, stale = shifted
+        override = Task(family=task.family, task_id=task.task_id + "-dir",
+                        prompt=task.prompt +
+                        "\n[directional probe: obstacles added on the old paths]",
+                        items=items, meta=meta)
+        probes += [
+            _mk(task, 3, "directional_shift", "accept", acc_new,
+                "shortest paths recomputed on a grid with new obstacles",
+                "own BFS on the perturbed grid; the verifier must read the shifted grid",
+                operator="DIR", task_override=override),
+            _mk(task, 4, "directional_shift", "reject", stale,
+                "the paths that were shortest before the obstacles moved",
+                "the input changed, so the old paths now cross a wall",
+                operator="DIR", task_override=override),
+        ]
     return probes
 
 
@@ -878,6 +946,36 @@ def _csp_solution(c: Dict[str, Any], nodes: Sequence[str],
     return out
 
 
+def _csp_directional(task: Task) -> Optional[Tuple[List[Dict[str, Any]], Dict[str, Any],
+                                                   List[Any], List[Any]]]:
+    """Add a node joined to two differently coloured neighbours.
+
+    The old colouring omits the new node, so it cannot satisfy the shifted
+    constraint set; a fresh colouring is found with the independent search.
+    """
+    items, acc, stale = [], [], []
+    for it in task.items:
+        c = it["constraints"]
+        nodes, edges = list(c["nodes"]), [list(e) for e in c["edges"]]
+        pair = next(((u, v) for u, v in edges
+                     if it["expected"][u] != it["expected"][v]), None)
+        if pair is None:
+            return None
+        u, v = pair
+        node = next(ch for ch in "WXYZ" if ch not in nodes)
+        c2 = {"nodes": nodes + [node], "edges": edges + [[u, node], [node, v]],
+              "pins": dict(c["pins"]), "colors": c["colors"]}
+        sols = _csp_solution(c2, list(reversed(c2["nodes"])),
+                             list(reversed(range(1, int(c2["colors"]) + 1)),), limit=2)
+        if not sols:
+            return None
+        sol = {n: int(col) for n, col in sols[0].items()}
+        acc.append(sol)
+        stale.append(dict(it["expected"]))
+        items.append({"unit": it["unit"], "expected": sol, "constraints": c2})
+    return items, {}, acc, stale
+
+
 def _csp(task: Task, heavy: bool) -> List[Probe]:
     acc = []
     for it in task.items:
@@ -901,6 +999,27 @@ def _csp(task: Task, heavy: bool) -> List[Probe]:
         _mk(task, 1, "silent_partial", "reject", bad,
             "one edge given the same colour on both endpoints",
             "own edge selection from the stated constraints", operator="SDL"),
+    ] + _csp_dir_probes(task)
+
+
+def _csp_dir_probes(task: Task) -> List[Probe]:
+    shifted = _csp_directional(task)
+    if shifted is None:
+        return []
+    items, meta, acc, stale = shifted
+    override = Task(family=task.family, task_id=task.task_id + "-dir",
+                    prompt=task.prompt +
+                    "\n[directional probe: one node and two edges added]",
+                    items=items, meta=meta)
+    return [
+        _mk(task, 2, "directional_shift", "accept", acc,
+            "a colouring recomputed after a node was appended",
+            "own search on the shifted constraints; the verifier must read them",
+            operator="DIR", task_override=override),
+        _mk(task, 3, "directional_shift", "reject", stale,
+            "the colouring that satisfied the constraints before the node existed",
+            "the answer ignores the new node, so it cannot satisfy the shifted set",
+            operator="DIR", task_override=override),
     ]
 
 
@@ -923,6 +1042,45 @@ def _sched_valid(prob: Dict[str, Any], starts: Dict[str, int]) -> bool:
         if cells[a] & cells[b]:
             return False
     return set(starts) == set(ids)
+
+
+def _schedule_directional(task: Task) -> Optional[Tuple[List[Dict[str, Any]],
+                                                       Dict[str, Any],
+                                                       List[Any], List[Any]]]:
+    """Mark a slot used by the old schedule as busy, then reschedule.
+
+    The old schedule conflicts with the new availability, so it must be
+    rejected; a new schedule is found by an independent brute-force search.
+    """
+    items, acc, stale = [], [], []
+    for it in task.items:
+        prob, old = it["problem"], dict(it["expected"])
+        found = None
+        for m in prob["meetings"]:
+            if found:
+                break
+            for person in m["who"]:
+                slot = int(old[m["id"]])
+                if slot in prob["busy"][person]:
+                    continue
+                busy = {p: list(v) for p, v in prob["busy"].items()}
+                busy[person] = sorted(busy[person] + [slot])
+                prob2 = {"meetings": prob["meetings"], "busy": busy}
+                ids = [x["id"] for x in prob["meetings"]]
+                for combo in itertools.product(range(_SLOTS), repeat=len(ids)):
+                    starts = dict(zip(ids, combo))
+                    if _sched_valid(prob2, starts):
+                        found = (prob2, starts)
+                        break
+                if found:
+                    break
+        if found is None:
+            return None
+        prob2, sol = found
+        acc.append(sol)
+        stale.append(dict(old))
+        items.append({"unit": it["unit"], "expected": sol, "problem": prob2})
+    return items, {}, acc, stale
 
 
 def _schedule(task: Task, heavy: bool) -> List[Probe]:
@@ -958,6 +1116,27 @@ def _schedule(task: Task, heavy: bool) -> List[Probe]:
         _mk(task, 1, "silent_partial", "reject", bad,
             "one meeting shifted into a conflict; the rest of the schedule stays valid",
             "own perturb-and-check loop", operator="CR"),
+    ] + _schedule_dir_probes(task)
+
+
+def _schedule_dir_probes(task: Task) -> List[Probe]:
+    shifted = _schedule_directional(task)
+    if shifted is None:
+        return []
+    items, meta, acc, stale = shifted
+    override = Task(family=task.family, task_id=task.task_id + "-dir",
+                    prompt=task.prompt +
+                    "\n[directional probe: one previously free slot became busy]",
+                    items=items, meta=meta)
+    return [
+        _mk(task, 2, "directional_shift", "accept", acc,
+            "a schedule recomputed after an attendee became busy",
+            "own search on the shifted availability; the verifier must read it",
+            operator="DIR", task_override=override),
+        _mk(task, 3, "directional_shift", "reject", stale,
+            "the schedule that fitted the old availability",
+            "it now puts a meeting into a busy slot",
+            operator="DIR", task_override=override),
     ]
 
 
@@ -979,6 +1158,36 @@ def _kahn_sorted(nodes: Sequence[str], edges: Sequence[Sequence[str]]) -> List[s
     return out
 
 
+def _topo_directional(task: Task) -> Optional[Tuple[List[Dict[str, Any]], Dict[str, Any],
+                                                   List[Any], List[Any]]]:
+    """Insert a new node between an existing source and sink.
+
+    The old order predates the node and therefore does not cover the shifted
+    graph; the new order is recomputed with the independent Kahn pass.
+    """
+    items, acc, stale = [], [], []
+    for it in task.items:
+        g = it["graph"]
+        nodes, edges = list(g["nodes"]), [list(e) for e in g["edges"]]
+        node = next(ch for ch in "WXYZ" if ch not in nodes)
+        indeg = {n: 0 for n in nodes}
+        outdeg = {n: 0 for n in nodes}
+        for u, v in edges:
+            indeg[v] += 1
+            outdeg[u] += 1
+        source = sorted(n for n in nodes if indeg[n] == 0)[0]
+        sink = sorted(n for n in nodes if outdeg[n] == 0)[-1]
+        edges2 = edges + [[source, node], [node, sink]]
+        order = _kahn_sorted(nodes + [node], edges2)
+        if not order:
+            return None
+        acc.append(order)
+        stale.append(list(it["expected"]))
+        items.append({"unit": it["unit"], "expected": order,
+                      "graph": {"nodes": nodes + [node], "edges": edges2}})
+    return items, {}, acc, stale
+
+
 def _topo(task: Task, heavy: bool) -> List[Probe]:
     acc = [_kahn_sorted(it["graph"]["nodes"], it["graph"]["edges"]) for it in task.items]
     bad = [list(reversed(o)) for o in acc]
@@ -989,6 +1198,27 @@ def _topo(task: Task, heavy: bool) -> List[Probe]:
         _mk(task, 1, "silent_partial", "reject", bad,
             "order reversed: every node listed once, every edge violated",
             "own reversal of the independent order", operator="TR"),
+    ] + _topo_dir_probes(task)
+
+
+def _topo_dir_probes(task: Task) -> List[Probe]:
+    shifted = _topo_directional(task)
+    if shifted is None:
+        return []
+    items, meta, acc, stale = shifted
+    override = Task(family=task.family, task_id=task.task_id + "-dir",
+                    prompt=task.prompt +
+                    "\n[directional probe: one node and two edges added]",
+                    items=items, meta=meta)
+    return [
+        _mk(task, 2, "directional_shift", "accept", acc,
+            "a topological order recomputed after a node was inserted",
+            "own Kahn pass on the shifted graph; the verifier must read it",
+            operator="DIR", task_override=override),
+        _mk(task, 3, "directional_shift", "reject", stale,
+            "the order that covered the graph before the node existed",
+            "it omits the new node, so it is not a permutation of the shifted nodes",
+            operator="DIR", task_override=override),
     ]
 
 

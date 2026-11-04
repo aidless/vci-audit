@@ -31,7 +31,7 @@ from .metrics import cohen_kappa, wilson_interval
 from .registry import INDEX, by_name
 from .schema import Candidate
 
-REALFAIL_VERSION = "1.0"
+REALFAIL_VERSION = "2.0"
 
 DEFAULT_FAMILIES = [
     "arith_expression",
@@ -185,6 +185,11 @@ def run(families, n_tasks: int, seed: int, model: str, host: str,
             rec: Dict[str, Any] = {
                 "family": fam.name, "task_id": task.task_id,
                 "n_units": task.n_items, "prompt_chars": len(prompt),
+                # stored verbatim so the exact model input can be re-read
+                "prompt": prompt,
+                # one greedy sample per task: temperature 0.0, fixed seed
+                "decoding": {"temperature": 0.0, "seed": seed,
+                             "num_predict": max_tokens, "samples": 1},
             }
             try:
                 gen = ollama_generate(host, model, prompt, seed=seed,
@@ -224,6 +229,7 @@ def run(families, n_tasks: int, seed: int, model: str, host: str,
             "families": [f.name for f in families],
             "temperature": 0.0,
             "max_tokens": max_tokens,
+            "samples_per_task": 1,
             "date": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
         },
         "records": records,

@@ -257,7 +257,8 @@ def _run_directional(family, n=3, seed=0):
     return out
 
 
-@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch",
+                                   "csp_assign", "schedule_slots", "topo_order"])
 def test_every_task_has_a_directional_probe_pair(family):
     fam = registry.by_name(family)
     task = fam.generate(1, random.Random(3))[0]
@@ -268,7 +269,8 @@ def test_every_task_has_a_directional_probe_pair(family):
                for p in probes)
 
 
-@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch",
+                                   "csp_assign", "schedule_slots", "topo_order"])
 def test_directional_accept_probes_are_accepted(family):
     """The correct answer to the perturbed input must pass: a rejection is a
     false reject on new input -- the quantity the directional TPR measures."""
@@ -278,13 +280,45 @@ def test_directional_accept_probes_are_accepted(family):
     assert bad == [], f"{family} falsely rejects the shifted correct answer: {bad}"
 
 
-@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch"])
+@pytest.mark.parametrize("family", ["sql_result", "regex_construct", "code_patch",
+                                   "csp_assign", "schedule_slots", "topo_order"])
 def test_directional_stale_answers_are_rejected(family):
     """The answer that was correct *before* the input shift must now fail."""
     pairs = [(p, v) for p, v in _run_directional(family) if p.expectation == "reject"]
     assert pairs
     leaked = [p.probe_id for p, v in pairs if v.passed]
     assert leaked == [], f"{family} accepts a stale answer after the shift: {leaked}"
+
+
+def test_sql_heldout_dataset_cannot_share_the_visible_answer():
+    """The second dataset must be provably different, not just differently sampled."""
+    from vci.families import data as data_mod
+
+    fam = registry.by_name("sql_result")
+    assert isinstance(fam, data_mod.SqlResult)
+    for i, task in enumerate(fam.generate(50, random.Random(11))):
+        assert task.meta["probe_depts"] == data_mod.PROBE_DEPTS
+        assert task.meta["probe_depts"] != data_mod.DEPTS
+        for it in task.items:
+            assert it["expected"]["probe"] != it["expected"]["primary"], (
+                f"task {i} item {it['unit']} ({it['key']}) has a degenerate probe")
+
+
+def test_grid_directional_walls_never_block_a_start_or_goal():
+    fam = registry.by_name("grid_path")
+    seen = 0
+    for task in fam.generate(25, random.Random(0)):
+        probes = [p for p in adversarial.probes_for("grid_path", task)
+                  if p.failure_class == "directional_shift"]
+        for p in probes:
+            eff = p.task_override or task
+            cand = Candidate(cand_id=p.probe_id, task_id=task.task_id,
+                             family="grid_path", payload=p.payload,
+                             defect=p.failure_class)
+            v = fam.verify(eff, cand)
+            assert v.passed == (p.expectation == "accept"), (task.task_id, p.note)
+        seen += bool(probes)
+    assert seen >= 20
 
 
 def test_directional_override_changes_what_the_verifier_sees():

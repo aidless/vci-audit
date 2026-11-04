@@ -20,6 +20,15 @@ DEPTS = [
     ("OPS", "Linus", 500),
     ("HR", "Maria", 300),
 ]
+#: The held-out dataset has its own department fixture.  Same schema, different
+#: rows: a query answered from the visible ``depts`` table cannot reproduce the
+#: probe result, which is what makes a memorised answer visibly wrong.
+PROBE_DEPTS = [
+    ("ENG", "Ada", 950),
+    ("SLS", "Grace", 650),
+    ("OPS", "Linus", 550),
+    ("MKT", "Turing", 800),
+]
 REGIONS = ["NA", "EU", "APAC"]
 STATUSES = ["paid", "pending", "refund"]
 
@@ -43,17 +52,17 @@ def _rows_equal(expected: List[List[Any]], got: List[List[Any]], ordered: bool) 
     return len(e) == len(g) and all(a == b for a, b in zip(e, g))
 
 
-def _make_db(rows: List[List[Any]]):
+def _make_db(rows: List[List[Any]], depts=DEPTS):
     con = sqlite3.connect(":memory:")
     con.executescript(SCHEMA)
     con.executemany("INSERT INTO orders (id, dept, region, amount, status) VALUES (?,?,?,?,?)",
                     rows)
-    con.executemany("INSERT INTO depts (name, head, budget) VALUES (?,?,?)", DEPTS)
+    con.executemany("INSERT INTO depts (name, head, budget) VALUES (?,?,?)", depts)
     return con
 
 
-def _run(rows: List[List[Any]], sql: str) -> List[List[Any]]:
-    con = _make_db(rows)
+def _run(rows: List[List[Any]], sql: str, depts=DEPTS) -> List[List[Any]]:
+    con = _make_db(rows, depts)
     try:
         cur = con.execute(sql)
         return [list(r) for r in cur.fetchall()]
@@ -88,22 +97,43 @@ class SqlResult(Family):
     payload_kind = "list"
 
     def make_one(self, rng, idx):
+        # The visible dataset covers two of the three regions; the held-out
+        # dataset adds the third.  "Which regions have more than 3 orders"
+        # therefore cannot have the same answer on both datasets, so an answer
+        # copied from the visible result is detectable by execution alone.
+        visible_regions = REGIONS[:2]
         rows = []
         for i in range(1, 31):
-            rows.append([i, rng.choice([d[0] for d in DEPTS]), rng.choice(REGIONS),
+            rows.append([i, rng.choice([d[0] for d in DEPTS]),
+                         rng.choice(visible_regions),
                          rng.randint(10, 500), rng.choice(STATUSES)])
-        # probe rows deliberately include counts at the HAVING boundary
+        # Held-out rows: four per region and four paid.  Positive amounts make
+        # every SUM/AVG move, and the paid rows make the count move.
         probe = [list(r) for r in rows]
         for j in range(12):
             probe.append([31 + j, rng.choice([d[0] for d in DEPTS]),
                           REGIONS[j % 3], rng.randint(10, 500),
-                          rng.choice(STATUSES)])
+                          "paid" if j < 4 else rng.choice(["pending", "refund"])])
         keys = rng.sample(list(QUESTION_TEMPLATES), rng.randint(2, 3))
+        # top2_depts is the one answer that can survive extra rows unchanged.
+        # One decisive row outside the visible top two guarantees a different
+        # answer on the held-out dataset.
+        if "top2_depts" in keys:
+            totals: Dict[str, int] = {}
+            for r in rows:
+                totals[r[1]] = totals.get(r[1], 0) + r[3]
+            top2 = {d for d, _ in sorted(totals.items(),
+                                         key=lambda kv: (-kv[1], kv[0]))[:2]}
+            outside = next(d for d in (x[0] for x in DEPTS) if d not in top2)
+            probe.append([43, outside, REGIONS[0], sum(totals.values()) + 1000,
+                          "refund"])
         items, lines, meta_q = [], [], []
         for j, key in enumerate(keys, 1):
             text, ref_sql, ordered = QUESTION_TEMPLATES[key]
-            exp_primary = _run(rows, ref_sql)
-            exp_probe = _run(probe, ref_sql)
+            exp_primary = _run(rows, ref_sql, DEPTS)
+            exp_probe = _run(probe, ref_sql, PROBE_DEPTS)
+            assert exp_probe != exp_primary, (
+                f"{key}: held-out answer coincides with the visible answer")
             items.append({"unit": f"q{j}", "expected": {"primary": exp_primary,
                                                         "probe": exp_probe},
                           "ordered": ordered, "key": key})
@@ -116,7 +146,8 @@ class SqlResult(Family):
                   "same schema.  Return a JSON array of SQL strings, one per "
                   "question, in order.\n" + "\n".join(lines))
         return self.task(f"sql_result-{idx:03d}", prompt, items,
-                         {"rows": rows, "probe": probe, "questions": meta_q})
+                         {"rows": rows, "probe": probe,
+                          "probe_depts": PROBE_DEPTS, "questions": meta_q})
 
     def canonical(self, task):
         return [q["ref"] for q in task.meta["questions"]]
@@ -126,8 +157,8 @@ class SqlResult(Family):
         try:
             if not self._safe(sql):
                 return False
-            got = _run(task.meta["rows"], sql)
-            got_probe = _run(task.meta["probe"], sql)
+            got = _run(task.meta["rows"], sql, DEPTS)
+            got_probe = _run(task.meta["probe"], sql, task.meta["probe_depts"])
         except sqlite3.Error:
             return False
         exp = item["expected"]
@@ -242,8 +273,8 @@ class SqlResult(Family):
         if not self._safe(answer):
             return False, f"not an accepted read-only SQL query: {answer!r}"
         try:
-            got_primary = _run(task.meta["rows"], answer)
-            got_probe = _run(task.meta["probe"], answer)
+            got_primary = _run(task.meta["rows"], answer, DEPTS)
+            got_probe = _run(task.meta["probe"], answer, task.meta["probe_depts"])
         except sqlite3.Error as ex:
             return False, f"query failed: {ex}"
         exp = item["expected"]

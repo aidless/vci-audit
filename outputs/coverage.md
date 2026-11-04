@@ -1,12 +1,12 @@
 # VCI coverage table (round 3)
 
-seed=`0`  tasks/family=`25`  families=`20`  aligned candidates=`6849`  non-aligned probes=`1432`  generator version=`5.0`
+seed=`0`  tasks/family=`25`  families=`20`  aligned candidates=`6854`  non-aligned probes=`1628`  generator version=`5.1`
 
-**Median VCI 0.969** (95% bootstrap CI 0.904-1.000); aligned-only median 0.987 (0.913-1.000). **17/20 families >= 0.70**.
+**Median VCI 0.969** (95% bootstrap CI 0.904-1.000); aligned-only median 0.986 (0.913-1.000). **17/20 families >= 0.70**.
 
 Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no human labels yet)` (human rows n=0, undecidable 0; synthetic upper bound 1.000 is reported separately and is not a human value).
 
-**Krippendorff alpha (ordinal) alongside:** `1.000` (source `synthetic`, decided values n=13698, undecidable 0, 95% CI 1.000-1.000). Independent-probe oracle alpha `0.819` (n=2862).
+**Krippendorff alpha (ordinal) alongside:** `1.000` (source `synthetic`, decided values n=13708, undecidable 0, 95% CI 1.000-1.000). Independent-probe oracle alpha `0.844` (n=3254).
 
 `alpha` and `kappa` are reported side by side, never merged. With two coders and two labels they answer the same question; they diverge when (a) undecidable rows exist -- kappa drops them, alpha keeps them as missing units and still counts them in the expected disagreement; (b) prevalence is extreme -- kappa's expected agreement is pinned by the marginals while alpha estimates it from the pooled distribution with a finite-sample correction; (c) more than two coders or ordinal labels are used, where kappa is not defined. If they disagree, trust neither until the undecidable count is reported.
 
@@ -29,8 +29,8 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | csp_assign | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | schedule_slots | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | topo_order | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| sql_result | 0.798 | 0.754-0.838 | 1.00 | 0.44 | 2.0 | 0.96 | 1.00 | 0.96 | 1.00 | 1.00 | 0.00 | 1.00 | 0.96 | 0.04 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| code_patch | 0.780 | 0.774-0.785 | 0.98 | 1.00 | 4.0 | 0.61 | 1.00 | 0.61 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.39 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
+| sql_result | 0.844 | 0.814-0.870 | 1.00 | 0.51 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
+| code_patch | 0.778 | 0.771-0.783 | 0.97 | 1.00 | 4.0 | 0.61 | 1.00 | 0.61 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.39 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | unit_convert | 0.000 | 0.000-0.000 | 1.00 | 0.69 | 3.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | log_field_extraction | 0.000 | 0.000-0.000 | 1.00 | 1.00 | 10.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.00 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | template_render | 0.000 | 0.000-0.000 | 1.00 | 1.00 | 5.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
@@ -41,9 +41,9 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 
 | family | category | n | pos | neg | TPR | TNR | FAR90 |
 |---|---|---|---|---|---|---|---|
-| **pooled** | minimum_functionality | 204 | 50 | 154 | 0.00 | 0.99 | 1.00 |
+| **pooled** | minimum_functionality | 204 | 50 | 154 | 0.00 | 1.00 | 1.00 |
 | **pooled** | invariance | 652 | 550 | 102 | 0.86 | 1.00 | 0.00 |
-| **pooled** | directional | 575 | 75 | 500 | 1.00 | 1.00 | 0.00 |
+| **pooled** | directional | 771 | 173 | 598 | 1.00 | 1.00 | 0.00 |
 | stats_summary | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | stats_summary | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
 | matrix_ops | invariance | 25 | 25 | 0 | 1.00 | - | - |
@@ -68,14 +68,14 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | date_arith | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | date_arith | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
 | grid_path | invariance | 26 | 25 | 1 | 1.00 | 1.00 | 0.00 |
-| grid_path | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
+| grid_path | directional | 71 | 23 | 48 | 1.00 | 1.00 | 0.00 |
 | csp_assign | invariance | 25 | 25 | 0 | 1.00 | - | - |
-| csp_assign | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
+| csp_assign | directional | 75 | 25 | 50 | 1.00 | 1.00 | 0.00 |
 | schedule_slots | invariance | 25 | 25 | 0 | 1.00 | - | - |
-| schedule_slots | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
+| schedule_slots | directional | 75 | 25 | 50 | 1.00 | 1.00 | 0.00 |
 | topo_order | invariance | 25 | 25 | 0 | 1.00 | - | - |
-| topo_order | directional | 25 | 0 | 25 | - | 1.00 | 0.00 |
-| sql_result | minimum_functionality | 25 | 0 | 25 | - | 0.92 | 0.08 |
+| topo_order | directional | 75 | 25 | 50 | 1.00 | 1.00 | 0.00 |
+| sql_result | minimum_functionality | 25 | 0 | 25 | - | 1.00 | 0.00 |
 | sql_result | invariance | 25 | 25 | 0 | 1.00 | - | - |
 | sql_result | directional | 50 | 25 | 25 | 1.00 | 1.00 | 0.00 |
 | code_patch | minimum_functionality | 79 | 0 | 79 | - | 1.00 | 1.00 |
@@ -100,8 +100,8 @@ Three buckets: `verifier_too_strict` (a correct answer rejected because of its s
 |---|---|---|---|---|---|
 | verifier_too_strict | 75 | 0 | 0 | 75 | 0 |
 | task_under_specified | 50 | 0 | 0 | 50 | 0 |
-| true_defect | 756 | 754 | 2 | 0 | 0 |
-| agreement | 550 | 0 | 0 | 0 | 550 |
+| true_defect | 854 | 854 | 0 | 0 | 0 |
+| agreement | 648 | 0 | 0 | 0 | 648 |
 | observe | 1 | 0 | 0 | 0 | 0 |
 
 First examples per bucket (full list in `attribution.csv`):
@@ -126,6 +126,7 @@ Cell = share of that class the verifier accepted. `n` is the number of probes in
 | date_arith | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | json_schema_extract | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | regex_construct | 1.00 (n=25) | - | - | 0.00 (n=50) | - | - |
+| sql_result | 1.00 (n=25) | - | 0.00 (n=25) | - | - | - |
 | table_aggregate | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | sort_multikey | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | interval_merge | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
@@ -134,7 +135,6 @@ Cell = share of that class the verifier accepted. `n` is the number of probes in
 | schedule_slots | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | topo_order | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
 | life_step | 1.00 (n=25) | - | - | - | 0.00 (n=25) | - |
-| sql_result | 1.00 (n=25) | - | 0.08 (n=25) | - | - | - |
 | code_patch | 1.00 (n=25) | - | 0.00 (n=25) | 0.00 (n=54) | - | 0.00 (n=102) |
 | unit_convert | 1.00 (n=25) | 0.00 (n=25) | - | - | 0.00 (n=25) | - |
 | log_field_extraction | 0.00 (n=75) | - | - | - | 0.00 (n=25) | - |
