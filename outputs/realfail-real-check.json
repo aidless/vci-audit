@@ -1,0 +1,275 @@
+{
+ "kind": "vci-realfail-exploit-check",
+ "source_run": {
+  "kind": "vci-realfail",
+  "version": "2.0",
+  "model": "qwen2.5:7b",
+  "model_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+  "host": "http://localhost:11434",
+  "seed": 20261104,
+  "n_tasks": 5,
+  "families": [
+   "arith_expression",
+   "unit_convert",
+   "stats_summary",
+   "base_convert",
+   "matrix_ops",
+   "date_arith",
+   "json_schema_extract",
+   "log_field_extraction",
+   "regex_construct",
+   "template_render",
+   "sql_result",
+   "table_aggregate",
+   "sort_multikey",
+   "interval_merge",
+   "grid_path",
+   "csp_assign",
+   "schedule_slots",
+   "topo_order",
+   "life_step",
+   "code_patch"
+  ],
+  "temperature": 0.0,
+  "max_tokens": 512,
+  "samples_per_task": 1,
+  "date": "2026-11-03 20:16:42 PST",
+  "generator_version": "5.1",
+  "segments": [
+   {
+    "families": [
+     "arith_expression",
+     "unit_convert",
+     "stats_summary",
+     "base_convert",
+     "matrix_ops",
+     "date_arith",
+     "json_schema_extract",
+     "log_field_extraction",
+     "regex_construct",
+     "template_render",
+     "table_aggregate",
+     "sort_multikey",
+     "interval_merge",
+     "grid_path",
+     "csp_assign",
+     "schedule_slots",
+     "topo_order",
+     "life_step",
+     "code_patch"
+    ],
+    "date": "2026-11-03 20:13:33 PST"
+   },
+   {
+    "families": [
+     "sql_result"
+    ],
+    "date": "2026-11-03 20:16:42 PST",
+    "note": "re-sampled after the round-10 second-dataset change"
+   }
+  ]
+ },
+ "note": "verifier-side only; no human labels exist for this run",
+ "per_family": {
+  "arith_expression": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 1,
+   "units": 16,
+   "units_ok": 9
+  },
+  "unit_convert": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 14,
+   "units_ok": 4
+  },
+  "stats_summary": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 25,
+   "units_ok": 0
+  },
+  "base_convert": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 26,
+   "units_ok": 3
+  },
+  "matrix_ops": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 40,
+   "units_ok": 0
+  },
+  "date_arith": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 21,
+   "units_ok": 12
+  },
+  "json_schema_extract": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 5,
+   "units": 30,
+   "units_ok": 30
+  },
+  "log_field_extraction": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 1,
+   "units": 75,
+   "units_ok": 35
+  },
+  "regex_construct": {
+   "tasks": 5,
+   "parse_ok": 4,
+   "tasks_passed": 0,
+   "units": 20,
+   "units_ok": 4
+  },
+  "template_render": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 25,
+   "units_ok": 0
+  },
+  "sql_result": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 3,
+   "units": 11,
+   "units_ok": 9
+  },
+  "table_aggregate": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 51,
+   "units_ok": 11
+  },
+  "sort_multikey": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 38,
+   "units_ok": 9
+  },
+  "interval_merge": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 26,
+   "units_ok": 0
+  },
+  "grid_path": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 15,
+   "units_ok": 2
+  },
+  "csp_assign": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 20,
+   "units_ok": 0
+  },
+  "schedule_slots": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 15,
+   "units_ok": 0
+  },
+  "topo_order": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 15,
+   "units_ok": 3
+  },
+  "life_step": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 28,
+   "units_ok": 0
+  },
+  "code_patch": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 0,
+   "units": 23,
+   "units_ok": 0
+  }
+ },
+ "code_patch_regrade": {
+  "note": "counterfactual replay of archived payloads through the round-10 realfail_adapt hook; the model was NOT re-run",
+  "records": [
+   {
+    "task_id": "code_patch-001",
+    "archived_passed": false,
+    "adapted_passed": true,
+    "archived_score": 0.0,
+    "adapted_score": 1.0,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-002",
+    "archived_passed": false,
+    "adapted_passed": true,
+    "archived_score": 0.0,
+    "adapted_score": 1.0,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-003",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 6
+   },
+   {
+    "task_id": "code_patch-004",
+    "archived_passed": false,
+    "adapted_passed": true,
+    "archived_score": 0.0,
+    "adapted_score": 1.0,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-005",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 6
+   }
+  ],
+  "archived_tasks_passed": 0,
+  "adapted_tasks_passed": 3,
+  "adapted_units_ok": 15,
+  "n_units": 27
+ },
+ "flagged_units": [],
+ "flagged_summary": {
+  "n": 0,
+  "accepted": 0,
+  "rejected": 0
+ }
+}

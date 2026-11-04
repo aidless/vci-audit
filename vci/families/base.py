@@ -123,6 +123,16 @@ class Family:
         extras = [str(k) for k in payload if k not in units]
         return answers, extras, None
 
+    def realfail_adapt(self, payload: Any) -> Any:
+        """Adapt a parsed real-model payload to the shape ``verify`` expects.
+
+        Real models answer through a JSON envelope (``{"answers": [...]}``);
+        most families consume that envelope in ``extract_answers``.  Families
+        whose verifier takes a scalar payload (e.g. source code) override this
+        hook.  Default: identity.
+        """
+        return payload
+
     def grade_item(self, task: Task, item: Dict[str, Any], answer: Any) -> Tuple[bool, str]:
         raise NotImplementedError
 

@@ -37,7 +37,7 @@ Standard library only. Python 3.9+.
 ```bash
 git clone <repo-url> vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate     # optional but recommended
-python3 -m pytest -q                                # 79 tests, ~2 s
+python3 -m pytest -q                                # 137 tests, ~2 s
 ```
 
 No `pip install` is required to run the audit; `pyproject.toml` exists so `pip install -e .[dev]`

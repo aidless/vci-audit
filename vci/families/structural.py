@@ -1030,3 +1030,17 @@ class CodePatch(Family):
 
     def grade_item(self, task, item, answer):  # pragma: no cover - verify is overridden
         return False, "code_patch uses verify()"
+
+    def realfail_adapt(self, payload):
+        """Real models return the module source as a JSON list of lines.
+
+        The verifier takes the source as a single string, so join the lines
+        here (harness layer).  The audit path is untouched: synthetic mutants
+        already carry string payloads.  Round-10 replay showed the un-adapted
+        envelope cost the archived real run 23/23 units (all false rejects).
+        """
+        if isinstance(payload, dict) and isinstance(payload.get("answers"), list):
+            payload = payload["answers"]
+        if isinstance(payload, (list, tuple)):
+            return "\n".join(str(x) for x in payload)
+        return payload

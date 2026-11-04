@@ -314,3 +314,43 @@ def test_analyze_tolerant_v2_repairs_multikey_pattern():
     assert v2["repairs"] == [f"{task.task_id}:r1"]
     assert v2["repairs_by_rule"]["keyed_unwrap"] == 1
     assert v2["tpr"] == 1.0
+
+
+# ----------------------------------------------------------- realfail_adapt
+def test_realfail_adapt_default_is_identity():
+    fam = by_name("arith_expression")
+    payload = {"answers": [1, 2]}
+    assert fam.realfail_adapt(payload) is payload
+
+
+def test_realfail_adapt_code_patch_joins_lines():
+    fam = by_name("code_patch")
+    assert fam.realfail_adapt({"answers": ["a", "b"]}) == "a\nb"
+    assert fam.realfail_adapt(["a", "b"]) == "a\nb"
+    assert fam.realfail_adapt("a\nb") == "a\nb"
+
+
+def test_realfail_adapt_repairs_code_patch_envelope():
+    """The archived real run returned code as a JSON list of lines; the raw
+    envelope is 100% false-rejected while the joined source is graded."""
+    import random as _random
+    from vci.schema import Candidate
+    fam = by_name("code_patch")
+    rng = _random.Random(family_seed(20261104, INDEX[fam.name]))
+    task = fam.generate(5, rng)[0]
+    good = fam.canonical(task)
+    bad = fam._variant(task, "buggy")
+    env_good = {"answers": good.splitlines()}
+    env_bad = {"answers": bad.splitlines()}
+    v_raw = fam.verify(task, Candidate("a", task.task_id, fam.name,
+                                       env_good, "real_model_output"))
+    v_good = fam.verify(task, Candidate("b", task.task_id, fam.name,
+                                        fam.realfail_adapt(env_good),
+                                        "real_model_output"))
+    v_bad = fam.verify(task, Candidate("c", task.task_id, fam.name,
+                                       fam.realfail_adapt(env_bad),
+                                       "real_model_output"))
+    assert not v_raw.passed          # the envelope itself is not Python source
+    assert v_good.passed             # joining repairs the false reject
+    assert v_good.score == 1.0
+    assert not v_bad.passed          # joining must not create false accepts

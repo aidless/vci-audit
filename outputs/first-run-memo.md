@@ -275,7 +275,7 @@ In priority order — each removes one of the ceilings above, and none is a cosm
 ## 9. Reproduce
 
 ```
-python3 -m pytest -q                       # 112 tests
+python3 -m pytest -q                       # 137 tests
 python3 -m vci audit --families all --out outputs
 python3 -m vci label --sheet annotations/blind.csv --out annotations/labels.csv \
     --qualification --group-by-family --shuffle-seed 7
@@ -559,14 +559,15 @@ splits each task into units with the model answer, the gold reference and the pe
 verdict.  One record (`regex_construct`) failed to produce parseable JSON.
 
 Results: **10/100 tasks accepted by the verifier, 89 real failures** (1 parse failure, 88
-semantic/format failures).  Against the strict gold reference at unit level, **131/131
-correct real answers were accepted** and **0/303 wrong real answers were accepted**.  The
-labels in that sentence are gold-checked, **not human**; the raw replies are archived for
-review.  `sql_result` was re-sampled after the second-dataset change and the manifest
-records the two segments.  These traces are deliberately **not merged into the VCI
-headline**: without a human sheet, mixing them into TPR/TNR would grade the verifier
-against itself.  They are the external-validity evidence and the seed for the next blind
-label sheet.
+semantic/format failures).  Against the strict gold reference at unit level, **131/146
+gold-correct real answers were accepted** and **0/288 wrong real answers were accepted**
+(earlier wording said 131/131 and 0/303; the code_patch regrade in §6 moved 15 units from
+"wrong" to "gold-correct", so the denominators are 146/288).  The labels in that sentence
+are gold-checked, **not human**; the raw replies are archived for review.  `sql_result` was
+re-sampled after the second-dataset change and the manifest records the two segments.
+These traces are deliberately **not merged into the VCI headline**: without a human sheet,
+mixing them into TPR/TNR would grade the verifier against itself.  They are the
+external-validity evidence and the seed for the next blind label sheet.
 
 ## 2. SQL: a provably discriminating second dataset
 
@@ -637,3 +638,40 @@ directional positives more than doubled with TPR 1.000.  The validity ceiling is
 human κ/α is 0 rows — and by the 50 AMB / 75 invariance false rejects.  Real traces now
 exist in the repo, but a blind human sheet on them is what would raise the ceiling; no
 model access was the blocker this round.
+
+## 5. Exploit-signature check on the real outputs (round 10, continued)
+
+`work/realfail_real_check.py` replays the archived run and mechanically flags the known
+memorization signatures the synthetic probes encode: regex patterns that are pure
+alternations of the visible positives or literally embed ≥2 of them, sql constant
+(no-FROM) queries or queries embedding ≥2 visible reference literals, and `code_patch`
+sources embedding ≥2 visible fixture outputs.  Result: **0 flagged units across all 500**
+(`outputs/realfail-real-check.json`).  The round-6 speculation that a stronger model would
+emit well-formed overfit exploits is therefore **not confirmed on this run** — the leak
+remains demonstrated only by synthetic probes.  One greedy 7b sample per task cannot rule
+the behaviour out; a temperature sweep would settle it.
+
+## 6. code_patch envelope false-rejects and the adapt hook (round 10, continued)
+
+The 7b run returned `code_patch` sources as a JSON list of lines (`{"answers": [...]}`),
+while the verifier takes a single source string: all 23 archived units were false-rejects
+("candidate is not Python source").  Replaying the archived payloads through a join — no
+re-sampling — makes 3/5 tasks fully correct (visible 5/5, holdout rows ok, adapted_score
+1.0); the two `count_vowels` tasks stay rejected, so the repair creates no false accepts
+(`outputs/realfail-real-check.json → code_patch_regrade`: tasks 0 → 3 of 5, units 0/23 →
+15/23 visible).  This is round-8's extraction fragility recurring on a second model, now
+with a permanent fix: `Family.realfail_adapt` (default identity; `CodePatch` joins
+list-of-lines) is applied inside `realfail run` (v2.1), so future runs grade the joined
+source.  Archived records are unchanged and the regrade stays explicitly counterfactual.
+The audit path is untouched: synthetic mutants already carry string payloads, so no probe
+verdict or VCI number moved.  137 tests pass, including three new adapt tests.
+
+## Next candidates (updated after §5/§6)
+
+1. **Re-run the real model with the v2.1 harness** (needs ollama) so `code_patch` records
+   are archived in adapted form; then re-issue the blind sheet including the 15 recovered
+   units.
+2. **Human labels** for the archived sheets.  Deterministic; needs a human.
+3. **Harness-level cross-task contamination experiment** (process verifier at the run
+   level, not per task).
+4. **Generalise `OVF`** beyond regex/code_patch via a random-20%-holdout probe.

@@ -31,7 +31,7 @@ from .metrics import cohen_kappa, wilson_interval
 from .registry import INDEX, by_name
 from .schema import Candidate
 
-REALFAIL_VERSION = "2.0"
+REALFAIL_VERSION = "2.1"
 
 DEFAULT_FAMILIES = [
     "arith_expression",
@@ -206,6 +206,9 @@ def run(families, n_tasks: int, seed: int, model: str, host: str,
                 continue
             payload, status = parse_payload(gen["text"], fam.payload_kind)
             rec["parse_status"] = status
+            # family hook joins e.g. code_patch's list-of-lines into source;
+            # without it the envelope is 100% false-rejected (round 10)
+            payload = fam.realfail_adapt(payload)
             rec["payload"] = payload
             cand = Candidate(cand_id=f"{task.task_id}-real", task_id=task.task_id,
                              family=fam.name, payload=payload,
