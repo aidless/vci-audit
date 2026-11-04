@@ -69,6 +69,8 @@ python3 -m vci selfcheck                 # mutants that contradict their own lab
 python3 -m vci annotate --per-family 3   # 60-row blind adjudication sheet
 python3 -m vci label --qualification --group-by-family --shuffle-seed 7
 python3 -m vci score-annotations         # recompute kappa from labels.csv without a full rerun
+python3 -m vci realfail-tolerant         # counterfactual: re-grade the archived realfail run
+                                         # with schema-tolerant extraction (round 8, offline)
 ```
 
 One command reproduces every deliverable in `outputs/`:

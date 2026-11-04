@@ -179,3 +179,138 @@ def test_sheet_contexts_are_nonempty_for_all_six_families():
                                         "evidence": verdict.evidence}}]}
         rows = realfail.emit_sheet(run, fams)
         assert rows and all(r["context"] for r in rows), name
+
+
+# ----------------------------------------------------------------- tolerant
+def _fixture_run(fam_name, mutate, seed=20261104, n_tasks=1):
+    """A one-task run whose archived verdict is computed by the current code."""
+    from vci.schema import Candidate
+    fam = by_name(fam_name)
+    rng = random.Random(family_seed(seed, INDEX[fam_name]))
+    task = fam.generate(seed and 1 or 1, rng)[0]
+    payload = {"answers": mutate(fam.canonical(task))}
+    verdict = fam.verify(task, Candidate("c", task.task_id, fam_name,
+                                         payload, "real_model_output"))
+    return ({"manifest": {"kind": "vci-realfail", "seed": seed, "n_tasks": 1,
+                          "families": [fam_name], "model": "m",
+                          "model_digest": None, "host": "h", "temperature": 0.0,
+                          "max_tokens": 64, "date": "2026-11-04"},
+             "records": [{"family": fam_name, "task_id": task.task_id,
+                          "parse_status": "ok", "payload": payload,
+                          "verdict": {"passed": verdict.passed,
+                                      "score": verdict.score,
+                                      "evidence": verdict.evidence}}]},
+            task)
+
+
+def test_tolerant_variants_rules():
+    assert realfail.tolerant_variants("plain") == [("plain", None)]
+    assert realfail.tolerant_variants({"pattern": "x"}) == [({"pattern": "x"}, None),
+                                                            ("x", "unwrap")]
+    assert realfail.tolerant_variants(853.35) == [(853.35, None), ("853.35", "num2str")]
+    assert realfail.tolerant_variants(7) == [(7, None), ("7", "num2str")]
+    # booleans are not numbers for this purpose
+    assert realfail.tolerant_variants(True) == [(True, None)]
+    # multi-key dicts are not unwrapped
+    assert realfail.tolerant_variants({"a": 1, "b": 2}) == [({"a": 1, "b": 2}, None)]
+
+
+def test_analyze_tolerant_repairs_numeric_money():
+    def mutate(ans):
+        out = list(ans)
+        out[1] = float(ans[1])  # money line as a JSON number
+        return out
+    run, task = _fixture_run("template_render", mutate)
+    if realfail._num_to_str(float(task.items[1]["expected"])) != task.items[1]["expected"]:
+        # pathological rounding in this seed's money line; pick another seed
+        run, task = _fixture_run("template_render", mutate, seed=7)
+    fams = {"template_render": by_name("template_render")}
+    labels = {f"{task.task_id}:{it['unit']}": True for it in task.items}
+    rep = realfail.analyze_tolerant(run, labels, fams)
+    assert rep["faithful_families"] == ["template_render"]
+    cell = rep["per_family"]["template_render"]
+    v1 = cell["variants"]["v1"]
+    assert v1["repairs"] == [f"{task.task_id}:s2"]
+    assert v1["repairs_by_rule"] == {"unwrap": 0, "num2str": 1}
+    assert cell["strict"]["tpr"] < 1.0 and v1["tpr"] == 1.0
+    assert len(v1["repaired_correct"]) == 1
+    assert v1["new_false_accepts"] == []
+
+
+def test_analyze_tolerant_repairs_wrapped_pattern():
+    def mutate(ans):
+        out = list(ans)
+        out[0] = {"pattern": out[0]}
+        return out
+    run, task = _fixture_run("regex_construct", mutate)
+    fams = {"regex_construct": by_name("regex_construct")}
+    labels = {f"{task.task_id}:{it['unit']}": True for it in task.items}
+    rep = realfail.analyze_tolerant(run, labels, fams)
+    cell = rep["per_family"]["regex_construct"]
+    v1 = cell["variants"]["v1"]
+    assert v1["repairs"] == [f"{task.task_id}:r1"]
+    assert v1["repairs_by_rule"]["unwrap"] == 1
+    assert v1["tpr"] == 1.0
+
+
+def test_analyze_tolerant_keeps_verdict_when_strict_already_ok():
+    run, task = _fixture_run("template_render", lambda a: list(a))
+    fams = {"template_render": by_name("template_render")}
+    labels = {f"{task.task_id}:{it['unit']}": True for it in task.items}
+    rep = realfail.analyze_tolerant(run, labels, fams)
+    cell = rep["per_family"]["template_render"]
+    assert cell["variants"]["v1"]["repairs"] == []
+    assert cell["strict"]["tpr"] == cell["variants"]["v1"]["tpr"] == 1.0
+
+
+def test_analyze_tolerant_wrong_answer_stays_rejected():
+    def mutate(ans):
+        out = list(ans)
+        out[1] = float(ans[1]) + 1.0  # wrong value, not a schema issue
+        return out
+    run, task = _fixture_run("template_render", mutate)
+    fams = {"template_render": by_name("template_render")}
+    labels = {f"{task.task_id}:{it['unit']}": it["unit"] != "s2"
+              for it in task.items}  # human says s2 is wrong
+    rep = realfail.analyze_tolerant(run, labels, fams)
+    cell = rep["per_family"]["template_render"]
+    assert cell["variants"]["v1"]["repairs"] == []
+    assert cell["variants"]["v1"]["tnr"] == 1.0 and cell["variants"]["v1"]["tpr"] == 1.0
+
+
+def test_analyze_tolerant_excludes_drifted_family():
+    run, task = _fixture_run("template_render", lambda a: list(a))
+    # simulate generator drift: corrupt one archived evidence flag
+    run["records"][0]["verdict"]["evidence"][0]["ok"] = False
+    fams = {"template_render": by_name("template_render")}
+    rep = realfail.analyze_tolerant(run, {}, fams)
+    assert rep["faithful_families"] == []
+    assert "template_render" in rep["excluded_families"]
+    assert rep["excluded_families"]["template_render"]["mismatched_units"] == 1
+    assert rep["n_units"] == 0
+
+
+def test_tolerant_variants_keyed_unwrap_is_v2_only():
+    d = {"pattern": "^x$", "description": "ends in x"}
+    assert realfail.tolerant_variants(d, "v1") == [(d, None)]
+    assert realfail.tolerant_variants(d, "v2") == [(d, None), ("^x$", "keyed_unwrap")]
+    # unknown keys are not unwrapped even in v2
+    d2 = {"regexp": "^x$", "note": "n"}
+    assert realfail.tolerant_variants(d2, "v2") == [(d2, None)]
+
+
+def test_analyze_tolerant_v2_repairs_multikey_pattern():
+    def mutate(ans):
+        out = list(ans)
+        out[0] = {"pattern": out[0], "description": "wrapped with metadata"}
+        return out
+    run, task = _fixture_run("regex_construct", mutate)
+    fams = {"regex_construct": by_name("regex_construct")}
+    labels = {f"{task.task_id}:{it['unit']}": True for it in task.items}
+    rep = realfail.analyze_tolerant(run, labels, fams)
+    cell = rep["per_family"]["regex_construct"]
+    assert cell["variants"]["v1"]["repairs"] == []
+    v2 = cell["variants"]["v2"]
+    assert v2["repairs"] == [f"{task.task_id}:r1"]
+    assert v2["repairs_by_rule"]["keyed_unwrap"] == 1
+    assert v2["tpr"] == 1.0

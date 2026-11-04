@@ -389,3 +389,192 @@ def analyze(payload: Dict[str, Any], labels: Dict[str, Optional[bool]],
         "per_family": per_family,
         "pooled": pooled,
     }
+
+
+# ----------------------------------------------------------------- tolerant
+# Round 8: counterfactual re-analysis of the archived run.  Human labels stay
+# the truth; the only thing that changes is the verifier's verdict when the
+# extraction layer is schema-tolerant.  Two rule variants are measured:
+#
+#   v1: unwrap single-key dicts ({"pattern": x} -> x); coerce JSON numbers to
+#       their shortest string form (853.35 -> "853.35").
+#   v2: v1 plus keyed unwrap for multi-key dicts carrying a known payload key
+#       ({"pattern": x, "description": ...} -> x).
+#
+# A family enters the analysis only if strict replay of the archived payload
+# against regenerated tasks reproduces the archived verdict bit-for-bit — this
+# excludes families whose generator has drifted since the run.
+
+TOLERANT_VERSION = "1.0"
+
+RULE_VARIANTS = {
+    "v1": ["unwrap", "num2str"],
+    "v2": ["keyed_unwrap", "unwrap", "num2str"],
+}
+
+_KEYED_PRIORITY = ("pattern", "sql", "answer", "query", "result", "output")
+
+
+def _num_to_str(x: Any) -> str:
+    if isinstance(x, int):
+        return str(x)
+    s = repr(float(x))
+    return s[:-2] if s.endswith(".0") else s
+
+
+def tolerant_variants(answer: Any, mode: str = "v1") -> List[Tuple[Any, Optional[str]]]:
+    """Reinterpretations of a raw answer, strict interpretation first."""
+    out: List[Tuple[Any, Optional[str]]] = [(answer, None)]
+    if isinstance(answer, dict):
+        if len(answer) == 1:
+            out.append((next(iter(answer.values())), "unwrap"))
+        elif mode == "v2":
+            for key in _KEYED_PRIORITY:
+                if key in answer:
+                    out.append((answer[key], "keyed_unwrap"))
+                    break
+    elif isinstance(answer, (int, float)) and not isinstance(answer, bool):
+        out.append((_num_to_str(answer), "num2str"))
+    return out
+
+
+def _safe_grade(fam, task, item, answer) -> bool:
+    try:
+        ok, _ = fam.grade_item(task, item, answer)
+        return bool(ok)
+    except Exception:  # verify() counts verifier exceptions as failure; mirror it
+        return False
+
+
+def _regen_tasks(payload: Dict[str, Any], families_by_name) -> Dict[str, Dict[str, Any]]:
+    seed = payload["manifest"]["seed"]
+    n_tasks = payload["manifest"]["n_tasks"]
+    cache: Dict[str, Dict[str, Any]] = {}
+    for fam_name in payload["manifest"]["families"]:
+        fam = families_by_name[fam_name]
+        rng = random.Random(family_seed(seed, INDEX[fam_name]))
+        cache[fam_name] = {t.task_id: t for t in fam.generate(n_tasks, rng)}
+    return cache
+
+
+def _replay_family(fam, tasks: Dict[str, Any],
+                   records: List[Dict[str, Any]]) -> Tuple[int, List[Dict[str, Any]]]:
+    """Strictly re-grade archived payloads.  Returns ``(mismatches, units)``
+    where each unit row carries the archived verdict and one tolerant verdict
+    per rule variant (``tol_v1`` / ``tol_v2`` with the rule that flipped it)."""
+    mismatches = 0
+    units: List[Dict[str, Any]] = []
+    for rec in records:
+        if "verdict" not in rec:
+            continue
+        task = tasks[rec["task_id"]]
+        ev_by_unit = {e["unit"]: e for e in rec["verdict"]["evidence"]}
+        answers: Dict[str, Any] = {}
+        if rec.get("payload") is not None:
+            try:
+                answers, _, _ = fam.extract_answers(task, rec["payload"])
+            except Exception:  # pragma: no cover - defensive
+                answers = {}
+        for item in task.items:
+            unit = item["unit"]
+            archived = bool(ev_by_unit.get(unit, {}).get("ok", False))
+            ans = answers.get(unit)
+            ok_strict = _safe_grade(fam, task, item, ans) if unit in answers else False
+            if ok_strict != archived:
+                mismatches += 1
+            row = {
+                "row_id": f"{rec['task_id']}:{unit}",
+                "family": rec["family"],
+                "archived_ok": archived,
+                "ok_strict": ok_strict,
+            }
+            for mode in RULE_VARIANTS:
+                ok_tol, rule = ok_strict, None
+                if not ok_strict and unit in answers:
+                    for alt, r in tolerant_variants(ans, mode)[1:]:
+                        if _safe_grade(fam, task, item, alt):
+                            ok_tol, rule = True, r
+                            break
+                row[f"ok_{mode}"] = ok_tol
+                row[f"rule_{mode}"] = rule
+            units.append(row)
+    return mismatches, units
+
+
+def _confusion_cell(units: List[Dict[str, Any]], labels: Dict[str, Optional[bool]],
+                    flag: str) -> Dict[str, Any]:
+    sub = [u for u in units if labels.get(u["row_id"]) is not None]
+    human = [bool(labels[u["row_id"]]) for u in sub]
+    verif = [bool(u[flag]) for u in sub]
+    tp = sum(1 for h, v in zip(human, verif) if h and v)
+    fn = sum(1 for h, v in zip(human, verif) if h and not v)
+    tn = sum(1 for h, v in zip(human, verif) if not h and not v)
+    fp = sum(1 for h, v in zip(human, verif) if not h and v)
+    kap, po = cohen_kappa(human, verif) if sub else (None, None)
+    return {
+        "n": len(sub), "pos": tp + fn, "neg": tn + fp,
+        "tp": tp, "fn": fn, "tn": tn, "fp": fp,
+        "tpr": tp / (tp + fn) if tp + fn else None,
+        "tnr": tn / (tn + fp) if tn + fp else None,
+        "kappa": kap, "po": po,
+        "tpr_ci": wilson_interval(tp, tp + fn) if tp + fn else None,
+        "tnr_ci": wilson_interval(tn, tn + fp) if tn + fp else None,
+    }
+
+
+def _variant_block(units: List[Dict[str, Any]], labels: Dict[str, Optional[bool]],
+                   mode: str) -> Dict[str, Any]:
+    repairs = [u for u in units if not u["archived_ok"] and u[f"ok_{mode}"]]
+    breaks = [u for u in units if u["archived_ok"] and not u[f"ok_{mode}"]]
+    assert not breaks, "tolerant grading must be a superset of strict grading"
+    return {
+        **_confusion_cell(units, labels, f"ok_{mode}"),
+        "repairs": [u["row_id"] for u in repairs],
+        "repairs_by_rule": {r: sum(1 for u in repairs if u[f"rule_{mode}"] == r)
+                            for r in RULE_VARIANTS[mode]},
+        "repaired_correct": [u["row_id"] for u in repairs
+                             if labels.get(u["row_id"]) is True],
+        "new_false_accepts": [u["row_id"] for u in repairs
+                              if labels.get(u["row_id"]) is False],
+    }
+
+
+def analyze_tolerant(payload: Dict[str, Any], labels: Dict[str, Optional[bool]],
+                     families_by_name) -> Dict[str, Any]:
+    tasks_by_family = _regen_tasks(payload, families_by_name)
+    faithful: List[str] = []
+    excluded: Dict[str, Any] = {}
+    all_units: List[Dict[str, Any]] = []
+    per_family: Dict[str, Any] = {}
+    for fam_name in payload["manifest"]["families"]:
+        fam = families_by_name[fam_name]
+        recs = [r for r in payload["records"] if r["family"] == fam_name]
+        mismatches, units = _replay_family(fam, tasks_by_family[fam_name], recs)
+        if mismatches:
+            excluded[fam_name] = {
+                "reason": "strict replay does not reproduce the archived verdict "
+                          "(generator drift since the run); family excluded",
+                "mismatched_units": mismatches,
+            }
+            continue
+        faithful.append(fam_name)
+        all_units.extend(units)
+        per_family[fam_name] = {
+            "strict": _confusion_cell(units, labels, "ok_strict"),
+            "variants": {m: _variant_block(units, labels, m) for m in RULE_VARIANTS},
+        }
+    return {
+        "kind": "vci-realfail-tolerant",
+        "version": TOLERANT_VERSION,
+        "source_run": payload["manifest"],
+        "rule_variants": RULE_VARIANTS,
+        "faithful_families": faithful,
+        "excluded_families": excluded,
+        "n_units": len(all_units),
+        "per_family": per_family,
+        "pooled": {
+            "strict": _confusion_cell(all_units, labels, "ok_strict"),
+            "variants": {m: _variant_block(all_units, labels, m)
+                         for m in RULE_VARIANTS},
+        },
+    }

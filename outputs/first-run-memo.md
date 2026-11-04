@@ -382,3 +382,52 @@ audit is internally invariant to the change.  Where the defect actually bit was 
 tasks — which is exactly why it was found by hand-grading real outputs and not by the
 probe suite.  The 8 affected units in the round-6 human sheet stay as labelled (the model
 was wrong under both readings).  The validity ceiling of §7 is unchanged.
+
+---
+
+# Round-8 addendum — schema-tolerant extraction, measured as a counterfactual (2026-11-04)
+
+R6.3 said deployment grading of weak models would first need output-schema tolerant
+extraction.  Round 8 measures that counterfactual on the archived round-6 run **without
+re-sampling the model**: `python3 -m vci realfail-tolerant` replays every archived payload
+through regenerated tasks, re-grades each unit under two tolerant rule variants, and
+recomputes agreement against the frozen human labels.  A family enters only if strict
+replay reproduces its archived verdict bit-for-bit.  All six families passed; note that
+arith_expression's round-7 precedence fix changed 8 reference values but 0 verdicts (the
+model was already wrong on all 8), so the replay is verdict-identical.
+
+Rule variants: **v1** = unwrap single-key dicts (`{"sql": …}`) + coerce JSON numbers to
+strings; **v2** = v1 + keyed unwrap for multi-key dicts carrying a payload key
+(`{"pattern": …, "description": …}`).
+
+| variant | pooled TPR | pooled TNR | κ | units flipped | of which correct | new false accepts |
+|---|---|---|---|---|---|---|
+| strict (baseline) | 0.946 | 1.000 | 0.948 | — | — | — |
+| v1 | 0.981 | 0.998 | 0.979 | 14 | 13 | 1 |
+| v2 | **1.000** | 0.993 | 0.992 | 23 | 20 | 3 |
+
+Per family (v2): template_render TPR .931 → 1.000; sql_result .083 → 1.000 (TNR .982);
+regex_construct .000 → 1.000 (TNR .980).  v2 repairs **all 20** round-6 false rejects.
+
+The three new false accepts are verifier weaknesses the strict path never reached — they
+only become visible once tolerant extraction lets the answers in:
+
+1. `regex_construct-009:r3` — `.*\d{1,3}` for a "starts with a lower-case letter, then
+   3-16 chars of [a-z0-9_]" spec passes the sampled pos/neg probes under fullmatch
+   semantics (the probe set contains no short lowercase-then-digit counterexample).
+2. `regex_construct-022:r1` — an alternation hardcoding the three visible positive IPs;
+   passes the sampled probes, fails the spec.  Both are the known loose-probe class
+   (round-5's open regex leak), now observed on real outputs.
+3. `sql_result-006:q2` — `ORDER BY AVG(amount) DESC` where the task demanded order by
+   region; for this particular data the two orderings coincide, so result comparison
+   passes (data-coincidence false accept).
+
+So R6.2-2's "≥18 units, zero TNR cost" estimate is refined by measurement: the repair
+count is 14 (v1) to 23 (v2) and the cost is small but **not** zero (1–3 new false accepts
+out of 410 negatives, TNR ≥ 0.993).  Tolerance trades a little TNR for a lot of TPR.  If
+tolerant extraction is adopted, v2's keyed unwrap should ship together with tightened
+regex pos/neg probes — that is exactly where its new false accepts landed.
+
+Artifact: `work/realfail_tolerant.json`.  Offline tests +8 (variant rules, per-rule
+repairs, wrong-answer-stays-rejected, multi-key keyed unwrap, generator-drift exclusion).
+Nothing in this section re-ran the model; the raw run and the human labels are untouched.

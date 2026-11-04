@@ -147,6 +147,46 @@ def cmd_realfail_sheet(args):
     return 0
 
 
+def cmd_realfail_tolerant(args):
+    import json
+    from . import realfail
+    with open(args.run, encoding="utf-8") as fh:
+        payload = json.load(fh)
+    labels = realfail.load_human_labels(args.labels)
+    fams = {f.name: f for f in registry.FAMILIES}
+    rep = realfail.analyze_tolerant(payload, labels, fams)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    print(f"faithful families: {', '.join(rep['faithful_families'])}")
+    for fam, why in rep["excluded_families"].items():
+        print(f"  EXCLUDED {fam}: {why['mismatched_units']} replay mismatches")
+
+    def _fmt(x):
+        return "n/a" if x is None else f"{x:.3f}"
+
+    modes = list(rep["rule_variants"])
+    for fam, c in rep["per_family"].items():
+        s = c["strict"]
+        for m in modes:
+            v = c["variants"][m]
+            print(f"  {fam:22s} {m} TPR {_fmt(s['tpr'])} -> {_fmt(v['tpr'])} "
+                  f"TNR {_fmt(s['tnr'])} -> {_fmt(v['tnr'])} "
+                  f"repairs={len(v['repairs'])} "
+                  f"(correct={len(v['repaired_correct'])}, "
+                  f"new FA={len(v['new_false_accepts'])})")
+    s = rep["pooled"]["strict"]
+    for m in modes:
+        v = rep["pooled"]["variants"][m]
+        print(f"  {'POOLED':22s} {m} TPR {_fmt(s['tpr'])} -> {_fmt(v['tpr'])} "
+              f"TNR {_fmt(s['tnr'])} -> {_fmt(v['tnr'])} "
+              f"kappa {_fmt(s['kappa'])} -> {_fmt(v['kappa'])} "
+              f"repairs={len(v['repairs'])} "
+              f"(correct={len(v['repaired_correct'])}, "
+              f"new FA={len(v['new_false_accepts'])})")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_realfail_analyze(args):
     import json
     from . import realfail
@@ -325,6 +365,14 @@ def build_parser():
     ra.add_argument("--labels", default="work/realfail_human.csv")
     ra.add_argument("--out", default="work/realfail_analysis.json")
     ra.set_defaults(fn=cmd_realfail_analyze)
+
+    rt = sub.add_parser("realfail-tolerant",
+                        help="counterfactual: re-grade the archived run with "
+                             "schema-tolerant extraction (round 8)")
+    rt.add_argument("--run", default="work/realfail.json")
+    rt.add_argument("--labels", default="work/realfail_human.csv")
+    rt.add_argument("--out", default="work/realfail_tolerant.json")
+    rt.set_defaults(fn=cmd_realfail_tolerant)
 
     c = sub.add_parser("score-annotations", help="recompute kappa from labels")
     c.add_argument("--labels", default="annotations/labels.csv")
