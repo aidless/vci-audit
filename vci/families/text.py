@@ -268,11 +268,17 @@ class LogFieldExtraction(Family):
 
 
 class _Spec:
-    __slots__ = ("kind", "rule", "pos", "neg", "pattern", "loose", "tight")
+    __slots__ = ("kind", "rule", "pos", "neg", "pattern", "loose", "tight",
+                 "held_pos", "held_neg")
 
-    def __init__(self, kind, rule, pos, neg, pattern, loose, tight):
+    def __init__(self, kind, rule, pos, neg, pattern, loose, tight,
+                 held_pos=(), held_neg=()):
         self.kind, self.rule, self.pos, self.neg = kind, rule, pos, neg
         self.pattern, self.loose, self.tight = pattern, loose, tight
+        # Held-out strings: never shown in the prompt, never read by the probe
+        # builder.  A pattern that enumerates the labelled examples fails here;
+        # a pattern that encodes the stated rule passes.
+        self.held_pos, self.held_neg = list(held_pos), list(held_neg)
 
 
 def _regex_specs(rng) -> List[_Spec]:
@@ -293,26 +299,41 @@ def _regex_specs(rng) -> List[_Spec]:
     filen = ["main.pyc", "main.PY", "x", "main.py.bak"]
     bytepairs = ["0a 1b 2c", "ff 00 7e", "aa bb"]
     byten = ["0a1b", "0a 1b 2", "0a 1b 2c 3", "zz 00"]
-    return [
+    specs = [
         _Spec("hex_color", "exactly #RRGGBB with six hex digits",
               hexp + hexq, hexn, r"^#[0-9a-fA-F]{6}$",
-              r"^#?[0-9a-fA-F]{1,8}$", r"^#[0-9a-f]{6}$"),
+              r"^#?[0-9a-fA-F]{1,8}$", r"^#[0-9a-f]{6}$",
+              held_pos=["#4B2E11", "#aBcDeF"], held_neg=["#4B2E1", "#4B2E1Z"]),
         _Spec("ipv4_shape", "four dot-separated groups of 1-3 digits",
               ip, ipn, r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",
-              r"^\d{1,3}(?:\.\d{1,3}){2,4}$", r"^\d{1,3}\.\d{1,3}\.\d{1,3}$"),
+              r"^\d{1,3}(?:\.\d{1,3}){2,4}$", r"^\d{1,3}\.\d{1,3}\.\d{1,3}$",
+              held_pos=["7.7.7.7", "123.45.6.78"], held_neg=["7.7.7", "7.7.7.7.7"]),
         _Spec("identifier", "starts with a lower-case letter, then 3-16 chars of [a-z0-9_]",
               ids, idn, r"^[a-z][a-z0-9_]{3,16}$",
-              r"^[a-z0-9_]+$", r"^[a-z][a-z0-9_]{4,16}$"),
+              r"^[a-z0-9_]+$", r"^[a-z][a-z0-9_]{4,16}$",
+              held_pos=["zz_001", "item_x7"], held_neg=["ZZ_001", "a_b"]),
         _Spec("iso_date_shape", "four-digit year, two-digit month and day, dash separated",
               dates, daten, r"^\d{4}-\d{2}-\d{2}$",
-              r"^\d{4}-\d{1,2}-\d{1,2}$", r"^\d{2}-\d{2}-\d{2}$"),
+              r"^\d{4}-\d{1,2}-\d{1,2}$", r"^\d{2}-\d{2}-\d{2}$",
+              held_pos=["2001-02-03", "2030-12-31"], held_neg=["2001-2-3", "20010203"]),
         _Spec("python_file", "ends in .py, base name from [A-Za-z0-9_.-]",
               files, filen, r"^[A-Za-z0-9_.-]+\.py$",
-              r"^[A-Za-z0-9_.-]+\.py\.bak$", r"^[A-Za-z0-9_-]{1,2}\.py$"),
+              r"^[A-Za-z0-9_.-]+\.py\.bak$", r"^[A-Za-z0-9_-]{1,2}\.py$",
+              held_pos=["notes.py", "draft-v3.py"], held_neg=["notes.pyc", "notes.PY"]),
         _Spec("hex_bytes", "space-separated pairs of lower-case hex digits",
               bytepairs, byten, r"^[0-9a-f]{2}(?: [0-9a-f]{2})*$",
-              r"^[0-9a-f]{2}.*$", r"^[0-9a-f]{2}(?: [0-9a-f]{2}){3,}$"),
+              r"^[0-9a-f]{2}.*$", r"^[0-9a-f]{2}(?: [0-9a-f]{2}){3,}$",
+              held_pos=["01 02 03", "ab cd"], held_neg=["01 02 0", "AB CD"]),
     ]
+    # The canonical rule must itself classify the held-out set correctly; a
+    # held-out string that the reference pattern cannot handle would make every
+    # candidate wrong for a reason unrelated to overfitting.
+    for sp in specs:
+        for s in sp.held_pos:
+            assert re.fullmatch(sp.pattern, s) is not None, (sp.kind, s)
+        for s in sp.held_neg:
+            assert re.fullmatch(sp.pattern, s) is None, (sp.kind, s)
+    return specs
 
 
 class RegexConstruct(Family):
@@ -339,7 +360,9 @@ class RegexConstruct(Family):
                   "are applied with full-string matching semantics (equivalent to "
                   "re.fullmatch).  Answer with one pattern per line.\n" + "\n".join(lines))
         meta = {"specs": [{"kind": sp.kind, "pos": sp.pos, "neg": sp.neg,
-                           "loose": sp.loose, "tight": sp.tight} for sp in chosen]}
+                           "loose": sp.loose, "tight": sp.tight,
+                           "held_pos": sp.held_pos, "held_neg": sp.held_neg}
+                          for sp in chosen]}
         return self.task(f"regex_construct-{idx:03d}", prompt, items, meta)
 
     def canonical(self, task):
@@ -391,8 +414,16 @@ class RegexConstruct(Family):
         for s in sp["neg"]:
             if _guarded_fullmatch(compiled, s):
                 bad.append(f"accepts {s!r}")
-        return (not bad), ("all labelled strings classified correctly" if not bad
-                           else "; ".join(bad[:3]))
+        # Held-out strings: a pattern that merely enumerates the labelled
+        # examples with ``|`` passes the loops above yet fails here.
+        for s in sp.get("held_pos", ()):
+            if not _guarded_fullmatch(compiled, s):
+                bad.append(f"rejects held-out {s!r}")
+        for s in sp.get("held_neg", ()):
+            if _guarded_fullmatch(compiled, s):
+                bad.append(f"accepts held-out {s!r}")
+        return (not bad), ("all labelled and held-out strings classified correctly"
+                           if not bad else "; ".join(bad[:3]))
 
 
 def _guarded_fullmatch(compiled, s: str) -> bool:

@@ -431,3 +431,116 @@ regex pos/neg probes — that is exactly where its new false accepts landed.
 Artifact: `work/realfail_tolerant.json`.  Offline tests +8 (variant rules, per-rule
 repairs, wrong-answer-stays-rejected, multi-key keyed unwrap, generator-drift exclusion).
 Nothing in this section re-ran the model; the raw run and the human labels are untouched.
+
+---
+
+# Round 9 (2026-11-04): MFT-only tightening -- behavioural verifier hardening
+
+Scope: **minimum-functionality probes only**.  Invariance and directional verifiers were
+not touched; their TPR is unchanged (invariance 0.8636, directional 1.000).  The pass was
+requested as the round-4 follow-up after the round-3 `code_patch` 0.131→0.756 lesson (that
+gain came from probes authored to match the verifier, not from discrimination).  It ran on
+top of rounds 4–8.
+
+## What changed
+
+1. `code_patch` (`vci/families/structural.py`): the verifier now executes the suite **twice
+   in one process** and appends a **held-out input set** (`_CODE_HOLDOUT`, 2 inputs per
+   template) that is not in the prompt, not in the fixture table the solver sees, and not
+   imported by `vci.adversarial`.  Expected answers for the held-out inputs come from the
+   task's own reference implementation.  This closes `HARD` (lookup table of the visible
+   test answers), `OVF` (rules keyed to the visible shapes/sizes) and `STATE/x02` (correct
+   for the first calls, degrading afterwards).
+2. `regex_construct` (`vci/families/text.py`): every spec now carries held-out positive and
+   negative strings that the prompt never shows and the probe builder never reads.  The
+   verifier classifies the candidate pattern on them too.  This closes the alternation
+   overfit that round 8 observed on real outputs (`regex_construct-022:r1`).
+3. Probes (`vci/adversarial.py`, generator 4.0 → 5.0): code_patch `OVF` grows from 4 to 54
+   probes (two per task, plus the historic chunk probe); `STATE` stays at 4 per task = 100.
+   The new OVF payloads are asserted at test time to reproduce the reference answer on
+   **every visible case** and to fail at least one held-out case, so they are genuine
+   overfits rather than plain mutations.
+
+## MFT per-family TNR, before → after (Wilson 95% CI on the after value)
+
+| family | MFT negatives | TNR before | TNR after | 95% CI (after) |
+|---|---|---|---|---|
+| code_patch | 79 | **0.000** (n=29) | **1.000** | [0.954, 1.000] |
+| regex_construct | 50 | **0.500** | **1.000** | [0.929, 1.000] |
+| sql_result | 25 | 0.920 | 0.920 | [0.750, 0.978] |
+| other 17 families | 0 (AMB positives only) | n/a | n/a | — |
+| **pooled MFT** | **154** | **0.4615** (n=104) | **0.9870** | — |
+
+"before" is the round-8 committed audit; "after" is this run.  The family-level before
+values are reproduced on the **current** probe set by the paired check below, so the
+headline delta is not an artifact of adding probes.
+
+## Is this real discrimination or another probe artifact?
+
+Self-check, in the order round 3 taught:
+
+1. **Paired design.** Same probes, two verifiers (`work/mft_after_check.py`).  Legacy
+   (round-3 harness / visible-only regex grading) vs hardened: code_patch 0.000 → 1.000 on
+   the same 79 negatives, regex 0.500 → 1.000 on the same 50.  Only the verifier differs.
+2. **Pre-existing probes carried the delta.** `code_patch x01` (HARD) and `x06` (chunk OVF)
+   and the regex `x01` alternation were authored before this round.  They flip
+   accepted → rejected without any probe edit, so the gain is not "write a probe the fix
+   happens to catch".
+3. **Construct validity is tested, not asserted.** `test_code_patch_overfit_rules_are_rejected_only_by_heldout_inputs`
+   runs every OVF payload on all five templates and requires it to be correct on every
+   visible case and wrong on at least one held-out case.  A payload that were also wrong on
+   a visible case would be a plain mutation and could not support the attribution.
+4. **Held-out independence.** The regex held-out strings are disjoint from the labelled
+   strings the prompt shows (`test_regex_overfit_patterns_are_rejected_by_heldout_strings`);
+   the code_patch held-out inputs live in a separate structure that `vci.adversarial` does
+   not import (`test_only_the_code_patch_fixture_table_is_imported`).
+5. **No new false rejects.** Accept-expected probes: code_patch 25/25 equivalents still
+   accepted, regex 25/25 equivalents still accepted, and every other family's accept-expected
+   pass count is identical before/after (false rejects unchanged in all 20 families).
+   Invariance TPR 0.8636 and directional TPR 1.000 are unchanged.
+
+Residual risk: the held-out sets and the OVF payload thresholds were written by the same
+author in the same round.  The mitigating evidence is items 1–3 (pre-existing probes and a
+construct-validity test).  What would falsify the claim: a correct-but-unusual patch that
+passes the visible suite and fails held-out inputs.  None was found in the 10 reference
+implementations tested, but this is synthetic evidence, not human-labelled.
+
+## STATE/x02 and what remains undecidable
+
+- `STATE/x02` is closed for `code_patch`: invariance-category TNR 0.7549 → 1.0000 (101
+  rejected negatives, 0 accepted; `resource` class 0/101 accepted).  The two-pass harness
+  makes late-call degradation observable.
+- **Bounded call budget.** Two passes only catch state that manifests within the tested call
+  count.  A candidate that is correct for the first 1,000 calls and degrades afterwards
+  survives any fixed repeat count; deciding that needs a call-budget clause in the task
+  contract, not a better verifier.  Reported as undecidable, not fixed.
+- **Cross-task memory contamination.** Each task is verified in its own subprocess, so
+  leakage *between tasks* is invisible by construction.  The within-task arity memo (`x05`)
+  is caught; cross-task reuse would need the harness to share one process across tasks and a
+  task-order-dependent expected answer.  Undecidable at the verifier level.
+- **17 fixture-replay families (unit_convert, log_field_extraction, template_render, …).**
+  Their payload is a static value, not an executable procedure.  There is no "rule" to
+  overfit and no call history to contaminate: `OVF` and `STATE` are **not constructible**,
+  not merely uncaught.  This is why "≥50 OVF/STATE per family" is achieved only for
+  code_patch (OVF 54, STATE 100) and regex (OVF 50).  Writing probes there would measure
+  nothing.
+- **sql_result, 2/25 residual HARD accepts.** `rich_depts` reads only the `depts` table,
+  which is identical on the visible and probe datasets, and for two task instances
+  `regions_over_3`'s probe rows do not cross the `HAVING` boundary, so
+  `expected_probe == expected_primary` and a constant answer passes both.  This is a
+  **degenerate held-out dataset**, not verifier blindness.  It is decidable in principle
+  with a provably discriminating second dataset (a second `depts` table plus a generated
+  probe set guaranteed to change every answer); that is a task-data change, not done here.
+- **50 MFT false rejects remain (unit_convert 25, template_render 25).**  These are
+  `spec_ambiguity` positives (AMB), i.e. the task spec does not determine an answer; the
+  verifier is right to reject.  Unchanged and out of scope.
+
+## Verdict
+
+MFT is **fixable, not structural** for the three defects that matter: hardcoding,
+visible-case overfitting and state contamination are all decided by behaviour (unseen
+inputs, changed shapes, repeated calls).  The gain (0.4615 → 0.9870) is real discrimination
+on a paired design, not a probe artifact.  The residual MFT leak is 2/25 in `sql_result`
+(degenerate held-out data) and the 50 AMB false rejects (under-specified tasks); the
+undecidable parts are cross-task contamination and unbounded call budgets, which need task
+interface guarantees rather than tighter verifiers.

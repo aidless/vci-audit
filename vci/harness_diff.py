@@ -1,8 +1,9 @@
 """Harness differential experiment: one task set, two execution strategies.
 
-Strategy A is the production ``code_patch`` harness: every case is called once
-inside a single subprocess.  Strategy B runs the whole suite *twice* in the
-same subprocess and rejects when the second pass disagrees with the first.
+Strategy A is the round-3 production ``code_patch`` harness (``verify_legacy``):
+every case is called once inside a single subprocess.  Strategy B runs the whole
+suite *twice* in the same subprocess and rejects when the second pass disagrees
+with the first.
 
 Hypothesis under test (round-3 memo, section 8 item 4): the surviving
 ``STATE/x02`` leak -- correct for the first five calls, ``None`` afterwards --
@@ -13,8 +14,8 @@ verdict.  The experiment reports the flip matrix, per-strategy trust on the
 non-aligned probes, the per-seed spread of the delta, and B's behaviour on the
 aligned mutant set (where A and B should agree on every candidate).
 
-Nothing here changes the production audit: ``CodePatch.verify`` is untouched
-and the audit keeps calling strategy A.
+Round 4 adopted strategy B (plus held-out cases) as ``CodePatch.verify``; this
+module keeps A as ``verify_legacy`` so the differential remains reproducible.
 """
 import json
 import random
@@ -106,7 +107,7 @@ def _aligned_agreement(fam, tasks) -> Dict[str, Any]:
 
 
 def verify_a(fam, task, cand):
-    return fam.verify(task, cand)
+    return fam.verify_legacy(task, cand)
 
 
 def verify_b(fam, task, cand):

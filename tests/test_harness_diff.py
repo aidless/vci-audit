@@ -36,8 +36,8 @@ def test_strategy_b_catches_the_x02_stateful_leak():
     task = _tasks()[0]
     x02 = _probe(task, "-x02")
     assert x02.operator == "STATE"
-    # Sanity: strategy A still accepts it (that is the known leak) ...
-    assert FAM.verify(task, _cand(task, x02)).passed
+    # Sanity: strategy A (round-3 harness) still accepts it (that was the leak) ...
+    assert FAM.verify_legacy(task, _cand(task, x02)).passed
     # ... and strategy B rejects it.
     assert not FAM.verify_twice(task, _cand(task, x02)).passed
 

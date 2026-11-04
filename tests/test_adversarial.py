@@ -131,27 +131,56 @@ def _run(family, expect_class, heavy=False):
 
 
 # --- Known leaks: the verifier disagrees with the independent label ---------
-def test_code_patch_hardcoded_answers_are_accepted_known_leak():
-    """A lookup table of the hidden-test answers passes the subprocess verifier."""
+def test_code_patch_hardcoded_answers_are_now_rejected():
+    """Round 4 fix: the verifier runs held-out inputs the table cannot answer."""
     pairs = _run("code_patch", "hardcoded_expected")
     assert pairs
-    assert all(v.passed for _, v in pairs)
+    assert not any(v.passed for _, v in pairs)
 
 
-def test_code_patch_stateful_output_is_invisible_known_leak():
-    """Round 3: only the *first-call-only* defect is still invisible.
+def test_code_patch_stateful_output_is_now_caught():
+    """Round 4 fix: the suite runs twice, so late-call degradation is visible.
 
-    The one-shot subprocess verifier runs every case in a single import, so it
-    does see "fails from the second invocation on", alternation and a
-    arity-keyed memo -- those three are caught.  What it cannot see is a solver
-    that is right exactly once: `x02` is correct for its first five calls, which
-    covers the whole harness, and returns `None` afterwards.  That is the leak
-    this test registers, by id, so a future fix shows up as a test change.
+    All four state probes (x02 first-five-calls-only, x03 second-call, x04
+    alternation, x05 arity memo) are rejected; none is a known leak any more.
     """
     pairs = _run("code_patch", "resource")
     assert pairs
     known_leaks = {p.probe_id for p, v in pairs if v.passed}
-    assert known_leaks == {"code_patch-001-x02"}, known_leaks
+    assert known_leaks == set(), known_leaks
+
+
+def test_code_patch_overfit_rules_are_rejected_only_by_heldout_inputs():
+    """Each OVF payload is correct on every visible case and wrong off-distribution.
+
+    This is the construct-validity check: if a payload were also wrong on a
+    visible case it would be a plain mutation, not an overfit, and the rejection
+    could not be attributed to the held-out suite.
+    """
+    from vci.families.structural import _CODE_HOLDOUT, _CODE_TEMPLATES
+
+    for tpl in _CODE_TEMPLATES:
+        name = tpl["name"]
+        ref = {}
+        exec(compile(tpl["correct"], "<ref>", "exec"), ref)
+        impl = adversarial._code_impl(name)[1].replace("def solve(", "def _impl(", 1)
+        for tail, _note in adversarial._CODE_OVF[name]:
+            ns = {}
+            exec(compile(impl + tail, "<probe>", "exec"), ns)
+            assert all(ns["solve"](*c) == ref["solve"](*c) for c in tpl["cases"]), name
+            assert any(ns["solve"](*c) != ref["solve"](*c)
+                       for c in _CODE_HOLDOUT[name]), name
+
+    fam = registry.by_name("code_patch")
+    task = fam.generate(1, random.Random(0))[0]
+    pairs = [p for p in adversarial.probes_for("code_patch", task)
+             if p.failure_class == "overfit_to_tests" and p.operator == "OVF"]
+    assert len(pairs) >= 2
+    for p in pairs:
+        cand = Candidate(cand_id=p.probe_id, task_id=task.task_id,
+                         family="code_patch", payload=p.payload,
+                         defect=p.failure_class)
+        assert not fam.verify(task, cand).passed, p.probe_id
 
 
 def test_log_equivalent_timestamps_are_rejected_known_over_strictness():
@@ -172,6 +201,34 @@ def test_independently_correct_implementations_are_accepted():
     pairs = _run("code_patch", "semantic_equivalent")
     assert pairs
     assert all(v.passed for _, v in pairs)
+
+
+def test_regex_overfit_patterns_are_rejected_by_heldout_strings():
+    """Enumerating the labelled examples now fails on unseen strings.
+
+    Construct validity: the x01 pattern classifies every labelled string that
+    the prompt shows correctly, so its rejection is attributable to the held-out
+    set, not to a plain error.  Equivalents of the canonical rule stay accepted.
+    """
+    fam = registry.by_name("regex_construct")
+    task = fam.generate(1, random.Random(0))[0]
+    pairs = [p for p in adversarial.probes_for("regex_construct", task)
+             if p.failure_class == "overfit_to_tests"]
+    assert pairs
+    for p in pairs:
+        cand = Candidate(cand_id=p.probe_id, task_id=task.task_id,
+                         family="regex_construct", payload=p.payload,
+                         defect=p.failure_class)
+        assert not fam.verify(task, cand).passed, p.probe_id
+    for payload, _why in fam.equivalents(task, random.Random(1)):
+        cand = Candidate(cand_id="eq", task_id=task.task_id,
+                         family="regex_construct", payload=payload,
+                         defect="semantic_equivalent")
+        assert fam.verify(task, cand).passed
+    # The held-out strings are disjoint from what the prompt shows.
+    for sp in task.meta["specs"]:
+        assert set(sp["held_pos"]) - set(sp["pos"])
+        assert set(sp["held_neg"]) - set(sp["neg"])
 
 
 def test_only_the_code_patch_fixture_table_is_imported():

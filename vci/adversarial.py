@@ -34,7 +34,7 @@ cannot see.
 | `CR` | stale constant / off-by-one | easy to kill with exact fixtures; over-weights small numeric errors |
 | `SDL` | a missing step / dropped functionality | only visible if the verifier asserts that step at all |
 | `TR` | transposed operands or wrong emission order | looks equivalent whenever the checker sorts or compares sets |
-| `OVF` | a rule that only holds on the labelled examples | at most one per family: cannot represent the overfitting space |
+| `OVF` | a rule that only holds on the labelled examples | executable-oracle families only; two-plus per task where a held-out set exists |
 | `HARD` | lookup table instead of an algorithm | obviously wrong in principle, yet invisible to a fixture-replaying harness |
 | `STATE` | answer depends on history, not input | needs a second invocation; one-shot verifiers cannot see it |
 | `NONDET` | same input, different answer | needs repeated calls; most harnesses call once |
@@ -158,7 +158,7 @@ OPERATORS = ("AOR", "ROR", "CR", "SDL", "TR", "OVF", "HARD", "STATE",
 
 #: Bumped whenever a probe payload changes, so a result file can be traced to
 #: the sample that produced it.
-GENERATOR_VERSION = "4.0"
+GENERATOR_VERSION = "5.0"
 
 
 @dataclass
@@ -1078,6 +1078,52 @@ def _code_impl(name: str) -> Tuple[Callable[..., Any], str]:
     return impls[name]
 
 
+#: Overfit tails appended to the independent ``_impl``.  Each is correct on every
+#: visible fixture case and wrong on the held-out inputs in
+#: ``structural._CODE_HOLDOUT``; that is what makes ``OVF`` measurable here rather
+#: than merely asserted.  Thresholds are read off the *visible* case set only.
+_CODE_OVF: Dict[str, List[Tuple[str, str]]] = {
+    "running_max": [
+        ("\ndef solve(nums):\n    if len(nums) > 3:\n        return []\n"
+         "    return _impl(nums)\n",
+         "empty list for any input longer than the largest visible case (3 items)"),
+        ("\ndef solve(nums):\n    if sum(1 for x in nums if x > 0) > 2:\n"
+         "        return []\n    return _impl(nums)\n",
+         "empty list whenever more than two positive values occur (visible max is 2)"),
+    ],
+    "count_vowels": [
+        ("\ndef solve(s):\n    if len(s) > 12:\n        return 0\n    return _impl(s)\n",
+         "zero for any string longer than the longest visible case (12 chars)"),
+        ("\ndef solve(s):\n    if sum(1 for ch in s.lower() if ch == 'a') > 3:\n"
+         "        return 0\n    return _impl(s)\n",
+         "zero whenever a string contains more than three 'a' characters (visible max is 3)"),
+    ],
+    "chunk": [
+        ("\ndef solve(items, k):\n    if len(items) > 5:\n        return []\n"
+         "    return _impl(items, k)\n",
+         "empty list for any input longer than the largest visible case (5 items)"),
+        ("\ndef solve(items, k):\n    if k > 3:\n        return []\n"
+         "    return _impl(items, k)\n",
+         "empty list for any chunk size above the largest visible k (3)"),
+    ],
+    "safe_div": [
+        ("\ndef solve(a, b):\n    if len(str(abs(a))) > 2:\n        return None\n"
+         "    return _impl(a, b)\n",
+         "None for any numerator outside the visible digit range (at most 2 digits)"),
+        ("\ndef solve(a, b):\n    if abs(a) > 10:\n        return None\n"
+         "    return _impl(a, b)\n",
+         "None for any numerator above the largest visible magnitude (10)"),
+    ],
+    "dedupe": [
+        ("\ndef solve(xs):\n    if len(xs) > 5:\n        return []\n    return _impl(xs)\n",
+         "empty list for any input longer than the largest visible case (5 items)"),
+        ("\ndef solve(xs):\n    if (max(xs) if xs else 0) > 9:\n        return []\n"
+         "    return _impl(xs)\n",
+         "empty list for any element above the largest visible value (9)"),
+    ],
+}
+
+
 def _code(task: Task, heavy: bool) -> List[Probe]:
     name = task.meta["template"]
     cases = _code_cases()[name]
@@ -1167,6 +1213,17 @@ def _code(task: Task, heavy: bool) -> List[Probe]:
             "the input changed, so the old correct answer must fail the new "
             "hidden cases", operator="DIR", task_override=override),
     ]
+    # Two overfit variants per template: both reproduce the reference answer on
+    # every *visible* case and degrade on held-out shapes.  They are written
+    # against the independent implementation, so their passing half is not the
+    # fixture source.  x11/x12 stay fixed across templates; x06 is retained as
+    # the historic chunk-only probe.
+    ovf_tails = _CODE_OVF[name]
+    for j, (tail, note) in enumerate(ovf_tails, start=11):
+        probes.append(_mk(task, j, "overfit_to_tests", "reject", impl + tail,
+                          note, "rule keyed to the visible case shapes/sizes only; "
+                                "fails on inputs outside that range",
+                          operator="OVF"))
     if name == "chunk":
         probes.append(_mk(task, 6, "overfit_to_tests", "reject",
                           "def solve(items, k):\n    if len(items) > 5:\n        return []\n"

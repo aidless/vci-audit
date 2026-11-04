@@ -786,6 +786,21 @@ _CODE_TEMPLATES = [
     },
 ]
 
+#: Held-out inputs, used by the verifier only.  They are *not* the fixture table
+#: the solver sees (``_CODE_TEMPLATES["cases"]``), are not echoed in the prompt,
+#: and are not read by ``vci.adversarial`` (which imports only ``_CODE_TEMPLATES``).
+#: A patch that only memorises the visible test answers fails here; a patch that
+#: implements the stated spec passes.  This is the behavioural discriminator for
+#: the ``HARD``/``OVF`` failure classes: it compares the candidate's answers on
+#: *inputs it never saw*, not against a string the audit author chose.
+_CODE_HOLDOUT: Dict[str, List[List[Any]]] = {
+    "running_max": [[[5, 2, 9, 1, 7]], [[-1, -3, -2, 0]]],
+    "count_vowels": [["Beautiful sunrise"], ["bananaaaaa"]],
+    "chunk": [[[1, 2, 3, 4, 5, 6, 7, 8], 3], [[6, 5, 4, 3, 2, 1], 4]],
+    "safe_div": [[100, 4], [12, 3]],
+    "dedupe": [[[1, 2, 3, 4, 5, 6]], [[10, 1, 10]]],
+}
+
 _HARNESS = r'''
 import json, sys
 payload = json.load(sys.stdin)
@@ -886,6 +901,14 @@ class CodePatch(Family):
         exec(compile(t["correct"], "<ref>", "exec"), fn)
         return [fn["solve"](*args) for args in t["cases"]]
 
+    def _holdout_expected(self, task):
+        """Reference answers for the held-out inputs (task oracle, not the solver)."""
+        name = task.meta["template"]
+        t = next(x for x in _CODE_TEMPLATES if x["name"] == name)
+        fn = {}
+        exec(compile(t["correct"], "<ref>", "exec"), fn)
+        return [fn["solve"](*args) for args in _CODE_HOLDOUT[name]]
+
     def canonical(self, task):
         t = next(x for x in _CODE_TEMPLATES if x["name"] == task.meta["template"])
         return t["correct"]
@@ -915,7 +938,8 @@ class CodePatch(Family):
         return ("def solve(*args):\n    table = {\n    " + table +
                 "\n    }\n    return table.get(repr(args), '__wrong__')\n")
 
-    def _verify_with(self, task, candidate: Candidate, harness: str) -> Verdict:
+    def _verify_with(self, task, candidate: Candidate, harness: str,
+                     holdout: bool = True) -> Verdict:
         t0 = time.perf_counter()
         src = candidate.payload
         evidence = []
@@ -929,12 +953,16 @@ class CodePatch(Family):
                 evidence.append({"unit": it["unit"], "ok": False,
                                  "detail": "candidate uses a banned construct"})
             return Verdict(False, 0.0, evidence, (time.perf_counter() - t0) * 1000)
-        tpl = next(x for x in _CODE_TEMPLATES if x["name"] == task.meta["template"])
+        name = task.meta["template"]
+        tpl = next(x for x in _CODE_TEMPLATES if x["name"] == name)
         expected = self._expected(task)
+        hold_cases = _CODE_HOLDOUT[name] if holdout else []
+        hold_exp = self._holdout_expected(task) if holdout else []
+        visible_cases = tpl["cases"]
         try:
             proc = subprocess.run(
                 [sys.executable, "-I", "-c", harness],
-                input=json.dumps({"src": src, "tests": tpl["cases"]}),
+                input=json.dumps({"src": src, "tests": visible_cases + hold_cases}),
                 capture_output=True, text=True, timeout=3)
             results = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.stdout.strip() else []
         except Exception as ex:
@@ -943,6 +971,7 @@ class CodePatch(Family):
         else:
             err = "process exited with status %s" % proc.returncode
         passed = 0
+        n_visible = len(task.items)
         for i, it in enumerate(task.items):
             r = results[i] if i < len(results) else None
             if r is None or not r.get("ok"):
@@ -955,19 +984,49 @@ class CodePatch(Family):
             else:
                 evidence.append({"unit": it["unit"], "ok": False,
                                  "detail": f"expected {expected[i]!r}, got {r['value']!r}"})
-        n = len(task.items)
+        hold_bad = 0
+        for j, args in enumerate(hold_cases):
+            r = results[n_visible + j] if n_visible + j < len(results) else None
+            if r is None or not r.get("ok"):
+                detail = (r or {}).get("error", err)
+                hold_bad += 1
+                evidence.append({"unit": f"holdout{j + 1}", "ok": False,
+                                 "detail": f"held-out input {args!r}: {detail}"})
+            elif not _num_eq(hold_exp[j], r["value"]):
+                hold_bad += 1
+                evidence.append({"unit": f"holdout{j + 1}", "ok": False,
+                                 "detail": f"held-out input {args!r}: expected "
+                                           f"{hold_exp[j]!r}, got {r['value']!r}"})
+        n = n_visible
         score = passed / n if n else 0.0
-        return Verdict(passed == n and n > 0, score, evidence,
+        # A patch that memorises the visible answers stops here.  The verdict is
+        # a conjunction of the visible suite and the held-out suite, while the
+        # score keeps its original per-visible-test meaning for VCI comparability.
+        passed_all = passed == n and n > 0 and hold_bad == 0
+        return Verdict(passed_all, score, evidence,
                        (time.perf_counter() - t0) * 1000)
 
     def verify(self, task, candidate: Candidate) -> Verdict:
-        """Production strategy A: each case called once, single subprocess."""
-        return self._verify_with(task, candidate, _HARNESS)
+        """Production: visible + held-out cases, suite executed twice in-process.
+
+        The repeat pass makes call-history-dependent output observable (a
+        candidate that is correct once and degrades later fails the second
+        pass), and the held-out cases make visible-case memorisation
+        observable (a lookup table built only from the fixture answers fails).
+        Both discriminators are behavioural -- they run the candidate on inputs
+        and repetitions it cannot have anticipated -- rather than string
+        comparisons against an author-chosen answer.
+        """
+        return self._verify_with(task, candidate, _HARNESS_TWICE)
 
     def verify_twice(self, task, candidate: Candidate) -> Verdict:
-        """Strategy B: the suite runs twice in-process; a changed or failed
-        second pass rejects.  Used by the harness differential experiment."""
+        """Historic strategy-B entry point (same harness as production now)."""
         return self._verify_with(task, candidate, _HARNESS_TWICE)
+
+    def verify_legacy(self, task, candidate: Candidate) -> Verdict:
+        """Round-3 behaviour: one pass, visible cases only.  Kept so the harness
+        differential can still show what the hardening changed."""
+        return self._verify_with(task, candidate, _HARNESS, holdout=False)
 
     def grade_item(self, task, item, answer):  # pragma: no cover - verify is overridden
         return False, "code_patch uses verify()"
