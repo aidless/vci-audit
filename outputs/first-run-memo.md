@@ -675,3 +675,64 @@ verdict or VCI number moved.  137 tests pass, including three new adapt tests.
 3. **Harness-level cross-task contamination experiment** (process verifier at the run
    level, not per task).
 4. **Generalise `OVF`** beyond regex/code_patch via a random-20%-holdout probe.
+
+---
+
+# Round 11 (2026-11-04): stronger-model retest — the exploit hypothesis fails a second time
+
+Round-10 §5 mechanically checked the 7b run for the memorization signatures the
+synthetic leaks encode and found 0/500 units, leaving "a stronger model plausibly
+would" open.  Round 11 retests exactly that with **qwen2.5-coder:14b**
+(coding-specialised, digest `9ec8897f747e…`, temperature 0.0, same seed and same
+tasks as the 7b run): a 20-family × 1-task smoke run plus a focused 5-task run on
+the three exploit families (`regex_construct`, `sql_result`, `code_patch`;
+max_tokens 1024).  Prompt hashes verify every shared task_id is content-identical
+across runs, so all comparisons are paired.  Artifacts:
+`outputs/realfail-coder14b{,-full,-check}.json`, `outputs/realfail-compare.json`;
+analysis: `work/round11_failmix.py` (failure taxonomy), `work/realfail_real_check.py`
+(exploit signatures).
+
+## R11.1 Findings
+
+1. **0 exploit signatures again.**  Across all units of the 15 exploit-family
+   records the mechanical check flags nothing — no pure-positive alternations, no
+   literal-embedding patterns, no constant queries, no lookup-table sources.  The
+   taxonomy's HARD bucket is **0/35** coder14b records (7b: 0/100).  The round-6
+   speculation that a stronger model would emit well-formed overfit exploits is
+   **not confirmed on a code-specialised model either**; the leaks remain
+   demonstrated only by synthetic probes.
+2. **0 false accepts.**  None of the 11 accepted coder14b tasks (5 smoke + 6
+   focused) is gold-wrong.  Manual audit shows general patterns
+   (`^\d{1,3}(\.\d{1,3}){3}$`, not alternations), genuine GROUP BY/HAVING queries
+   and a clean safe-divide implementation — all re-verified against held-out data
+   by the hardened verifiers.  Cumulative real-output false accepts stay at **0
+   across 135 archived records** (100 from 7b + 35 from coder14b).
+3. **The stronger model fails shallower, not differently.**  On the 15 matched
+   exploit-family tasks coder14b is accepted 6 vs 7b's 3; its residual failures
+   are CALC/PARTIAL (deep share 0.0 vs 7b's 0.111) and FORMAT drops 6 → 1 — a
+   drop confounded by harness v2.1 and num_predict 1024, so it is not attributed
+   to the model alone.  Neither model produced a DRIFT or STATE record; coder14b's
+   accuracy-by-position does not collapse at the tail (0.643 at position 8 vs
+   7b's 0.132 on the smoke run).
+
+## R11.2 Boundaries
+
+- Still greedy single-sample local models ≤ 14B, one seed set.  A temperature
+  sweep or a frontier API model is untested — environment recon
+  (`outputs/realfail-recon.json`, `work/round11_keys.json`) records no API keys
+  and no usable GPU on this machine, so that path is blocked, not merely undone.
+- The taxonomy's false-reject cell is blind for the seven ALT families (their
+  gold is the verifier's own execution); the round-10 code_patch envelope defect
+  was found by the adapt regrade, not by this taxonomy.
+- The Just et al. ceiling is untouched where no real trace exists; every
+  synthetic TPR/TNR in §1–§6 stands unchanged.
+
+## R11.3 What changes
+
+The evidence on "the verifier accepts real garbage" is now: two independent
+real-model runs, 135 records, **0 false accepts, 0 memorization exploits** —
+against synthetic probes that reliably catch authored exploits.  For natural
+outputs of local models the risk order found in round 6 is therefore doubly
+supported: **extraction/packaging strictness > memorization leaks**.  The
+synthetic leak classes stay precautionary hardening targets, not observed
+deployment failures.

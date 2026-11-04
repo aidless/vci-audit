@@ -1,0 +1,105 @@
+{
+ "kind": "vci-realfail-exploit-check",
+ "source_run": {
+  "kind": "vci-realfail",
+  "version": "2.1",
+  "model": "qwen2.5-coder:14b",
+  "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+  "host": "http://localhost:11434",
+  "seed": 20261104,
+  "n_tasks": 5,
+  "families": [
+   "regex_construct",
+   "sql_result",
+   "code_patch"
+  ],
+  "temperature": 0.0,
+  "max_tokens": 1024,
+  "samples_per_task": 1,
+  "date": "2026-11-03 23:29:55 PST"
+ },
+ "note": "verifier-side only; no human labels exist for this run",
+ "per_family": {
+  "regex_construct": {
+   "tasks": 4,
+   "parse_ok": 4,
+   "tasks_passed": 1,
+   "units": 16,
+   "units_ok": 11
+  },
+  "sql_result": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 4,
+   "units": 11,
+   "units_ok": 10
+  },
+  "code_patch": {
+   "tasks": 5,
+   "parse_ok": 5,
+   "tasks_passed": 1,
+   "units": 31,
+   "units_ok": 5
+  }
+ },
+ "code_patch_regrade": {
+  "note": "counterfactual replay of archived payloads through the round-10 realfail_adapt hook; the model was NOT re-run",
+  "records": [
+   {
+    "task_id": "code_patch-001",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 7
+   },
+   {
+    "task_id": "code_patch-002",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 7
+   },
+   {
+    "task_id": "code_patch-003",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 6
+   },
+   {
+    "task_id": "code_patch-004",
+    "archived_passed": true,
+    "adapted_passed": true,
+    "archived_score": 1.0,
+    "adapted_score": 1.0,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-005",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "adapted_units_ok": 0,
+    "n_units": 6
+   }
+  ],
+  "archived_tasks_passed": 1,
+  "adapted_tasks_passed": 1,
+  "adapted_units_ok": 5,
+  "n_units": 31
+ },
+ "flagged_units": [],
+ "flagged_summary": {
+  "n": 0,
+  "accepted": 0,
+  "rejected": 0
+ }
+}

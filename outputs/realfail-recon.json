@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-04",
+  "purpose": "can this machine produce failure traces from a model clearly stronger than qwen2.5:7b?",
+  "host": {
+    "cpu": "AMD Ryzen 7 5800H (8C/16T, boost 4.47 GHz)",
+    "ram_gb_total": 14,
+    "ram_gb_available_at_probe": 1,
+    "swap_gb_total": 15,
+    "swap_gb_used_at_probe": 9.9,
+    "load_average_1m": 18.2,
+    "discrete_gpu": "NVIDIA GA106M / RTX 3060 Mobile Max-Q (6 GB)",
+    "igpu": "AMD Radeon Vega (Cezanne)",
+    "cuda_usable": false,
+    "cuda_reason": "/dev/nvidia* absent; nvidia-smi fails; driver package installed but module not loaded (Secure Boot on). ollama reports size_vram=0 for every model.",
+    "gpu_usable_vram_gb": 0
+  },
+  "disk": {
+    "models_dir": "/data4/OllamaModels",
+    "free_gb": 11,
+    "total_gb": 238,
+    "used_pct": 96
+  },
+  "runtime": {
+    "ollama": "0.33.3",
+    "keep_alive_default_s": 300
+  },
+  "api_keys": {
+    "checked": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN",
+                "DEEPSEEK_API_KEY", "DASHSCOPE_API_KEY", "ALIBABA_API_KEY",
+                "QWEN_API_KEY", "MOONSHOT_API_KEY", "ZHIPU_API_KEY",
+                "GEMINI_API_KEY", "GOOGLE_API_KEY", "OPENROUTER_API_KEY",
+                "SILICONFLOW_API_KEY", "MODELSCOPE_API_KEY", "HF_TOKEN",
+                "HUGGINGFACE_HUB_TOKEN", "AZURE_OPENAI_API_KEY", "GROQ_API_KEY",
+                "TOGETHER_API_KEY", "MISTRAL_API_KEY", "XAI_API_KEY"],
+    "present": [],
+    "note": "presence only; no values are read, printed or stored"
+  },
+  "measured_throughput_cpu_only": {
+    "qwen2.5:7b": {"decode_tok_s": 3.19, "prompt_tok_s": null, "note": "idle-ish baseline run, round 10"},
+    "qwen2.5-coder:14b": {
+      "decode_tok_s_idle": 1.61,
+      "prompt_eval_tok_s_idle": 3.66,
+      "decode_tok_s_contended": 1.49,
+      "prompt_eval_tok_s_contended": 1.36,
+      "prompt_tokens_143_wall_s": 230,
+      "note": "same host, three other CPU-heavy jobs from other sessions running; swap nearly full"
+    }
+  },
+  "capacity_estimate_cpu_only": {
+    "qwen2.5-coder:14b_q4_K_M": {
+      "weights_gb": 9.0,
+      "fits_ram": false,
+      "why": "14 GiB total RAM, ~13 GiB already used by other sessions; model mmap thrashes against a full swap file",
+      "measured": true
+    },
+    "qwen2.5-coder:32b_q4_K_M": {
+      "weights_gb": 20,
+      "fits_ram": false,
+      "why": "larger than total RAM and larger than the 11 GB disk headroom"
+    },
+    "verdict": "14B is the practical local ceiling and it runs at ~1.5 tok/s; a 100-task run is ~6 h on this host. 32B is not installable (disk) and not runnable (RAM)."
+  }
+}

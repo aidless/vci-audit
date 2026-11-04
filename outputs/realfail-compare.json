@@ -1,0 +1,2644 @@
+{
+ "7b": {
+  "model": "qwen2.5:7b",
+  "manifest": {
+   "kind": "vci-realfail",
+   "version": "2.0",
+   "model": "qwen2.5:7b",
+   "model_digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+   "host": "http://localhost:11434",
+   "seed": 20261104,
+   "n_tasks": 5,
+   "families": [
+    "arith_expression",
+    "unit_convert",
+    "stats_summary",
+    "base_convert",
+    "matrix_ops",
+    "date_arith",
+    "json_schema_extract",
+    "log_field_extraction",
+    "regex_construct",
+    "template_render",
+    "sql_result",
+    "table_aggregate",
+    "sort_multikey",
+    "interval_merge",
+    "grid_path",
+    "csp_assign",
+    "schedule_slots",
+    "topo_order",
+    "life_step",
+    "code_patch"
+   ],
+   "temperature": 0.0,
+   "max_tokens": 512,
+   "samples_per_task": 1,
+   "date": "2026-11-03 20:16:42 PST",
+   "generator_version": "5.1",
+   "segments": [
+    {
+     "families": [
+      "arith_expression",
+      "unit_convert",
+      "stats_summary",
+      "base_convert",
+      "matrix_ops",
+      "date_arith",
+      "json_schema_extract",
+      "log_field_extraction",
+      "regex_construct",
+      "template_render",
+      "table_aggregate",
+      "sort_multikey",
+      "interval_merge",
+      "grid_path",
+      "csp_assign",
+      "schedule_slots",
+      "topo_order",
+      "life_step",
+      "code_patch"
+     ],
+     "date": "2026-11-03 20:13:33 PST"
+    },
+    {
+     "families": [
+      "sql_result"
+     ],
+     "date": "2026-11-03 20:16:42 PST",
+     "note": "re-sampled after the round-10 second-dataset change"
+    }
+   ]
+  },
+  "n_tasks": 100,
+  "buckets": {
+   "FORMAT": 6,
+   "HARD": 0,
+   "SPEC": 10,
+   "STATE": 0,
+   "PARTIAL": 29,
+   "DRIFT": 0,
+   "CALC": 45,
+   "correct": 10
+  },
+  "n_failed": 90,
+  "deep_share_of_failures": 0.111,
+  "deep_share_of_all": 0.1,
+  "partial_share_of_failures": 0.322,
+  "shallow_share_of_failures": 0.567,
+  "accepted_tasks": 10,
+  "accept_rate": 0.1,
+  "accepted_but_gold_wrong": 0,
+  "accepted_leaks": [],
+  "verifier_false_rejects": [],
+  "per_family": {
+   "arith_expression": {
+    "tasks": 5,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 4,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "base_convert": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "code_patch": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 5,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "csp_assign": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "date_arith": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 5,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "grid_path": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 5,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "interval_merge": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "json_schema_extract": {
+    "tasks": 5,
+    "accepted": 5,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 5
+    }
+   },
+   "life_step": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "log_field_extraction": {
+    "tasks": 5,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 4,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "matrix_ops": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "regex_construct": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 1,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 2,
+     "DRIFT": 0,
+     "CALC": 2,
+     "correct": 0
+    }
+   },
+   "schedule_slots": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "sort_multikey": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 3,
+     "DRIFT": 0,
+     "CALC": 2,
+     "correct": 0
+    }
+   },
+   "sql_result": {
+    "tasks": 5,
+    "accepted": 3,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 2,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 3
+    }
+   },
+   "stats_summary": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 0
+    }
+   },
+   "table_aggregate": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 4,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "template_render": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 5,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "topo_order": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 2,
+     "DRIFT": 0,
+     "CALC": 3,
+     "correct": 0
+    }
+   },
+   "unit_convert": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 3,
+     "DRIFT": 0,
+     "CALC": 2,
+     "correct": 0
+    }
+   }
+  },
+  "accuracy_by_unit_position": {
+   "1": 0.29,
+   "2": 0.25,
+   "3": 0.2,
+   "4": 0.284,
+   "5": 0.268,
+   "6": 0.233,
+   "7": 0.333,
+   "8": 0.132
+  },
+  "rows": [
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-001",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-002",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-003",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-001",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-002",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-003",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-004",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-005",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-005",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-001",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-002",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-003",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-004",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-005",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-001",
+    "n_units": 3,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-002",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 4,
+    "verifier_passed": false,
+    "units_ok": 4,
+    "bucket": "PARTIAL",
+    "detail": "4/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-004",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 4,
+    "verifier_passed": false,
+    "units_ok": 4,
+    "bucket": "PARTIAL",
+    "detail": "4/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-004",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-005",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-001",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/15 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-002",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/15 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-003",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/15 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-004",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/15 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-005",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-001",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-003",
+    "bucket": "FORMAT",
+    "detail": "parse_status=no_json",
+    "parse_status": "no_json",
+    "passed": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-004",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-005",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-003",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-004",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-005",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-001",
+    "n_units": 12,
+    "gold_mode": "reference",
+    "gold_ok": 4,
+    "verifier_passed": false,
+    "units_ok": 4,
+    "bucket": "PARTIAL",
+    "detail": "4/12 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-002",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-003",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-004",
+    "n_units": 12,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/12 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-005",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-001",
+    "n_units": 8,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": false,
+    "units_ok": 6,
+    "bucket": "PARTIAL",
+    "detail": "6/8 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-003",
+    "n_units": 8,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/8 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-004",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-005",
+    "n_units": 7,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "SPEC",
+    "detail": "unit p2 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-005",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-001",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "FORMAT",
+    "detail": "candidate source does not compile (truncated)",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-002",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "FORMAT",
+    "detail": "candidate source does not compile (truncated)",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-003",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "FORMAT",
+    "detail": "candidate source does not compile (truncated)",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-004",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "FORMAT",
+    "detail": "candidate source does not compile (truncated)",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-005",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "FORMAT",
+    "detail": "candidate source does not compile (truncated)",
+    "verifier_false_reject": false
+   }
+  ],
+  "accepted_samples_for_manual_audit": [
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-003",
+    "raw_response": "{\"answers\": [19, 3.5]}",
+    "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. 5 + 14\n  2. (7) / 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-001",
+    "raw_response": "{\"id\": 4607, \"customer\": \"Maria Curie\", \"priority\": 4, \"total_usd\": 73.46, \"tags\": [\"fragile\", \"gift\", \"return\", \"bulk\"], \"steps\": [\"invoice\", \"ship\"]}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #4607\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 73.46\ntags: fragile, gift, return, bulk\nsteps: invoice > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-002",
+    "raw_response": "{\"id\": 5517, \"customer\": \"Niels Bohr\", \"priority\": 1, \"total_usd\": 85.17, \"tags\": [\"urgent\", \"return\", \"express\", \"fragile\"], \"steps\": [\"pack\", \"label\", \"ship\", \"verify\"]}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5517\ncustomer: Niels Bohr\npriority: 1\ntotal_usd: 85.17\ntags: urgent, return, express, fragile\nsteps: pack > label > ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-003",
+    "raw_response": "{\"id\": 8966, \"customer\": \"Grace Hopper\", \"priority\": 3, \"total_usd\": 336.7, \"tags\": [\"fragile\", \"return\", \"express\"], \"steps\": [\"ship\", \"label\", \"invoice\"]}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #8966\ncustomer: Grace Hopper\npriority: 3\ntotal_usd: 336.70\ntags: fragile, return, express\nsteps: ship > label > invoice\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-004",
+    "raw_response": "{\"id\": 3955, \"customer\": \"Maria Curie\", \"priority\": 4, \"total_usd\": 799.72, \"tags\": [\"urgent\", \"return\"], \"steps\": [\"pack\", \"label\", \"verify\", \"ship\"]}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #3955\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 799.72\ntags: urgent, return\nsteps: pack > label > verify > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-005",
+    "raw_response": "{\"id\": 5775, \"customer\": \"Maria Curie\", \"priority\": 2, \"total_usd\": 494.08, \"tags\": [\"urgent\", \"gift\"], \"steps\": [\"ship\", \"verify\"]}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5775\ncustomer: Maria Curie\npriority: 2\ntotal_usd: 494.08\ntags: urgent, gift\nsteps: ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-005",
+    "raw_response": "{\n    \"1\": {\n        \"ts\": \"2024-05-26T04:17:29Z\",\n        \"level\": \"ERROR\",\n        \"service\": \"billing\",\n        \"code\": \"D201\",\n        \"msg\": \"retrying request\"\n    },\n    \"2\": {\n        \"ts\": \"2024-05-04T08:59:10Z\",\n        \"level\": \"WARN\",\n        \"service\": \"search\",\n        \"code\": \"I841\",\n        \"msg\": \"connection reset by peer\"\n    },\n    \"3\": {\n        \"ts\": \"2024-05-22T19:11:23Z\",\n        \"level\": \"WARN\",\n        \"service\": \"api\",\n        \"code\": \"W865\",\n        \"msg\": \"handler took 320ms\"\n    }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-26T04:17:29Z level=ERROR service=billing code=D201 msg=\"retrying request\"\n2024-05-04T08:59:10Z level=WARN service=search code=I841 msg=\"connection reset by peer\"\n2024-05-22T19:11:23Z level=WARN service=api code=W865 msg=\"handler took 320ms\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-003",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-005",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   }
+  ]
+ },
+ "14b": {
+  "model": "qwen2.5-coder:14b",
+  "manifest": {
+   "kind": "vci-realfail",
+   "version": "2.1",
+   "model": "qwen2.5-coder:14b",
+   "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+   "host": "http://localhost:11434",
+   "seed": 20261104,
+   "n_tasks": 1,
+   "families": [
+    "arith_expression",
+    "unit_convert",
+    "stats_summary",
+    "base_convert",
+    "matrix_ops",
+    "date_arith",
+    "json_schema_extract",
+    "log_field_extraction",
+    "regex_construct",
+    "template_render",
+    "sql_result",
+    "table_aggregate",
+    "sort_multikey",
+    "interval_merge",
+    "grid_path",
+    "csp_assign",
+    "schedule_slots",
+    "topo_order",
+    "life_step",
+    "code_patch"
+   ],
+   "temperature": 0.0,
+   "max_tokens": 512,
+   "samples_per_task": 1,
+   "date": "2026-11-03 21:44:45 PST"
+  },
+  "n_tasks": 20,
+  "buckets": {
+   "FORMAT": 0,
+   "HARD": 0,
+   "SPEC": 3,
+   "STATE": 0,
+   "PARTIAL": 4,
+   "DRIFT": 0,
+   "CALC": 8,
+   "correct": 5
+  },
+  "n_failed": 15,
+  "deep_share_of_failures": 0.2,
+  "deep_share_of_all": 0.15,
+  "partial_share_of_failures": 0.267,
+  "shallow_share_of_failures": 0.533,
+  "accepted_tasks": 5,
+  "accept_rate": 0.25,
+  "accepted_but_gold_wrong": 0,
+  "accepted_leaks": [],
+  "verifier_false_rejects": [],
+  "per_family": {
+   "arith_expression": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "base_convert": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "code_patch": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "csp_assign": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "date_arith": {
+    "tasks": 1,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "grid_path": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 1,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "interval_merge": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "json_schema_extract": {
+    "tasks": 1,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "life_step": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "log_field_extraction": {
+    "tasks": 1,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "matrix_ops": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "regex_construct": {
+    "tasks": 1,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "schedule_slots": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 1,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "sort_multikey": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "sql_result": {
+    "tasks": 1,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 1
+    }
+   },
+   "stats_summary": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   },
+   "table_aggregate": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "template_render": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 1,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "topo_order": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "unit_convert": {
+    "tasks": 1,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 0
+    }
+   }
+  },
+  "accuracy_by_unit_position": {
+   "1": 0.4,
+   "2": 0.3,
+   "3": 0.294,
+   "4": 0.417,
+   "5": 0.4,
+   "6": 0.6,
+   "7": 1.0,
+   "8": 0.643
+  },
+  "rows": [
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-001",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-001",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-001",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-001",
+    "n_units": 3,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": true,
+    "units_ok": 3,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-001",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-001",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 4,
+    "verifier_passed": true,
+    "units_ok": 4,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-001",
+    "n_units": 12,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/12 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-001",
+    "n_units": 8,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": false,
+    "units_ok": 6,
+    "bucket": "PARTIAL",
+    "detail": "6/8 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-001",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   }
+  ],
+  "accepted_samples_for_manual_audit": [
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-001",
+    "raw_response": "{\"answers\": [\"2024-08-02\", \"2022-08-02\", \"2024-02-29\"]}",
+    "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-20 -18 days\n  2. 2023-03-02 -7 months\n  3. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-001",
+    "raw_response": "{\n  \"id\": 4607,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 73.46,\n  \"tags\": [\"fragile\", \"gift\", \"return\", \"bulk\"],\n  \"steps\": [\"invoice\", \"ship\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #4607\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 73.46\ntags: fragile, gift, return, bulk\nsteps: invoice > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-001",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T11:57:53Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"W480\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-21T17:32:06Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I234\",\n    \"msg\": \"handler took 320ms\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-25T00:42:15Z\",\n    \"level\": \"INFO\",\n    \"service\": \"auth\",\n    \"code\": \"W501\",\n    \"msg\": \"connection reset by peer\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T11:57:53Z level=WARN service=worker code=W480 msg=\"retrying request\"\n2024-05-21T17:32:06Z level=INFO service=billing code=I234 msg=\"handler took 320ms\"\n2024-05-25T00:42:15Z level=INFO service=auth code=W501 msg=\"connection reset by peer\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-001",
+    "raw_response": "{\n  \"answers\": [\n    \"^\\\\d{1,3}(\\\\.\\\\d{1,3}){3}$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^(?:[0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^#([0-9a-fA-F]{6})$\"\n  ]\n}",
+    "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAn"
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   }
+  ]
+ },
+ "14bf": {
+  "model": "qwen2.5-coder:14b",
+  "manifest": {
+   "kind": "vci-realfail",
+   "version": "2.1",
+   "model": "qwen2.5-coder:14b",
+   "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+   "host": "http://localhost:11434",
+   "seed": 20261104,
+   "n_tasks": 5,
+   "families": [
+    "regex_construct",
+    "sql_result",
+    "code_patch"
+   ],
+   "temperature": 0.0,
+   "max_tokens": 1024,
+   "samples_per_task": 1,
+   "date": "2026-11-03 23:29:55 PST"
+  },
+  "n_tasks": 15,
+  "buckets": {
+   "FORMAT": 1,
+   "HARD": 0,
+   "SPEC": 0,
+   "STATE": 0,
+   "PARTIAL": 3,
+   "DRIFT": 0,
+   "CALC": 5,
+   "correct": 6
+  },
+  "n_failed": 9,
+  "deep_share_of_failures": 0.0,
+  "deep_share_of_all": 0.0,
+  "partial_share_of_failures": 0.333,
+  "shallow_share_of_failures": 0.667,
+  "accepted_tasks": 6,
+  "accept_rate": 0.4,
+  "accepted_but_gold_wrong": 0,
+  "accepted_leaks": [],
+  "verifier_false_rejects": [],
+  "per_family": {
+   "code_patch": {
+    "tasks": 5,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 0,
+     "DRIFT": 0,
+     "CALC": 4,
+     "correct": 1
+    }
+   },
+   "regex_construct": {
+    "tasks": 5,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 1,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 2,
+     "DRIFT": 0,
+     "CALC": 1,
+     "correct": 1
+    }
+   },
+   "sql_result": {
+    "tasks": 5,
+    "accepted": 4,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 4
+    }
+   }
+  },
+  "accuracy_by_unit_position": {
+   "1": 0.429,
+   "2": 0.643,
+   "3": 0.5,
+   "4": 0.5,
+   "5": 0.5
+  },
+  "rows": [
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-001",
+    "bucket": "FORMAT",
+    "detail": "TimeoutError: timed out",
+    "parse_status": "error",
+    "passed": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-003",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-004",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 5,
+    "verifier_passed": true,
+    "units_ok": 5,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-005",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-003",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-004",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-005",
+    "n_units": 2,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-001",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-002",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-003",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-004",
+    "n_units": 5,
+    "gold_mode": "verifier",
+    "gold_ok": 5,
+    "verifier_passed": true,
+    "units_ok": 5,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-005",
+    "n_units": 4,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   }
+  ],
+  "accepted_samples_for_manual_audit": [
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-004",
+    "raw_response": "{\n  \"answers\": [\n    \"^#([0-9A-Fa-f]{6})$\",\n    \"^([0-9]{1,3}\\\\.){3}[0-9]{1,3}$\",\n    \"^([0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+    "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. exactly #RRGGBB with six hex digits\n     match:     #5b3c79 | #4f0c7f | #c92dff | #D838DC\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  2. four dot-separated groups of 1-3 digits\n     match:     29.115.220.102 | 164.105.199.228 | 216.187.199.12\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  5. four-digit year, two-dig"
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-001",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-003",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-004",
+    "raw_response": "{\"answers\": [\"SELECT dept, SUM(amount) as total_amount FROM orders GROUP BY dept ORDER BY dept ASC\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. total amount per department, ordered by department ascending (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "sql_result",
+    "task_id": "sql_result-005",
+    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "code_patch",
+    "task_id": "code_patch-004",
+    "raw_response": "{\"answers\": [\"def solve(a, b):\", \"    if b == 0:\", \"        return None\", \"    else:\", \"        return float(a / b)\"]}",
+    "prompt": "Fix the function below so that it satisfies: return a/b as a float, or null when b is zero.  Return the full module source defining solve.\n\ndef solve(a, b):\n    return a / b\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences."
+   }
+  ]
+ },
+ "matched": {
+  "14b": {
+   "n_pairs": 20,
+   "7b": {
+    "n_tasks": 20,
+    "buckets": {
+     "FORMAT": 1,
+     "HARD": 0,
+     "SPEC": 2,
+     "STATE": 0,
+     "PARTIAL": 6,
+     "DRIFT": 0,
+     "CALC": 9,
+     "correct": 2
+    },
+    "n_failed": 18,
+    "accepted": 2,
+    "accept_rate": 0.1,
+    "deep_share_of_failures": 0.111,
+    "partial_share_of_failures": 0.333,
+    "shallow_share_of_failures": 0.556
+   },
+   "14b": {
+    "n_tasks": 20,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 3,
+     "STATE": 0,
+     "PARTIAL": 4,
+     "DRIFT": 0,
+     "CALC": 8,
+     "correct": 5
+    },
+    "n_failed": 15,
+    "accepted": 5,
+    "accept_rate": 0.25,
+    "deep_share_of_failures": 0.2,
+    "partial_share_of_failures": 0.267,
+    "shallow_share_of_failures": 0.533
+   }
+  },
+  "14bf": {
+   "n_pairs": 15,
+   "7b": {
+    "n_tasks": 15,
+    "buckets": {
+     "FORMAT": 6,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 4,
+     "DRIFT": 0,
+     "CALC": 2,
+     "correct": 3
+    },
+    "n_failed": 12,
+    "accepted": 3,
+    "accept_rate": 0.2,
+    "deep_share_of_failures": 0.0,
+    "partial_share_of_failures": 0.333,
+    "shallow_share_of_failures": 0.667
+   },
+   "14bf": {
+    "n_tasks": 15,
+    "buckets": {
+     "FORMAT": 1,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 3,
+     "DRIFT": 0,
+     "CALC": 5,
+     "correct": 6
+    },
+    "n_failed": 9,
+    "accepted": 6,
+    "accept_rate": 0.4,
+    "deep_share_of_failures": 0.0,
+    "partial_share_of_failures": 0.333,
+    "shallow_share_of_failures": 0.667
+   }
+  }
+ }
+}
