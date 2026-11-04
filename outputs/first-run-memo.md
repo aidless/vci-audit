@@ -360,3 +360,25 @@ Reproduce: `python3 -m vci realfail` then `realfail-sheet` then `realfail-analyz
 - The Just et al. ceiling is lifted exactly here and only here: real failures confirm the
   direction of the synthetic audit (strictness classes bit in reality) while reversing the
   perceived severity ranking (leaks matter less than false rejects, for this model).
+
+---
+
+# Round-7 addendum — the arith_expression render/eval mismatch is fixed (2026-11-04)
+
+R6.2-4 found that the `arith_expression` generator evaluated strictly left-to-right while
+rendering standard operator notation, contradicting the reference value on 7/25 tasks.
+Round 7 changes `_expr` to accumulate with standard precedence (`*` before `+`/`-`), so the
+reference now equals what a reader computes from the printed expression.  A new invariant
+test (`test_arith_expression_reference_matches_the_printed_expression`, 30 seeds × 25
+tasks = 750 tasks) checks `expected == eval(expr)` using Python's own evaluator as an
+independent implementation; selfcheck stays clean.
+
+The full audit was rerun after the fix.  **No metric moved**: arith VCI 0.9722 → 0.9722,
+median VCI 0.9342 (CI 0.904–1.000), families ≥ 0.70 stays 17/20, both core lists unchanged.
+That is expected, not a disappointment: the fix changes task *content*, and every aligned
+mutant and probe derives its expected verdict from the reference values, so the synthetic
+audit is internally invariant to the change.  Where the defect actually bit was grading
+*real* outputs — a standard-maths answer would have been unfairly rejected on 28 % of
+tasks — which is exactly why it was found by hand-grading real outputs and not by the
+probe suite.  The 8 affected units in the round-6 human sheet stay as labelled (the model
+was wrong under both readings).  The validity ceiling of §7 is unchanged.

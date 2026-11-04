@@ -66,6 +66,20 @@ def test_arith_expression_accepts_a_paraphrase():
         assert fam.verify(task, _cand(task, payload, "semantic_equivalent")).passed
 
 
+def test_arith_expression_reference_matches_the_printed_expression():
+    """Invariant (round-7): every reference value must equal the value a reader
+    gets by evaluating the rendered expression under standard precedence.
+    Uses Python's own evaluator as an independent implementation."""
+    fam = numeric.ArithExpression()
+    for seed in range(30):
+        for task in fam.generate(25, random.Random(seed)):
+            for it in task.items:
+                expr = it["expr"]
+                assert set(expr) <= set("0123456789+-*/() ."), expr
+                got = eval(expr, {"__builtins__": {}})  # noqa: S307 - charset-checked above
+                assert float(it["expected"]) == got, (expr, it["expected"], got)
+
+
 @pytest.mark.parametrize("payload", [
     None, "not-a-list", {"answers": []}, 42, [None] * 20, {"unexpected": 1},
 ])

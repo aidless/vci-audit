@@ -28,7 +28,7 @@ Median trust: aligned `1.000`, non-aligned `1.000`. kappa in use: `synthetic (no
 | csp_assign | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | schedule_slots | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | topo_order | 0.904 | 0.904-0.904 | 1.00 | 0.67 | 3.0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
-| code_patch | 0.807 | 0.800-0.814 | 1.00 | 1.00 | 4.0 | 0.65 | 1.00 | 0.65 | 1.00 | 1.00 | 0.00 | 1.00 | 0.65 | 0.35 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
+| code_patch | 0.807 | 0.799-0.814 | 1.00 | 1.00 | 4.0 | 0.65 | 1.00 | 0.65 | 1.00 | 1.00 | 0.00 | 1.00 | 0.65 | 0.35 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | sql_result | 0.798 | 0.754-0.838 | 1.00 | 0.44 | 2.0 | 0.96 | 1.00 | 0.96 | 1.00 | 1.00 | 0.00 | 1.00 | 0.96 | 0.04 | 1.00 (synthetic) | 1.00 (synthetic) | yes | yes |
 | regex_construct | 0.797 | 0.782-0.808 | 1.00 | 0.91 | 4.0 | 0.67 | 1.00 | 0.67 | 1.00 | 1.00 | 0.00 | 1.00 | 0.67 | 0.33 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
 | unit_convert | 0.000 | 0.000-0.000 | 1.00 | 0.69 | 3.0 | 0.00 | 1.00 | 0.00 | 1.00 | 1.00 | 0.00 | 0.50 | 1.00 | 1.00 | 1.00 (synthetic) | 1.00 (synthetic) | yes | NO |
@@ -111,7 +111,7 @@ First examples per bucket (full list in `attribution.csv`):
 - **task_under_specified** `unit_convert-001-x01` (AMB, minimum_functionality) six significant digits: the prompt never states a precision requirement -- basis: defensible second reading of an under-specified prompt; verifier said: expected 0.00012082761671836474986081285293883719080569474270261671836475, got '0.000120828'
 - **task_under_specified** `unit_convert-002-x01` (AMB, minimum_functionality) six significant digits: the prompt never states a precision requirement -- basis: defensible second reading of an under-specified prompt; verifier said: expected 0.3385289, got '0.338529'
 - **true_defect** `arith_expression-001-x01` (CR, directional) first value moved by +1/2 (6.375 -> 6.875) -- basis: reference value + an independent offset; verifier said: expected 6.375, got '6.875'
-- **true_defect** `arith_expression-002-x01` (CR, directional) first value moved by +1/2 (4.5 -> 5) -- basis: reference value + an independent offset; verifier said: expected 4.5, got '5'
+- **true_defect** `arith_expression-002-x01` (CR, directional) first value moved by +1/2 (1.3 -> 1.8) -- basis: reference value + an independent offset; verifier said: expected 1.3, got '1.8'
 
 ## Non-aligned acceptance by failure class
 

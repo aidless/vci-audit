@@ -41,11 +41,21 @@ class ArithExpression(Family):
         nums = [rng.randint(1, 19) for _ in range(rng.randint(2, 3))]
         ops = [rng.choice(["+", "-", "*"]) for _ in range(len(nums) - 1)]
         parts = [str(nums[0])]
-        val = Fraction(nums[0])
+        # Standard precedence: '*' binds tighter than '+'/'-'.  The reference
+        # value must equal what a reader computes from the printed expression
+        # (round 6 found the previous left-to-right accumulator contradicting
+        # the rendered text on 7/25 tasks).
+        terms = [Fraction(nums[0])]
         for op, n in zip(ops, nums[1:]):
             parts.extend([op, str(n)])
-            val = val + n if op == "+" else val - n if op == "-" else val * n
+            if op == "*":
+                terms[-1] = terms[-1] * n
+            elif op == "+":
+                terms.append(Fraction(n))
+            else:
+                terms.append(Fraction(-n))
         text = " ".join(parts)
+        val = sum(terms, Fraction(0))
         if rng.random() < 0.85:
             div = rng.choice([2, 4, 5, 8, 10])
             text = f"({text}) / {div}"
