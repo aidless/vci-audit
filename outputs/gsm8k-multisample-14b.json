@@ -1,0 +1,491 @@
+{
+ "ok": true,
+ "n_tasks": 30,
+ "n_attempts": 240,
+ "k_max": 8,
+ "max_runs_per_task": 8,
+ "status_counts": {
+  "pass": 76,
+  "fail": 164,
+  "timeout": 0,
+  "refusal": 0,
+  "error": 0
+ },
+ "run_counts": {
+  "min": 8,
+  "max": 8,
+  "mean": 8.0
+ },
+ "seeds": {
+  "per_task": {
+   "gsm8k-test-0000": [
+    9000
+   ],
+   "gsm8k-test-0043": [
+    9000
+   ],
+   "gsm8k-test-0086": [
+    9000
+   ],
+   "gsm8k-test-0129": [
+    9000
+   ],
+   "gsm8k-test-0172": [
+    9000
+   ],
+   "gsm8k-test-0215": [
+    9000
+   ],
+   "gsm8k-test-0258": [
+    9000
+   ],
+   "gsm8k-test-0301": [
+    9000
+   ],
+   "gsm8k-test-0344": [
+    9000
+   ],
+   "gsm8k-test-0387": [
+    9000
+   ],
+   "gsm8k-test-0430": [
+    9000
+   ],
+   "gsm8k-test-0473": [
+    9000
+   ],
+   "gsm8k-test-0516": [
+    9000
+   ],
+   "gsm8k-test-0559": [
+    9000
+   ],
+   "gsm8k-test-0602": [
+    9000
+   ],
+   "gsm8k-test-0645": [
+    9000
+   ],
+   "gsm8k-test-0688": [
+    9000
+   ],
+   "gsm8k-test-0731": [
+    9000
+   ],
+   "gsm8k-test-0774": [
+    9000
+   ],
+   "gsm8k-test-0817": [
+    9000
+   ],
+   "gsm8k-test-0860": [
+    9000
+   ],
+   "gsm8k-test-0903": [
+    9000
+   ],
+   "gsm8k-test-0946": [
+    9000
+   ],
+   "gsm8k-test-0989": [
+    9000
+   ],
+   "gsm8k-test-1032": [
+    9000
+   ],
+   "gsm8k-test-1075": [
+    9000
+   ],
+   "gsm8k-test-1118": [
+    9000
+   ],
+   "gsm8k-test-1161": [
+    9000
+   ],
+   "gsm8k-test-1204": [
+    9000
+   ],
+   "gsm8k-test-1247": [
+    9000
+   ]
+  },
+  "consistent": true
+ },
+ "curves": {
+  "as_failure": {
+   "pass@k": [
+    {
+     "k": 1,
+     "value": 0.31666666666666665,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.17916666666666667,
+      0.4583333333333333
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.3880952380952381,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.2392857142857143,
+      0.5416666666666666
+     ]
+    },
+    {
+     "k": 3,
+     "value": 0.4321428571428571,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.27440476190476193,
+      0.593452380952381
+     ]
+    },
+    {
+     "k": 4,
+     "value": 0.46380952380952384,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.3019047619047619,
+      0.6285714285714286
+     ]
+    },
+    {
+     "k": 5,
+     "value": 0.4875,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.3214285714285714,
+      0.6571428571428571
+     ]
+    },
+    {
+     "k": 6,
+     "value": 0.5059523809523809,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.33214285714285713,
+      0.6773809523809524
+     ]
+    },
+    {
+     "k": 7,
+     "value": 0.5208333333333334,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.35,
+      0.6916666666666667
+     ]
+    },
+    {
+     "k": 8,
+     "value": 0.5333333333333333,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.36666666666666664,
+      0.7
+     ]
+    }
+   ],
+   "pass^k": [
+    {
+     "k": 1,
+     "value": 0.31666666666666665,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.17916666666666667,
+      0.4583333333333333
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.24523809523809523,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.11190476190476191,
+      0.38452380952380955
+     ]
+    },
+    {
+     "k": 3,
+     "value": 0.21785714285714286,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.08809523809523809,
+      0.35238095238095235
+     ]
+    },
+    {
+     "k": 4,
+     "value": 0.20285714285714285,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.07142857142857142,
+      0.33714285714285713
+     ]
+    },
+    {
+     "k": 5,
+     "value": 0.19226190476190477,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.06666666666666667,
+      0.3267857142857143
+     ]
+    },
+    {
+     "k": 6,
+     "value": 0.18333333333333332,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.058333333333333334,
+      0.31666666666666665
+     ]
+    },
+    {
+     "k": 7,
+     "value": 0.175,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.04583333333333333,
+      0.30833333333333335
+     ]
+    },
+    {
+     "k": 8,
+     "value": 0.16666666666666666,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.03333333333333333,
+      0.3
+     ]
+    }
+   ]
+  },
+  "exclude_nonattest": {
+   "pass@k": [
+    {
+     "k": 1,
+     "value": 0.31666666666666665,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.18333333333333332,
+      0.4666666666666667
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.3880952380952381,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.2464285714285714,
+      0.5440476190476191
+     ]
+    },
+    {
+     "k": 3,
+     "value": 0.4321428571428571,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.2851190476190476,
+      0.5928571428571429
+     ]
+    },
+    {
+     "k": 4,
+     "value": 0.46380952380952384,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.30952380952380953,
+      0.6266666666666667
+     ]
+    },
+    {
+     "k": 5,
+     "value": 0.4875,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.3303571428571429,
+      0.6517857142857142
+     ]
+    },
+    {
+     "k": 6,
+     "value": 0.5059523809523809,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.3464285714285714,
+      0.6726190476190476
+     ]
+    },
+    {
+     "k": 7,
+     "value": 0.5208333333333334,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.35833333333333334,
+      0.6875
+     ]
+    },
+    {
+     "k": 8,
+     "value": 0.5333333333333333,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.36666666666666664,
+      0.7
+     ]
+    }
+   ],
+   "pass^k": [
+    {
+     "k": 1,
+     "value": 0.31666666666666665,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.18333333333333332,
+      0.4666666666666667
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.24523809523809523,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.11428571428571428,
+      0.3928571428571429
+     ]
+    },
+    {
+     "k": 3,
+     "value": 0.21785714285714286,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.09345238095238094,
+      0.35595238095238096
+     ]
+    },
+    {
+     "k": 4,
+     "value": 0.20285714285714285,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.08333333333333333,
+      0.33809523809523806
+     ]
+    },
+    {
+     "k": 5,
+     "value": 0.19226190476190477,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.07083333333333333,
+      0.3267857142857143
+     ]
+    },
+    {
+     "k": 6,
+     "value": 0.18333333333333332,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.06666666666666667,
+      0.31666666666666665
+     ]
+    },
+    {
+     "k": 7,
+     "value": 0.175,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.05,
+      0.30833333333333335
+     ]
+    },
+    {
+     "k": 8,
+     "value": 0.16666666666666666,
+     "n_tasks": 30,
+     "estimable": true,
+     "ci": [
+      0.03333333333333333,
+      0.3
+     ]
+    }
+   ]
+  }
+ },
+ "bootstrap": {
+  "n_boot": 2000,
+  "seed": 0,
+  "alpha": 0.05
+ },
+ "definitions": {
+  "pass@k": "mean over tasks of 1 - C(n-c, k)/C(n, k); k>n not estimable",
+  "pass^k": "mean over tasks of C(c, k)/C(n, k); k>n not estimable",
+  "pass@1": "mean over tasks of c/n (full-credit pass only)",
+  "n": "attempts for one task; c = attempts with status 'pass'",
+  "as_failure": "timeout/refusal/error count as failures",
+  "exclude_nonattest": "timeout/refusal/error attempts are dropped"
+ },
+ "notes": [
+  "attempts are never pooled across tasks; each task contributes its own per-task estimate",
+  "k > n is not estimable for that task and is excluded from that point (see n_tasks and estimable)",
+  "'pass' means full-credit acceptance; partial credit is not a pass",
+  "timeouts, refusals and transport errors are counted as failures in 'as_failure' and dropped in 'exclude_nonattest'"
+ ],
+ "run": {
+  "model": "qwen2.5-coder:14b",
+  "n_tasks": 30,
+  "samples": 8,
+  "wall_s_total": 505.7,
+  "wall_s_median_per_call": 1.33,
+  "wall_s_mean_per_call": 2.11,
+  "out_tokens_mean": 3.31,
+  "temperature": 1.1,
+  "top_p": 0.95,
+  "num_predict": 16,
+  "prompt": "answer-only",
+  "seeds": [
+   9000,
+   9001,
+   9002,
+   9003,
+   9004,
+   9005,
+   9006,
+   9007
+  ],
+  "dataset": "GSM8K test split (MIT), 1319 rows, stride selection"
+ }
+}

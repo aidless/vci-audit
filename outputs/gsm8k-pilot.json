@@ -1,0 +1,1955 @@
+{
+ "ok": true,
+ "n_tasks": 600,
+ "n_attempts": 1200,
+ "k_max": 2,
+ "max_runs_per_task": 2,
+ "status_counts": {
+  "pass": 49,
+  "fail": 1151,
+  "timeout": 0,
+  "refusal": 0,
+  "error": 0
+ },
+ "run_counts": {
+  "min": 2,
+  "max": 2,
+  "mean": 2.0
+ },
+ "seeds": {
+  "per_task": {
+   "gsm8k-test-0000": [
+    9000
+   ],
+   "gsm8k-test-0002": [
+    9000
+   ],
+   "gsm8k-test-0004": [
+    9000
+   ],
+   "gsm8k-test-0006": [
+    9000
+   ],
+   "gsm8k-test-0008": [
+    9000
+   ],
+   "gsm8k-test-0010": [
+    9000
+   ],
+   "gsm8k-test-0012": [
+    9000
+   ],
+   "gsm8k-test-0014": [
+    9000
+   ],
+   "gsm8k-test-0016": [
+    9000
+   ],
+   "gsm8k-test-0018": [
+    9000
+   ],
+   "gsm8k-test-0020": [
+    9000
+   ],
+   "gsm8k-test-0022": [
+    9000
+   ],
+   "gsm8k-test-0024": [
+    9000
+   ],
+   "gsm8k-test-0026": [
+    9000
+   ],
+   "gsm8k-test-0028": [
+    9000
+   ],
+   "gsm8k-test-0030": [
+    9000
+   ],
+   "gsm8k-test-0032": [
+    9000
+   ],
+   "gsm8k-test-0034": [
+    9000
+   ],
+   "gsm8k-test-0036": [
+    9000
+   ],
+   "gsm8k-test-0038": [
+    9000
+   ],
+   "gsm8k-test-0040": [
+    9000
+   ],
+   "gsm8k-test-0042": [
+    9000
+   ],
+   "gsm8k-test-0044": [
+    9000
+   ],
+   "gsm8k-test-0046": [
+    9000
+   ],
+   "gsm8k-test-0048": [
+    9000
+   ],
+   "gsm8k-test-0050": [
+    9000
+   ],
+   "gsm8k-test-0052": [
+    9000
+   ],
+   "gsm8k-test-0054": [
+    9000
+   ],
+   "gsm8k-test-0056": [
+    9000
+   ],
+   "gsm8k-test-0058": [
+    9000
+   ],
+   "gsm8k-test-0060": [
+    9000
+   ],
+   "gsm8k-test-0062": [
+    9000
+   ],
+   "gsm8k-test-0064": [
+    9000
+   ],
+   "gsm8k-test-0066": [
+    9000
+   ],
+   "gsm8k-test-0068": [
+    9000
+   ],
+   "gsm8k-test-0070": [
+    9000
+   ],
+   "gsm8k-test-0072": [
+    9000
+   ],
+   "gsm8k-test-0074": [
+    9000
+   ],
+   "gsm8k-test-0076": [
+    9000
+   ],
+   "gsm8k-test-0078": [
+    9000
+   ],
+   "gsm8k-test-0080": [
+    9000
+   ],
+   "gsm8k-test-0082": [
+    9000
+   ],
+   "gsm8k-test-0084": [
+    9000
+   ],
+   "gsm8k-test-0086": [
+    9000
+   ],
+   "gsm8k-test-0088": [
+    9000
+   ],
+   "gsm8k-test-0090": [
+    9000
+   ],
+   "gsm8k-test-0092": [
+    9000
+   ],
+   "gsm8k-test-0094": [
+    9000
+   ],
+   "gsm8k-test-0096": [
+    9000
+   ],
+   "gsm8k-test-0098": [
+    9000
+   ],
+   "gsm8k-test-0100": [
+    9000
+   ],
+   "gsm8k-test-0102": [
+    9000
+   ],
+   "gsm8k-test-0104": [
+    9000
+   ],
+   "gsm8k-test-0106": [
+    9000
+   ],
+   "gsm8k-test-0108": [
+    9000
+   ],
+   "gsm8k-test-0110": [
+    9000
+   ],
+   "gsm8k-test-0112": [
+    9000
+   ],
+   "gsm8k-test-0114": [
+    9000
+   ],
+   "gsm8k-test-0116": [
+    9000
+   ],
+   "gsm8k-test-0118": [
+    9000
+   ],
+   "gsm8k-test-0120": [
+    9000
+   ],
+   "gsm8k-test-0122": [
+    9000
+   ],
+   "gsm8k-test-0124": [
+    9000
+   ],
+   "gsm8k-test-0126": [
+    9000
+   ],
+   "gsm8k-test-0128": [
+    9000
+   ],
+   "gsm8k-test-0130": [
+    9000
+   ],
+   "gsm8k-test-0132": [
+    9000
+   ],
+   "gsm8k-test-0134": [
+    9000
+   ],
+   "gsm8k-test-0136": [
+    9000
+   ],
+   "gsm8k-test-0138": [
+    9000
+   ],
+   "gsm8k-test-0140": [
+    9000
+   ],
+   "gsm8k-test-0142": [
+    9000
+   ],
+   "gsm8k-test-0144": [
+    9000
+   ],
+   "gsm8k-test-0146": [
+    9000
+   ],
+   "gsm8k-test-0148": [
+    9000
+   ],
+   "gsm8k-test-0150": [
+    9000
+   ],
+   "gsm8k-test-0152": [
+    9000
+   ],
+   "gsm8k-test-0154": [
+    9000
+   ],
+   "gsm8k-test-0156": [
+    9000
+   ],
+   "gsm8k-test-0158": [
+    9000
+   ],
+   "gsm8k-test-0160": [
+    9000
+   ],
+   "gsm8k-test-0162": [
+    9000
+   ],
+   "gsm8k-test-0164": [
+    9000
+   ],
+   "gsm8k-test-0166": [
+    9000
+   ],
+   "gsm8k-test-0168": [
+    9000
+   ],
+   "gsm8k-test-0170": [
+    9000
+   ],
+   "gsm8k-test-0172": [
+    9000
+   ],
+   "gsm8k-test-0174": [
+    9000
+   ],
+   "gsm8k-test-0176": [
+    9000
+   ],
+   "gsm8k-test-0178": [
+    9000
+   ],
+   "gsm8k-test-0180": [
+    9000
+   ],
+   "gsm8k-test-0182": [
+    9000
+   ],
+   "gsm8k-test-0184": [
+    9000
+   ],
+   "gsm8k-test-0186": [
+    9000
+   ],
+   "gsm8k-test-0188": [
+    9000
+   ],
+   "gsm8k-test-0190": [
+    9000
+   ],
+   "gsm8k-test-0192": [
+    9000
+   ],
+   "gsm8k-test-0194": [
+    9000
+   ],
+   "gsm8k-test-0196": [
+    9000
+   ],
+   "gsm8k-test-0198": [
+    9000
+   ],
+   "gsm8k-test-0200": [
+    9000
+   ],
+   "gsm8k-test-0202": [
+    9000
+   ],
+   "gsm8k-test-0204": [
+    9000
+   ],
+   "gsm8k-test-0206": [
+    9000
+   ],
+   "gsm8k-test-0208": [
+    9000
+   ],
+   "gsm8k-test-0210": [
+    9000
+   ],
+   "gsm8k-test-0212": [
+    9000
+   ],
+   "gsm8k-test-0214": [
+    9000
+   ],
+   "gsm8k-test-0216": [
+    9000
+   ],
+   "gsm8k-test-0218": [
+    9000
+   ],
+   "gsm8k-test-0220": [
+    9000
+   ],
+   "gsm8k-test-0222": [
+    9000
+   ],
+   "gsm8k-test-0224": [
+    9000
+   ],
+   "gsm8k-test-0226": [
+    9000
+   ],
+   "gsm8k-test-0228": [
+    9000
+   ],
+   "gsm8k-test-0230": [
+    9000
+   ],
+   "gsm8k-test-0232": [
+    9000
+   ],
+   "gsm8k-test-0234": [
+    9000
+   ],
+   "gsm8k-test-0236": [
+    9000
+   ],
+   "gsm8k-test-0238": [
+    9000
+   ],
+   "gsm8k-test-0240": [
+    9000
+   ],
+   "gsm8k-test-0242": [
+    9000
+   ],
+   "gsm8k-test-0244": [
+    9000
+   ],
+   "gsm8k-test-0246": [
+    9000
+   ],
+   "gsm8k-test-0248": [
+    9000
+   ],
+   "gsm8k-test-0250": [
+    9000
+   ],
+   "gsm8k-test-0252": [
+    9000
+   ],
+   "gsm8k-test-0254": [
+    9000
+   ],
+   "gsm8k-test-0256": [
+    9000
+   ],
+   "gsm8k-test-0258": [
+    9000
+   ],
+   "gsm8k-test-0260": [
+    9000
+   ],
+   "gsm8k-test-0262": [
+    9000
+   ],
+   "gsm8k-test-0264": [
+    9000
+   ],
+   "gsm8k-test-0266": [
+    9000
+   ],
+   "gsm8k-test-0268": [
+    9000
+   ],
+   "gsm8k-test-0270": [
+    9000
+   ],
+   "gsm8k-test-0272": [
+    9000
+   ],
+   "gsm8k-test-0274": [
+    9000
+   ],
+   "gsm8k-test-0276": [
+    9000
+   ],
+   "gsm8k-test-0278": [
+    9000
+   ],
+   "gsm8k-test-0280": [
+    9000
+   ],
+   "gsm8k-test-0282": [
+    9000
+   ],
+   "gsm8k-test-0284": [
+    9000
+   ],
+   "gsm8k-test-0286": [
+    9000
+   ],
+   "gsm8k-test-0288": [
+    9000
+   ],
+   "gsm8k-test-0290": [
+    9000
+   ],
+   "gsm8k-test-0292": [
+    9000
+   ],
+   "gsm8k-test-0294": [
+    9000
+   ],
+   "gsm8k-test-0296": [
+    9000
+   ],
+   "gsm8k-test-0298": [
+    9000
+   ],
+   "gsm8k-test-0300": [
+    9000
+   ],
+   "gsm8k-test-0302": [
+    9000
+   ],
+   "gsm8k-test-0304": [
+    9000
+   ],
+   "gsm8k-test-0306": [
+    9000
+   ],
+   "gsm8k-test-0308": [
+    9000
+   ],
+   "gsm8k-test-0310": [
+    9000
+   ],
+   "gsm8k-test-0312": [
+    9000
+   ],
+   "gsm8k-test-0314": [
+    9000
+   ],
+   "gsm8k-test-0316": [
+    9000
+   ],
+   "gsm8k-test-0318": [
+    9000
+   ],
+   "gsm8k-test-0320": [
+    9000
+   ],
+   "gsm8k-test-0322": [
+    9000
+   ],
+   "gsm8k-test-0324": [
+    9000
+   ],
+   "gsm8k-test-0326": [
+    9000
+   ],
+   "gsm8k-test-0328": [
+    9000
+   ],
+   "gsm8k-test-0330": [
+    9000
+   ],
+   "gsm8k-test-0332": [
+    9000
+   ],
+   "gsm8k-test-0334": [
+    9000
+   ],
+   "gsm8k-test-0336": [
+    9000
+   ],
+   "gsm8k-test-0338": [
+    9000
+   ],
+   "gsm8k-test-0340": [
+    9000
+   ],
+   "gsm8k-test-0342": [
+    9000
+   ],
+   "gsm8k-test-0344": [
+    9000
+   ],
+   "gsm8k-test-0346": [
+    9000
+   ],
+   "gsm8k-test-0348": [
+    9000
+   ],
+   "gsm8k-test-0350": [
+    9000
+   ],
+   "gsm8k-test-0352": [
+    9000
+   ],
+   "gsm8k-test-0354": [
+    9000
+   ],
+   "gsm8k-test-0356": [
+    9000
+   ],
+   "gsm8k-test-0358": [
+    9000
+   ],
+   "gsm8k-test-0360": [
+    9000
+   ],
+   "gsm8k-test-0362": [
+    9000
+   ],
+   "gsm8k-test-0364": [
+    9000
+   ],
+   "gsm8k-test-0366": [
+    9000
+   ],
+   "gsm8k-test-0368": [
+    9000
+   ],
+   "gsm8k-test-0370": [
+    9000
+   ],
+   "gsm8k-test-0372": [
+    9000
+   ],
+   "gsm8k-test-0374": [
+    9000
+   ],
+   "gsm8k-test-0376": [
+    9000
+   ],
+   "gsm8k-test-0378": [
+    9000
+   ],
+   "gsm8k-test-0380": [
+    9000
+   ],
+   "gsm8k-test-0382": [
+    9000
+   ],
+   "gsm8k-test-0384": [
+    9000
+   ],
+   "gsm8k-test-0386": [
+    9000
+   ],
+   "gsm8k-test-0388": [
+    9000
+   ],
+   "gsm8k-test-0390": [
+    9000
+   ],
+   "gsm8k-test-0392": [
+    9000
+   ],
+   "gsm8k-test-0394": [
+    9000
+   ],
+   "gsm8k-test-0396": [
+    9000
+   ],
+   "gsm8k-test-0398": [
+    9000
+   ],
+   "gsm8k-test-0400": [
+    9000
+   ],
+   "gsm8k-test-0402": [
+    9000
+   ],
+   "gsm8k-test-0404": [
+    9000
+   ],
+   "gsm8k-test-0406": [
+    9000
+   ],
+   "gsm8k-test-0408": [
+    9000
+   ],
+   "gsm8k-test-0410": [
+    9000
+   ],
+   "gsm8k-test-0412": [
+    9000
+   ],
+   "gsm8k-test-0414": [
+    9000
+   ],
+   "gsm8k-test-0416": [
+    9000
+   ],
+   "gsm8k-test-0418": [
+    9000
+   ],
+   "gsm8k-test-0420": [
+    9000
+   ],
+   "gsm8k-test-0422": [
+    9000
+   ],
+   "gsm8k-test-0424": [
+    9000
+   ],
+   "gsm8k-test-0426": [
+    9000
+   ],
+   "gsm8k-test-0428": [
+    9000
+   ],
+   "gsm8k-test-0430": [
+    9000
+   ],
+   "gsm8k-test-0432": [
+    9000
+   ],
+   "gsm8k-test-0434": [
+    9000
+   ],
+   "gsm8k-test-0436": [
+    9000
+   ],
+   "gsm8k-test-0438": [
+    9000
+   ],
+   "gsm8k-test-0440": [
+    9000
+   ],
+   "gsm8k-test-0442": [
+    9000
+   ],
+   "gsm8k-test-0444": [
+    9000
+   ],
+   "gsm8k-test-0446": [
+    9000
+   ],
+   "gsm8k-test-0448": [
+    9000
+   ],
+   "gsm8k-test-0450": [
+    9000
+   ],
+   "gsm8k-test-0452": [
+    9000
+   ],
+   "gsm8k-test-0454": [
+    9000
+   ],
+   "gsm8k-test-0456": [
+    9000
+   ],
+   "gsm8k-test-0458": [
+    9000
+   ],
+   "gsm8k-test-0460": [
+    9000
+   ],
+   "gsm8k-test-0462": [
+    9000
+   ],
+   "gsm8k-test-0464": [
+    9000
+   ],
+   "gsm8k-test-0466": [
+    9000
+   ],
+   "gsm8k-test-0468": [
+    9000
+   ],
+   "gsm8k-test-0470": [
+    9000
+   ],
+   "gsm8k-test-0472": [
+    9000
+   ],
+   "gsm8k-test-0474": [
+    9000
+   ],
+   "gsm8k-test-0476": [
+    9000
+   ],
+   "gsm8k-test-0478": [
+    9000
+   ],
+   "gsm8k-test-0480": [
+    9000
+   ],
+   "gsm8k-test-0482": [
+    9000
+   ],
+   "gsm8k-test-0484": [
+    9000
+   ],
+   "gsm8k-test-0486": [
+    9000
+   ],
+   "gsm8k-test-0488": [
+    9000
+   ],
+   "gsm8k-test-0490": [
+    9000
+   ],
+   "gsm8k-test-0492": [
+    9000
+   ],
+   "gsm8k-test-0494": [
+    9000
+   ],
+   "gsm8k-test-0496": [
+    9000
+   ],
+   "gsm8k-test-0498": [
+    9000
+   ],
+   "gsm8k-test-0500": [
+    9000
+   ],
+   "gsm8k-test-0502": [
+    9000
+   ],
+   "gsm8k-test-0504": [
+    9000
+   ],
+   "gsm8k-test-0506": [
+    9000
+   ],
+   "gsm8k-test-0508": [
+    9000
+   ],
+   "gsm8k-test-0510": [
+    9000
+   ],
+   "gsm8k-test-0512": [
+    9000
+   ],
+   "gsm8k-test-0514": [
+    9000
+   ],
+   "gsm8k-test-0516": [
+    9000
+   ],
+   "gsm8k-test-0518": [
+    9000
+   ],
+   "gsm8k-test-0520": [
+    9000
+   ],
+   "gsm8k-test-0522": [
+    9000
+   ],
+   "gsm8k-test-0524": [
+    9000
+   ],
+   "gsm8k-test-0526": [
+    9000
+   ],
+   "gsm8k-test-0528": [
+    9000
+   ],
+   "gsm8k-test-0530": [
+    9000
+   ],
+   "gsm8k-test-0532": [
+    9000
+   ],
+   "gsm8k-test-0534": [
+    9000
+   ],
+   "gsm8k-test-0536": [
+    9000
+   ],
+   "gsm8k-test-0538": [
+    9000
+   ],
+   "gsm8k-test-0540": [
+    9000
+   ],
+   "gsm8k-test-0542": [
+    9000
+   ],
+   "gsm8k-test-0544": [
+    9000
+   ],
+   "gsm8k-test-0546": [
+    9000
+   ],
+   "gsm8k-test-0548": [
+    9000
+   ],
+   "gsm8k-test-0550": [
+    9000
+   ],
+   "gsm8k-test-0552": [
+    9000
+   ],
+   "gsm8k-test-0554": [
+    9000
+   ],
+   "gsm8k-test-0556": [
+    9000
+   ],
+   "gsm8k-test-0558": [
+    9000
+   ],
+   "gsm8k-test-0560": [
+    9000
+   ],
+   "gsm8k-test-0562": [
+    9000
+   ],
+   "gsm8k-test-0564": [
+    9000
+   ],
+   "gsm8k-test-0566": [
+    9000
+   ],
+   "gsm8k-test-0568": [
+    9000
+   ],
+   "gsm8k-test-0570": [
+    9000
+   ],
+   "gsm8k-test-0572": [
+    9000
+   ],
+   "gsm8k-test-0574": [
+    9000
+   ],
+   "gsm8k-test-0576": [
+    9000
+   ],
+   "gsm8k-test-0578": [
+    9000
+   ],
+   "gsm8k-test-0580": [
+    9000
+   ],
+   "gsm8k-test-0582": [
+    9000
+   ],
+   "gsm8k-test-0584": [
+    9000
+   ],
+   "gsm8k-test-0586": [
+    9000
+   ],
+   "gsm8k-test-0588": [
+    9000
+   ],
+   "gsm8k-test-0590": [
+    9000
+   ],
+   "gsm8k-test-0592": [
+    9000
+   ],
+   "gsm8k-test-0594": [
+    9000
+   ],
+   "gsm8k-test-0596": [
+    9000
+   ],
+   "gsm8k-test-0598": [
+    9000
+   ],
+   "gsm8k-test-0600": [
+    9000
+   ],
+   "gsm8k-test-0602": [
+    9000
+   ],
+   "gsm8k-test-0604": [
+    9000
+   ],
+   "gsm8k-test-0606": [
+    9000
+   ],
+   "gsm8k-test-0608": [
+    9000
+   ],
+   "gsm8k-test-0610": [
+    9000
+   ],
+   "gsm8k-test-0612": [
+    9000
+   ],
+   "gsm8k-test-0614": [
+    9000
+   ],
+   "gsm8k-test-0616": [
+    9000
+   ],
+   "gsm8k-test-0618": [
+    9000
+   ],
+   "gsm8k-test-0620": [
+    9000
+   ],
+   "gsm8k-test-0622": [
+    9000
+   ],
+   "gsm8k-test-0624": [
+    9000
+   ],
+   "gsm8k-test-0626": [
+    9000
+   ],
+   "gsm8k-test-0628": [
+    9000
+   ],
+   "gsm8k-test-0630": [
+    9000
+   ],
+   "gsm8k-test-0632": [
+    9000
+   ],
+   "gsm8k-test-0634": [
+    9000
+   ],
+   "gsm8k-test-0636": [
+    9000
+   ],
+   "gsm8k-test-0638": [
+    9000
+   ],
+   "gsm8k-test-0640": [
+    9000
+   ],
+   "gsm8k-test-0642": [
+    9000
+   ],
+   "gsm8k-test-0644": [
+    9000
+   ],
+   "gsm8k-test-0646": [
+    9000
+   ],
+   "gsm8k-test-0648": [
+    9000
+   ],
+   "gsm8k-test-0650": [
+    9000
+   ],
+   "gsm8k-test-0652": [
+    9000
+   ],
+   "gsm8k-test-0654": [
+    9000
+   ],
+   "gsm8k-test-0656": [
+    9000
+   ],
+   "gsm8k-test-0658": [
+    9000
+   ],
+   "gsm8k-test-0660": [
+    9000
+   ],
+   "gsm8k-test-0662": [
+    9000
+   ],
+   "gsm8k-test-0664": [
+    9000
+   ],
+   "gsm8k-test-0666": [
+    9000
+   ],
+   "gsm8k-test-0668": [
+    9000
+   ],
+   "gsm8k-test-0670": [
+    9000
+   ],
+   "gsm8k-test-0672": [
+    9000
+   ],
+   "gsm8k-test-0674": [
+    9000
+   ],
+   "gsm8k-test-0676": [
+    9000
+   ],
+   "gsm8k-test-0678": [
+    9000
+   ],
+   "gsm8k-test-0680": [
+    9000
+   ],
+   "gsm8k-test-0682": [
+    9000
+   ],
+   "gsm8k-test-0684": [
+    9000
+   ],
+   "gsm8k-test-0686": [
+    9000
+   ],
+   "gsm8k-test-0688": [
+    9000
+   ],
+   "gsm8k-test-0690": [
+    9000
+   ],
+   "gsm8k-test-0692": [
+    9000
+   ],
+   "gsm8k-test-0694": [
+    9000
+   ],
+   "gsm8k-test-0696": [
+    9000
+   ],
+   "gsm8k-test-0698": [
+    9000
+   ],
+   "gsm8k-test-0700": [
+    9000
+   ],
+   "gsm8k-test-0702": [
+    9000
+   ],
+   "gsm8k-test-0704": [
+    9000
+   ],
+   "gsm8k-test-0706": [
+    9000
+   ],
+   "gsm8k-test-0708": [
+    9000
+   ],
+   "gsm8k-test-0710": [
+    9000
+   ],
+   "gsm8k-test-0712": [
+    9000
+   ],
+   "gsm8k-test-0714": [
+    9000
+   ],
+   "gsm8k-test-0716": [
+    9000
+   ],
+   "gsm8k-test-0718": [
+    9000
+   ],
+   "gsm8k-test-0720": [
+    9000
+   ],
+   "gsm8k-test-0722": [
+    9000
+   ],
+   "gsm8k-test-0724": [
+    9000
+   ],
+   "gsm8k-test-0726": [
+    9000
+   ],
+   "gsm8k-test-0728": [
+    9000
+   ],
+   "gsm8k-test-0730": [
+    9000
+   ],
+   "gsm8k-test-0732": [
+    9000
+   ],
+   "gsm8k-test-0734": [
+    9000
+   ],
+   "gsm8k-test-0736": [
+    9000
+   ],
+   "gsm8k-test-0738": [
+    9000
+   ],
+   "gsm8k-test-0740": [
+    9000
+   ],
+   "gsm8k-test-0742": [
+    9000
+   ],
+   "gsm8k-test-0744": [
+    9000
+   ],
+   "gsm8k-test-0746": [
+    9000
+   ],
+   "gsm8k-test-0748": [
+    9000
+   ],
+   "gsm8k-test-0750": [
+    9000
+   ],
+   "gsm8k-test-0752": [
+    9000
+   ],
+   "gsm8k-test-0754": [
+    9000
+   ],
+   "gsm8k-test-0756": [
+    9000
+   ],
+   "gsm8k-test-0758": [
+    9000
+   ],
+   "gsm8k-test-0760": [
+    9000
+   ],
+   "gsm8k-test-0762": [
+    9000
+   ],
+   "gsm8k-test-0764": [
+    9000
+   ],
+   "gsm8k-test-0766": [
+    9000
+   ],
+   "gsm8k-test-0768": [
+    9000
+   ],
+   "gsm8k-test-0770": [
+    9000
+   ],
+   "gsm8k-test-0772": [
+    9000
+   ],
+   "gsm8k-test-0774": [
+    9000
+   ],
+   "gsm8k-test-0776": [
+    9000
+   ],
+   "gsm8k-test-0778": [
+    9000
+   ],
+   "gsm8k-test-0780": [
+    9000
+   ],
+   "gsm8k-test-0782": [
+    9000
+   ],
+   "gsm8k-test-0784": [
+    9000
+   ],
+   "gsm8k-test-0786": [
+    9000
+   ],
+   "gsm8k-test-0788": [
+    9000
+   ],
+   "gsm8k-test-0790": [
+    9000
+   ],
+   "gsm8k-test-0792": [
+    9000
+   ],
+   "gsm8k-test-0794": [
+    9000
+   ],
+   "gsm8k-test-0796": [
+    9000
+   ],
+   "gsm8k-test-0798": [
+    9000
+   ],
+   "gsm8k-test-0800": [
+    9000
+   ],
+   "gsm8k-test-0802": [
+    9000
+   ],
+   "gsm8k-test-0804": [
+    9000
+   ],
+   "gsm8k-test-0806": [
+    9000
+   ],
+   "gsm8k-test-0808": [
+    9000
+   ],
+   "gsm8k-test-0810": [
+    9000
+   ],
+   "gsm8k-test-0812": [
+    9000
+   ],
+   "gsm8k-test-0814": [
+    9000
+   ],
+   "gsm8k-test-0816": [
+    9000
+   ],
+   "gsm8k-test-0818": [
+    9000
+   ],
+   "gsm8k-test-0820": [
+    9000
+   ],
+   "gsm8k-test-0822": [
+    9000
+   ],
+   "gsm8k-test-0824": [
+    9000
+   ],
+   "gsm8k-test-0826": [
+    9000
+   ],
+   "gsm8k-test-0828": [
+    9000
+   ],
+   "gsm8k-test-0830": [
+    9000
+   ],
+   "gsm8k-test-0832": [
+    9000
+   ],
+   "gsm8k-test-0834": [
+    9000
+   ],
+   "gsm8k-test-0836": [
+    9000
+   ],
+   "gsm8k-test-0838": [
+    9000
+   ],
+   "gsm8k-test-0840": [
+    9000
+   ],
+   "gsm8k-test-0842": [
+    9000
+   ],
+   "gsm8k-test-0844": [
+    9000
+   ],
+   "gsm8k-test-0846": [
+    9000
+   ],
+   "gsm8k-test-0848": [
+    9000
+   ],
+   "gsm8k-test-0850": [
+    9000
+   ],
+   "gsm8k-test-0852": [
+    9000
+   ],
+   "gsm8k-test-0854": [
+    9000
+   ],
+   "gsm8k-test-0856": [
+    9000
+   ],
+   "gsm8k-test-0858": [
+    9000
+   ],
+   "gsm8k-test-0860": [
+    9000
+   ],
+   "gsm8k-test-0862": [
+    9000
+   ],
+   "gsm8k-test-0864": [
+    9000
+   ],
+   "gsm8k-test-0866": [
+    9000
+   ],
+   "gsm8k-test-0868": [
+    9000
+   ],
+   "gsm8k-test-0870": [
+    9000
+   ],
+   "gsm8k-test-0872": [
+    9000
+   ],
+   "gsm8k-test-0874": [
+    9000
+   ],
+   "gsm8k-test-0876": [
+    9000
+   ],
+   "gsm8k-test-0878": [
+    9000
+   ],
+   "gsm8k-test-0880": [
+    9000
+   ],
+   "gsm8k-test-0882": [
+    9000
+   ],
+   "gsm8k-test-0884": [
+    9000
+   ],
+   "gsm8k-test-0886": [
+    9000
+   ],
+   "gsm8k-test-0888": [
+    9000
+   ],
+   "gsm8k-test-0890": [
+    9000
+   ],
+   "gsm8k-test-0892": [
+    9000
+   ],
+   "gsm8k-test-0894": [
+    9000
+   ],
+   "gsm8k-test-0896": [
+    9000
+   ],
+   "gsm8k-test-0898": [
+    9000
+   ],
+   "gsm8k-test-0900": [
+    9000
+   ],
+   "gsm8k-test-0902": [
+    9000
+   ],
+   "gsm8k-test-0904": [
+    9000
+   ],
+   "gsm8k-test-0906": [
+    9000
+   ],
+   "gsm8k-test-0908": [
+    9000
+   ],
+   "gsm8k-test-0910": [
+    9000
+   ],
+   "gsm8k-test-0912": [
+    9000
+   ],
+   "gsm8k-test-0914": [
+    9000
+   ],
+   "gsm8k-test-0916": [
+    9000
+   ],
+   "gsm8k-test-0918": [
+    9000
+   ],
+   "gsm8k-test-0920": [
+    9000
+   ],
+   "gsm8k-test-0922": [
+    9000
+   ],
+   "gsm8k-test-0924": [
+    9000
+   ],
+   "gsm8k-test-0926": [
+    9000
+   ],
+   "gsm8k-test-0928": [
+    9000
+   ],
+   "gsm8k-test-0930": [
+    9000
+   ],
+   "gsm8k-test-0932": [
+    9000
+   ],
+   "gsm8k-test-0934": [
+    9000
+   ],
+   "gsm8k-test-0936": [
+    9000
+   ],
+   "gsm8k-test-0938": [
+    9000
+   ],
+   "gsm8k-test-0940": [
+    9000
+   ],
+   "gsm8k-test-0942": [
+    9000
+   ],
+   "gsm8k-test-0944": [
+    9000
+   ],
+   "gsm8k-test-0946": [
+    9000
+   ],
+   "gsm8k-test-0948": [
+    9000
+   ],
+   "gsm8k-test-0950": [
+    9000
+   ],
+   "gsm8k-test-0952": [
+    9000
+   ],
+   "gsm8k-test-0954": [
+    9000
+   ],
+   "gsm8k-test-0956": [
+    9000
+   ],
+   "gsm8k-test-0958": [
+    9000
+   ],
+   "gsm8k-test-0960": [
+    9000
+   ],
+   "gsm8k-test-0962": [
+    9000
+   ],
+   "gsm8k-test-0964": [
+    9000
+   ],
+   "gsm8k-test-0966": [
+    9000
+   ],
+   "gsm8k-test-0968": [
+    9000
+   ],
+   "gsm8k-test-0970": [
+    9000
+   ],
+   "gsm8k-test-0972": [
+    9000
+   ],
+   "gsm8k-test-0974": [
+    9000
+   ],
+   "gsm8k-test-0976": [
+    9000
+   ],
+   "gsm8k-test-0978": [
+    9000
+   ],
+   "gsm8k-test-0980": [
+    9000
+   ],
+   "gsm8k-test-0982": [
+    9000
+   ],
+   "gsm8k-test-0984": [
+    9000
+   ],
+   "gsm8k-test-0986": [
+    9000
+   ],
+   "gsm8k-test-0988": [
+    9000
+   ],
+   "gsm8k-test-0990": [
+    9000
+   ],
+   "gsm8k-test-0992": [
+    9000
+   ],
+   "gsm8k-test-0994": [
+    9000
+   ],
+   "gsm8k-test-0996": [
+    9000
+   ],
+   "gsm8k-test-0998": [
+    9000
+   ],
+   "gsm8k-test-1000": [
+    9000
+   ],
+   "gsm8k-test-1002": [
+    9000
+   ],
+   "gsm8k-test-1004": [
+    9000
+   ],
+   "gsm8k-test-1006": [
+    9000
+   ],
+   "gsm8k-test-1008": [
+    9000
+   ],
+   "gsm8k-test-1010": [
+    9000
+   ],
+   "gsm8k-test-1012": [
+    9000
+   ],
+   "gsm8k-test-1014": [
+    9000
+   ],
+   "gsm8k-test-1016": [
+    9000
+   ],
+   "gsm8k-test-1018": [
+    9000
+   ],
+   "gsm8k-test-1020": [
+    9000
+   ],
+   "gsm8k-test-1022": [
+    9000
+   ],
+   "gsm8k-test-1024": [
+    9000
+   ],
+   "gsm8k-test-1026": [
+    9000
+   ],
+   "gsm8k-test-1028": [
+    9000
+   ],
+   "gsm8k-test-1030": [
+    9000
+   ],
+   "gsm8k-test-1032": [
+    9000
+   ],
+   "gsm8k-test-1034": [
+    9000
+   ],
+   "gsm8k-test-1036": [
+    9000
+   ],
+   "gsm8k-test-1038": [
+    9000
+   ],
+   "gsm8k-test-1040": [
+    9000
+   ],
+   "gsm8k-test-1042": [
+    9000
+   ],
+   "gsm8k-test-1044": [
+    9000
+   ],
+   "gsm8k-test-1046": [
+    9000
+   ],
+   "gsm8k-test-1048": [
+    9000
+   ],
+   "gsm8k-test-1050": [
+    9000
+   ],
+   "gsm8k-test-1052": [
+    9000
+   ],
+   "gsm8k-test-1054": [
+    9000
+   ],
+   "gsm8k-test-1056": [
+    9000
+   ],
+   "gsm8k-test-1058": [
+    9000
+   ],
+   "gsm8k-test-1060": [
+    9000
+   ],
+   "gsm8k-test-1062": [
+    9000
+   ],
+   "gsm8k-test-1064": [
+    9000
+   ],
+   "gsm8k-test-1066": [
+    9000
+   ],
+   "gsm8k-test-1068": [
+    9000
+   ],
+   "gsm8k-test-1070": [
+    9000
+   ],
+   "gsm8k-test-1072": [
+    9000
+   ],
+   "gsm8k-test-1074": [
+    9000
+   ],
+   "gsm8k-test-1076": [
+    9000
+   ],
+   "gsm8k-test-1078": [
+    9000
+   ],
+   "gsm8k-test-1080": [
+    9000
+   ],
+   "gsm8k-test-1082": [
+    9000
+   ],
+   "gsm8k-test-1084": [
+    9000
+   ],
+   "gsm8k-test-1086": [
+    9000
+   ],
+   "gsm8k-test-1088": [
+    9000
+   ],
+   "gsm8k-test-1090": [
+    9000
+   ],
+   "gsm8k-test-1092": [
+    9000
+   ],
+   "gsm8k-test-1094": [
+    9000
+   ],
+   "gsm8k-test-1096": [
+    9000
+   ],
+   "gsm8k-test-1098": [
+    9000
+   ],
+   "gsm8k-test-1100": [
+    9000
+   ],
+   "gsm8k-test-1102": [
+    9000
+   ],
+   "gsm8k-test-1104": [
+    9000
+   ],
+   "gsm8k-test-1106": [
+    9000
+   ],
+   "gsm8k-test-1108": [
+    9000
+   ],
+   "gsm8k-test-1110": [
+    9000
+   ],
+   "gsm8k-test-1112": [
+    9000
+   ],
+   "gsm8k-test-1114": [
+    9000
+   ],
+   "gsm8k-test-1116": [
+    9000
+   ],
+   "gsm8k-test-1118": [
+    9000
+   ],
+   "gsm8k-test-1120": [
+    9000
+   ],
+   "gsm8k-test-1122": [
+    9000
+   ],
+   "gsm8k-test-1124": [
+    9000
+   ],
+   "gsm8k-test-1126": [
+    9000
+   ],
+   "gsm8k-test-1128": [
+    9000
+   ],
+   "gsm8k-test-1130": [
+    9000
+   ],
+   "gsm8k-test-1132": [
+    9000
+   ],
+   "gsm8k-test-1134": [
+    9000
+   ],
+   "gsm8k-test-1136": [
+    9000
+   ],
+   "gsm8k-test-1138": [
+    9000
+   ],
+   "gsm8k-test-1140": [
+    9000
+   ],
+   "gsm8k-test-1142": [
+    9000
+   ],
+   "gsm8k-test-1144": [
+    9000
+   ],
+   "gsm8k-test-1146": [
+    9000
+   ],
+   "gsm8k-test-1148": [
+    9000
+   ],
+   "gsm8k-test-1150": [
+    9000
+   ],
+   "gsm8k-test-1152": [
+    9000
+   ],
+   "gsm8k-test-1154": [
+    9000
+   ],
+   "gsm8k-test-1156": [
+    9000
+   ],
+   "gsm8k-test-1158": [
+    9000
+   ],
+   "gsm8k-test-1160": [
+    9000
+   ],
+   "gsm8k-test-1162": [
+    9000
+   ],
+   "gsm8k-test-1164": [
+    9000
+   ],
+   "gsm8k-test-1166": [
+    9000
+   ],
+   "gsm8k-test-1168": [
+    9000
+   ],
+   "gsm8k-test-1170": [
+    9000
+   ],
+   "gsm8k-test-1172": [
+    9000
+   ],
+   "gsm8k-test-1174": [
+    9000
+   ],
+   "gsm8k-test-1176": [
+    9000
+   ],
+   "gsm8k-test-1178": [
+    9000
+   ],
+   "gsm8k-test-1180": [
+    9000
+   ],
+   "gsm8k-test-1182": [
+    9000
+   ],
+   "gsm8k-test-1184": [
+    9000
+   ],
+   "gsm8k-test-1186": [
+    9000
+   ],
+   "gsm8k-test-1188": [
+    9000
+   ],
+   "gsm8k-test-1190": [
+    9000
+   ],
+   "gsm8k-test-1192": [
+    9000
+   ],
+   "gsm8k-test-1194": [
+    9000
+   ],
+   "gsm8k-test-1196": [
+    9000
+   ],
+   "gsm8k-test-1198": [
+    9000
+   ]
+  },
+  "consistent": true
+ },
+ "curves": {
+  "as_failure": {
+   "pass@k": [
+    {
+     "k": 1,
+     "value": 0.04083333333333333,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.03,
+      0.0525
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.08,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.058333333333333334,
+      0.10166666666666667
+     ]
+    }
+   ],
+   "pass^k": [
+    {
+     "k": 1,
+     "value": 0.04083333333333333,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.03,
+      0.0525
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.0016666666666666668,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.0,
+      0.006666666666666667
+     ]
+    }
+   ]
+  },
+  "exclude_nonattest": {
+   "pass@k": [
+    {
+     "k": 1,
+     "value": 0.04083333333333333,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.03,
+      0.0525
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.08,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.06,
+      0.10166666666666667
+     ]
+    }
+   ],
+   "pass^k": [
+    {
+     "k": 1,
+     "value": 0.04083333333333333,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.03,
+      0.0525
+     ]
+    },
+    {
+     "k": 2,
+     "value": 0.0016666666666666668,
+     "n_tasks": 600,
+     "estimable": true,
+     "ci": [
+      0.0,
+      0.005
+     ]
+    }
+   ]
+  }
+ },
+ "bootstrap": {
+  "n_boot": 2000,
+  "seed": 0,
+  "alpha": 0.05
+ },
+ "definitions": {
+  "pass@k": "mean over tasks of 1 - C(n-c, k)/C(n, k); k>n not estimable",
+  "pass^k": "mean over tasks of C(c, k)/C(n, k); k>n not estimable",
+  "pass@1": "mean over tasks of c/n (full-credit pass only)",
+  "n": "attempts for one task; c = attempts with status 'pass'",
+  "as_failure": "timeout/refusal/error count as failures",
+  "exclude_nonattest": "timeout/refusal/error attempts are dropped"
+ },
+ "notes": [
+  "attempts are never pooled across tasks; each task contributes its own per-task estimate",
+  "k > n is not estimable for that task and is excluded from that point (see n_tasks and estimable)",
+  "'pass' means full-credit acceptance; partial credit is not a pass",
+  "timeouts, refusals and transport errors are counted as failures in 'as_failure' and dropped in 'exclude_nonattest'"
+ ],
+ "run": {
+  "model": "evalsft-qwen25-05b:latest",
+  "n_tasks": 600,
+  "samples": 2,
+  "wall_s_total": 336.5,
+  "wall_s_median_per_call": 0.24,
+  "wall_s_mean_per_call": 0.28,
+  "out_tokens_mean": 4.61,
+  "temperature": 1.1,
+  "top_p": 0.95,
+  "num_predict": 16,
+  "prompt": "answer-only",
+  "seeds": [
+   9000,
+   9001
+  ],
+  "dataset": "GSM8K test split (MIT), 1319 rows, stride selection"
+ }
+}

@@ -1,7 +1,11 @@
 # Examples — real traces, nothing fabricated
 
-Both scripts read traces that are already committed under `outputs/`. They make no
-network calls and need no model. Every number printed below comes from those files.
+The first two scripts read traces that are already committed under `outputs/`. They
+make no network calls and need no model. Every number printed below comes from those files.
+
+The third script (`gsm8k_multisample.py`) is a **runner**: it needs a local ollama
+server and a model, and it downloads the GSM8K test file once. Its output is already
+committed, so you can read the result without re-running it.
 
 Run them from the repository root or from anywhere else (paths are resolved relative to
 this file):
@@ -62,6 +66,31 @@ repeats to fill the curve. Feed it N run files from your own harness to get the 
 
 The `pass@1` values match the archived acceptance rates (10/100 and 22/100), which is a
 sanity check that the calculator reads the same operating point the audit reported.
+
+## 3. Multi-sample pass^k on GSM8K — `gsm8k_multisample.py`
+
+**Question:** how far apart are pass@1 and pass^k on real repeated sampling, and does a
+single sample overstate reliability?
+
+**Data (already committed):** `outputs/gsm8k-multisample-14b.jsonl` — 30 GSM8K test tasks
+× 8 samples (qwen2.5-coder:14b, answer-only prompt, temperature 1.1, seeds 9000–9007),
+with every raw response, pass flag, wall time and token count. Full write-up:
+`outputs/multisample-run.md`.
+
+**Expected output** (`outputs/gsm8k-multisample-14b.json`):
+
+```
+pass@1 = 0.317 [0.179-0.458]   pass@8 = 0.533 [0.367-0.700]
+pass^k: 0.317 -> 0.245 -> 0.218 -> 0.203 -> 0.192 -> 0.183 -> 0.175 -> 0.167
+pass@1 / pass^8 = 1.90x   (curve still falling at k=8, not saturated)
+```
+
+Re-run it against your own local model (resumable; skips attempts already on disk):
+
+```bash
+python3 examples/gsm8k_multisample.py --n-tasks 30 --samples 8 \
+    --model qwen2.5-coder:14b --out outputs/my-runs.jsonl
+```
 
 ## Bring your own benchmark
 
