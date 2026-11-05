@@ -92,7 +92,7 @@ Standard library only. Python 3.9+. Nothing is fetched at run time.
 git clone <repo-url> vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 157 tests, a few seconds
+python3 -m pytest -q       # 157 tests
 ```
 
 Verified from a clean clone: `pip install -e .` builds an editable wheel, `from vci import
