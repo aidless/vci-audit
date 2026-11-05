@@ -1,0 +1,6225 @@
+{
+ "manifest": {
+  "kind": "vci-realfail",
+  "version": "2.1",
+  "model": "qwen2.5-coder:14b",
+  "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+  "host": "http://localhost:11434",
+  "seed": 20261104,
+  "n_tasks": 5,
+  "families": [
+   "arith_expression",
+   "unit_convert",
+   "stats_summary",
+   "base_convert",
+   "matrix_ops",
+   "date_arith",
+   "json_schema_extract",
+   "log_field_extraction",
+   "template_render",
+   "table_aggregate",
+   "sort_multikey",
+   "interval_merge",
+   "grid_path",
+   "csp_assign",
+   "schedule_slots",
+   "topo_order",
+   "life_step"
+  ],
+  "temperature": 0.0,
+  "max_tokens": 1024,
+  "samples_per_task": 1,
+  "date": "2026-11-04 05:54:32 PST"
+ },
+ "records": [
+  {
+   "family": "arith_expression",
+   "task_id": "arith_expression-001",
+   "n_units": 2,
+   "prompt_chars": 291,
+   "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. (3 - 4) / 8\n  2. (11 * 18 - 17) / 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [-0.125, 95.5]}",
+   "wall_s": 28.19,
+   "eval_count": 17,
+   "eval_duration_s": 4.725,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     -0.125,
+     95.5
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.5,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 90.5, got 95.5"
+     }
+    ]
+   }
+  },
+  {
+   "family": "arith_expression",
+   "task_id": "arith_expression-002",
+   "n_units": 2,
+   "prompt_chars": 295,
+   "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. (3 + 2 + 15) / 2\n  2. (8 + 17 * 1) / 10\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [10, 2.5]}",
+   "wall_s": 6.84,
+   "eval_count": 13,
+   "eval_duration_s": 3.57,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     10,
+     2.5
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "exact value"
+     }
+    ]
+   }
+  },
+  {
+   "family": "arith_expression",
+   "task_id": "arith_expression-003",
+   "n_units": 2,
+   "prompt_chars": 275,
+   "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. 5 + 14\n  2. (7) / 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [19, 3.5]}",
+   "wall_s": 6.121,
+   "eval_count": 13,
+   "eval_duration_s": 3.551,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     19,
+     3.5
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "exact value"
+     }
+    ]
+   }
+  },
+  {
+   "family": "arith_expression",
+   "task_id": "arith_expression-004",
+   "n_units": 5,
+   "prompt_chars": 346,
+   "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. (19 + 10) / 5\n  2. (5 * 2) / 10\n  3. (7 - 4) / 4\n  4. (14 + 4) / 8\n  5. (13 * 19 - 17) / 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [5.8, 1, 0.75, 2, 108]}",
+   "wall_s": 13.02,
+   "eval_count": 26,
+   "eval_duration_s": 7.884,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     5.8,
+     1,
+     0.75,
+     2,
+     108
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.6,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected 2.25, got 2"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected 115, got 108"
+     }
+    ]
+   }
+  },
+  {
+   "family": "arith_expression",
+   "task_id": "arith_expression-005",
+   "n_units": 5,
+   "prompt_chars": 357,
+   "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. (13 * 13 + 6) / 4\n  2. (1 + 18) / 2\n  3. (12 * 15) / 10\n  4. (6 - 12 - 9) / 10\n  5. (5 * 11 + 13) / 4\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [43.0, 9.5, 18.0, -1.7, 15.0]}",
+   "wall_s": 15.904,
+   "eval_count": 32,
+   "eval_duration_s": 9.455,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     43.0,
+     9.5,
+     18.0,
+     -1.7,
+     15.0
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.4,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 43.75, got 43.0"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "exact value"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected -1.5, got -1.7"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected 17, got 15.0"
+     }
+    ]
+   }
+  },
+  {
+   "family": "unit_convert",
+   "task_id": "unit_convert-001",
+   "n_units": 2,
+   "prompt_chars": 284,
+   "prompt": "Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).\n  1. 394.0256 m3 -> gal_us\n  2. 211.4834 lb -> g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [103476.00000000001, 95899.99999999999]}",
+   "wall_s": 17.145,
+   "eval_count": 43,
+   "eval_duration_s": 12.733,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     103476.00000000001,
+     95899.99999999999
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 104090.55143365084425911429455200322269615463319960965176728, got 103476.00000000001"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 95927.256621658, got 95899.99999999999"
+     }
+    ]
+   }
+  },
+  {
+   "family": "unit_convert",
+   "task_id": "unit_convert-002",
+   "n_units": 2,
+   "prompt_chars": 280,
+   "prompt": "Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).\n  1. 13.2831 h -> min\n  2. 313.8333 kg -> oz\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [796.986, 10999.99984]}",
+   "wall_s": 10.647,
+   "eval_count": 26,
+   "eval_duration_s": 7.505,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     796.986,
+     10999.99984
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.5,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 11070.1438827112546006891606223446836197884016435285276072876, got 10999.99984"
+     }
+    ]
+   }
+  },
+  {
+   "family": "unit_convert",
+   "task_id": "unit_convert-003",
+   "n_units": 2,
+   "prompt_chars": 283,
+   "prompt": "Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).\n  1. 178.9698 mi -> km\n  2. 434.0477 day -> min\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [287.7698, 62647008]}",
+   "wall_s": 9.815,
+   "eval_count": 24,
+   "eval_duration_s": 6.881,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     287.7698,
+     62647008
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 288.0239738112, got 287.7698"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 625028.688, got 62647008"
+     }
+    ]
+   }
+  },
+  {
+   "family": "unit_convert",
+   "task_id": "unit_convert-004",
+   "n_units": 4,
+   "prompt_chars": 329,
+   "prompt": "Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).\n  1. 418.0025 mL -> m3\n  2. 57.847 oz -> mg\n  3. 4.0965 gal_us -> L\n  4. 203.3212 gal_us -> L\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [0.0004180025, 1637600.0025, 15.4768, 7700.848]}",
+   "wall_s": 20.262,
+   "eval_count": 51,
+   "eval_duration_s": 15.388,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     0.0004180025,
+     1637600.0025,
+     15.4768,
+     7700.848
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.25,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 1639934.864211875, got 1637600.0025"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected 15.506939373156, got 15.4768"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected 769.6544664170208, got 7700.848"
+     }
+    ]
+   }
+  },
+  {
+   "family": "unit_convert",
+   "task_id": "unit_convert-005",
+   "n_units": 4,
+   "prompt_chars": 324,
+   "prompt": "Convert each quantity into the target unit.  Give one numeric answer per line, in order (no unit suffix).\n  1. 168.8648 m -> mm\n  2. 34.4862 mg -> lb\n  3. 432.2432 min -> h\n  4. 359.9263 g -> mg\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [168864.8, 0.07600000000000001, 7.204053333333333, 359926.3]}",
+   "wall_s": 24.329,
+   "eval_count": 64,
+   "eval_duration_s": 19.765,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     168864.8,
+     0.07600000000000001,
+     7.204053333333333,
+     359926.3
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 0.0000760290566616012522432861910794487129490295438611544546042518, got 0.07600000000000001"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "q4",
+      "ok": true,
+      "detail": "within tolerance"
+     }
+    ]
+   }
+  },
+  {
+   "family": "stats_summary",
+   "task_id": "stats_summary-001",
+   "n_units": 5,
+   "prompt_chars": 329,
+   "prompt": "Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.\n  data = [2, 2, 8, 11, 63, 77, 81, 83, 89, 94, 96, 100]\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"mean\": 54.0,\n  \"median\": 77.0,\n  \"std_sample\": 37.26779962499649,\n  \"q1\": 22.0,\n  \"q3\": 86.0\n}",
+   "wall_s": 32.776,
+   "eval_count": 69,
+   "eval_duration_s": 26.6,
+   "parse_status": "ok",
+   "payload": {
+    "mean": 54.0,
+    "median": 77.0,
+    "std_sample": 37.26779962499649,
+    "q1": 22.0,
+    "q3": 86.0
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "mean",
+      "ok": false,
+      "detail": "expected Fraction(353, 6), got 54.0"
+     },
+     {
+      "unit": "median",
+      "ok": false,
+      "detail": "expected Fraction(79, 1), got 77.0"
+     },
+     {
+      "unit": "std_sample",
+      "ok": false,
+      "detail": "expected 40.42688874169435, got 37.26779962499649"
+     },
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected Fraction(41, 4), got 22.0"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected Fraction(361, 4), got 86.0"
+     }
+    ]
+   }
+  },
+  {
+   "family": "stats_summary",
+   "task_id": "stats_summary-002",
+   "n_units": 5,
+   "prompt_chars": 340,
+   "prompt": "Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.\n  data = [20, 28, 29, 41, 48, 70, 73, 76, 80, 85, 88, 89, 92, 100]\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"mean\": 67.5,\n  \"median\": 74.5,\n  \"std_sample\": 27.386127875258304,\n  \"q1\": 44.5,\n  \"q3\": 86.0\n}",
+   "wall_s": 31.771,
+   "eval_count": 70,
+   "eval_duration_s": 26.693,
+   "parse_status": "ok",
+   "payload": {
+    "mean": 67.5,
+    "median": 74.5,
+    "std_sample": 27.386127875258303,
+    "q1": 44.5,
+    "q3": 86.0
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.2,
+    "evidence": [
+     {
+      "unit": "mean",
+      "ok": false,
+      "detail": "expected Fraction(919, 14), got 67.5"
+     },
+     {
+      "unit": "median",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "std_sample",
+      "ok": false,
+      "detail": "expected 26.951829231076303, got 27.386127875258303"
+     },
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected Fraction(171, 4), got 44.5"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected Fraction(349, 4), got 86.0"
+     }
+    ]
+   }
+  },
+  {
+   "family": "stats_summary",
+   "task_id": "stats_summary-003",
+   "n_units": 5,
+   "prompt_chars": 337,
+   "prompt": "Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.\n  data = [5, 7, 29, 29, 36, 42, 42, 57, 61, 64, 67, 77, 86, 93]\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"mean\": 54.0,\n  \"median\": 57.0,\n  \"std_sample\": 24.0,\n  \"q1\": 36.0,\n  \"q3\": 77.0\n}",
+   "wall_s": 20.386,
+   "eval_count": 56,
+   "eval_duration_s": 16.637,
+   "parse_status": "ok",
+   "payload": {
+    "mean": 54.0,
+    "median": 57.0,
+    "std_sample": 24.0,
+    "q1": 36.0,
+    "q3": 77.0
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "mean",
+      "ok": false,
+      "detail": "expected Fraction(695, 14), got 54.0"
+     },
+     {
+      "unit": "median",
+      "ok": false,
+      "detail": "expected Fraction(99, 2), got 57.0"
+     },
+     {
+      "unit": "std_sample",
+      "ok": false,
+      "detail": "expected 27.184857614423578, got 24.0"
+     },
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected Fraction(123, 4), got 36.0"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected Fraction(265, 4), got 77.0"
+     }
+    ]
+   }
+  },
+  {
+   "family": "stats_summary",
+   "task_id": "stats_summary-004",
+   "n_units": 5,
+   "prompt_chars": 321,
+   "prompt": "Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.\n  data = [2, 9, 15, 20, 65, 74, 74, 86, 89, 92]\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"mean\": 54.5,\n  \"median\": 74.0,\n  \"std_sample\": 30.276503540974918,\n  \"q1\": 20.0,\n  \"q3\": 86.0\n}",
+   "wall_s": 24.274,
+   "eval_count": 70,
+   "eval_duration_s": 21.369,
+   "parse_status": "ok",
+   "payload": {
+    "mean": 54.5,
+    "median": 74.0,
+    "std_sample": 30.276503540974918,
+    "q1": 20.0,
+    "q3": 86.0
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "mean",
+      "ok": false,
+      "detail": "expected Fraction(263, 5), got 54.5"
+     },
+     {
+      "unit": "median",
+      "ok": false,
+      "detail": "expected Fraction(139, 2), got 74.0"
+     },
+     {
+      "unit": "std_sample",
+      "ok": false,
+      "detail": "expected 36.5154457425591, got 30.276503540974918"
+     },
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected Fraction(65, 4), got 20.0"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected Fraction(83, 1), got 86.0"
+     }
+    ]
+   }
+  },
+  {
+   "family": "stats_summary",
+   "task_id": "stats_summary-005",
+   "n_units": 5,
+   "prompt_chars": 323,
+   "prompt": "Given the sample below compute mean, median, sample standard deviation (ddof=1), Q1 and Q3 (linear interpolation, position=(n-1)*q).  Answer as a JSON object with keys mean, median, std_sample, q1, q3.\n  data = [18, 20, 22, 37, 46, 69, 69, 84, 85, 97]\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"mean\": 54.5,\n  \"median\": 69.0,\n  \"std_sample\": 27.48688905325917,\n  \"q1\": 22.0,\n  \"q3\": 84.5\n}",
+   "wall_s": 35.748,
+   "eval_count": 69,
+   "eval_duration_s": 31.288,
+   "parse_status": "ok",
+   "payload": {
+    "mean": 54.5,
+    "median": 69.0,
+    "std_sample": 27.48688905325917,
+    "q1": 22.0,
+    "q3": 84.5
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "mean",
+      "ok": false,
+      "detail": "expected Fraction(547, 10), got 54.5"
+     },
+     {
+      "unit": "median",
+      "ok": false,
+      "detail": "expected Fraction(115, 2), got 69.0"
+     },
+     {
+      "unit": "std_sample",
+      "ok": false,
+      "detail": "expected 29.784597063284608, got 27.48688905325917"
+     },
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected Fraction(103, 4), got 22.0"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected Fraction(321, 4), got 84.5"
+     }
+    ]
+   }
+  },
+  {
+   "family": "base_convert",
+   "task_id": "base_convert-001",
+   "n_units": 5,
+   "prompt_chars": 338,
+   "prompt": "Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).\n  1. 639 -> base 8\n  2. 1212 -> base 8\n  3. 1690 -> base 8\n  4. 171 -> base 2\n  5. 2726 -> base 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"1167\", \"2324\", \"3202\", \"10101011\", \"101010110110\"]}",
+   "wall_s": 26.769,
+   "eval_count": 46,
+   "eval_duration_s": 18.77,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "1167",
+     "2324",
+     "3202",
+     "10101011",
+     "101010110110"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.2,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 1177, got '1167'"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 2274, got '2324'"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected 3232, got '3202'"
+     },
+     {
+      "unit": "q4",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected 101010100110, got '101010110110'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "base_convert",
+   "task_id": "base_convert-002",
+   "n_units": 6,
+   "prompt_chars": 362,
+   "prompt": "Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).\n  1. 344 -> base 2\n  2. 1553 -> base 16\n  3. 1917 -> base 16\n  4. 3104 -> base 16\n  5. 2846 -> base 2\n  6. 2014 -> base 8\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"101010000\", \"5F9\", \"775\", \"C80\", \"101100010110\", \"3736\"]}",
+   "wall_s": 31.172,
+   "eval_count": 50,
+   "eval_duration_s": 22.587,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "101010000",
+     "5F9",
+     "775",
+     "C80",
+     "101100010110",
+     "3736"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.166667,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 101011000, got '101010000'"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 611, got '5F9'"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected 77d, got '775'"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected c20, got 'C80'"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected 101100011110, got '101100010110'"
+     },
+     {
+      "unit": "q6",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     }
+    ]
+   }
+  },
+  {
+   "family": "base_convert",
+   "task_id": "base_convert-003",
+   "n_units": 6,
+   "prompt_chars": 359,
+   "prompt": "Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).\n  1. 536 -> base 2\n  2. 3788 -> base 8\n  3. 3205 -> base 2\n  4. 1436 -> base 8\n  5. 2927 -> base 16\n  6. 636 -> base 8\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"1000011000\", \"7244\", \"110010000101\", \"2644\", \"b67\", \"1214\"]}",
+   "wall_s": 38.936,
+   "eval_count": 53,
+   "eval_duration_s": 27.252,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "1000011000",
+     "7244",
+     "110010000101",
+     "2644",
+     "b67",
+     "1214"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 7314, got '7244'"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected 2634, got '2644'"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected b6f, got 'b67'"
+     },
+     {
+      "unit": "q6",
+      "ok": false,
+      "detail": "expected 1174, got '1214'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "base_convert",
+   "task_id": "base_convert-004",
+   "n_units": 5,
+   "prompt_chars": 341,
+   "prompt": "Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).\n  1. 1643 -> base 16\n  2. 2979 -> base 2\n  3. 3113 -> base 16\n  4. 2340 -> base 8\n  5. 389 -> base 8\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"673\", \"101110100011\", \"C31\", \"4424\", \"615\"]}",
+   "wall_s": 24.687,
+   "eval_count": 39,
+   "eval_duration_s": 15.155,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "673",
+     "101110100011",
+     "C31",
+     "4424",
+     "615"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.2,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "expected 66b, got '673'"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected c29, got 'C31'"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected 4444, got '4424'"
+     },
+     {
+      "unit": "q5",
+      "ok": false,
+      "detail": "expected 605, got '615'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "base_convert",
+   "task_id": "base_convert-005",
+   "n_units": 4,
+   "prompt_chars": 317,
+   "prompt": "Represent each decimal integer in the requested base.  One answer per line, in order, digits only (no prefix).\n  1. 84 -> base 2\n  2. 3380 -> base 2\n  3. 2948 -> base 8\n  4. 941 -> base 8\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"1010100\", \"110100101100\", \"5624\", \"1625\"]}",
+   "wall_s": 22.44,
+   "eval_count": 39,
+   "eval_duration_s": 16.705,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "1010100",
+     "110100101100",
+     "5624",
+     "1625"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.25,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "parses to the expected integer"
+     },
+     {
+      "unit": "q2",
+      "ok": false,
+      "detail": "expected 110100110100, got '110100101100'"
+     },
+     {
+      "unit": "q3",
+      "ok": false,
+      "detail": "expected 5604, got '5624'"
+     },
+     {
+      "unit": "q4",
+      "ok": false,
+      "detail": "expected 1655, got '1625'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "matrix_ops",
+   "task_id": "matrix_ops-001",
+   "n_units": 4,
+   "prompt_chars": 231,
+   "prompt": "Given A = [[-8, 0], [1, -4]], transpose the 2x2 matrix.  Reply with a JSON array of rows of integers.\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [-8, 1, 0, -4]}",
+   "wall_s": 11.442,
+   "eval_count": 16,
+   "eval_duration_s": 5.648,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     -8,
+     1,
+     0,
+     -4
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r0c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     }
+    ]
+   }
+  },
+  {
+   "family": "matrix_ops",
+   "task_id": "matrix_ops-002",
+   "n_units": 9,
+   "prompt_chars": 308,
+   "prompt": "Given A = [[8, 6, -2], [3, -9, 0], [-8, 8, -5]] and B = [[9, 4, -1], [-1, 2, -3], [7, 2, 6]], multiply the two 3x3 matrices A and B.  Reply with a JSON array of rows of integers.\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 9 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [66, 20, -10, -15, -33, 9, -12, 0, -33]}",
+   "wall_s": 22.434,
+   "eval_count": 38,
+   "eval_duration_s": 14.914,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     66,
+     20,
+     -10,
+     -15,
+     -33,
+     9,
+     -12,
+     0,
+     -33
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r0c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     }
+    ]
+   }
+  },
+  {
+   "family": "matrix_ops",
+   "task_id": "matrix_ops-003",
+   "n_units": 9,
+   "prompt_chars": 311,
+   "prompt": "Given A = [[2, -8, -8], [6, -7, 4], [-4, -8, -5]] and B = [[6, -7, -4], [-8, 1, 0], [-1, 6, 3]], multiply the two 3x3 matrices A and B.  Reply with a JSON array of rows of integers.\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 9 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [16, -10, -16, 2, -1, -2, -16, 8, 16]}",
+   "wall_s": 21.145,
+   "eval_count": 36,
+   "eval_duration_s": 14.056,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     16,
+     -10,
+     -16,
+     2,
+     -1,
+     -2,
+     -16,
+     8,
+     16
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r0c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     }
+    ]
+   }
+  },
+  {
+   "family": "matrix_ops",
+   "task_id": "matrix_ops-004",
+   "n_units": 9,
+   "prompt_chars": 251,
+   "prompt": "Given A = [[8, 8, -6], [-2, -9, -7], [3, -7, 6]], transpose the 3x3 matrix.  Reply with a JSON array of rows of integers.\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 9 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [8, -2, 3, 8, -9, -7, -6, -7, 6]}",
+   "wall_s": 17.124,
+   "eval_count": 31,
+   "eval_duration_s": 12.131,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     8,
+     -2,
+     3,
+     8,
+     -9,
+     -7,
+     -6,
+     -7,
+     6
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r0c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     }
+    ]
+   }
+  },
+  {
+   "family": "matrix_ops",
+   "task_id": "matrix_ops-005",
+   "n_units": 9,
+   "prompt_chars": 301,
+   "prompt": "Given A = [[7, 4, -9], [3, 5, 5], [0, 2, 3]] and B = [[0, 7, -9], [-1, 3, 8], [9, -8, -1]], add the two 3x3 matrices A and B.  Reply with a JSON array of rows of integers.\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 9 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [7, 11, -18, 2, 8, 13, 9, -6, 2]}",
+   "wall_s": 20.116,
+   "eval_count": 34,
+   "eval_duration_s": 12.589,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     7,
+     11,
+     -18,
+     2,
+     8,
+     13,
+     9,
+     -6,
+     2
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r0c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r0c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r1c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c0",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c1",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     },
+     {
+      "unit": "r2c2",
+      "ok": false,
+      "detail": "payload is not an array of rows: dict"
+     }
+    ]
+   }
+  },
+  {
+   "family": "date_arith",
+   "task_id": "date_arith-001",
+   "n_units": 3,
+   "prompt_chars": 357,
+   "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-20 -18 days\n  2. 2023-03-02 -7 months\n  3. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"2024-08-02\", \"2022-08-02\", \"2024-02-29\"]}",
+   "wall_s": 30.157,
+   "eval_count": 40,
+   "eval_duration_s": 20.871,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "2024-08-02",
+     "2022-08-02",
+     "2024-02-29"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d2",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d3",
+      "ok": true,
+      "detail": "date matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "date_arith",
+   "task_id": "date_arith-002",
+   "n_units": 4,
+   "prompt_chars": 383,
+   "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-04-07 +42 days\n  2. 2023-10-18 -38 days\n  3. 2024-07-03 -10 months\n  4. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"2024-05-19\", \"2023-09-21\", \"2023-09-03\", \"2024-02-29\"]}",
+   "wall_s": 30.269,
+   "eval_count": 52,
+   "eval_duration_s": 21.423,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "2024-05-19",
+     "2023-09-21",
+     "2023-09-03",
+     "2024-02-29"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "expected 2023-09-10, got '2023-09-21'"
+     },
+     {
+      "unit": "d3",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d4",
+      "ok": true,
+      "detail": "date matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "date_arith",
+   "task_id": "date_arith-003",
+   "n_units": 5,
+   "prompt_chars": 407,
+   "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-31 +15 days\n  2. 2023-11-01 -31 days\n  3. 2023-04-11 -36 days\n  4. 2024-02-02 +2 months\n  5. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"2024-09-15\", \"2023-10-01\", \"2023-03-06\", \"2024-04-02\", \"2024-02-29\"]}",
+   "wall_s": 37.248,
+   "eval_count": 64,
+   "eval_duration_s": 27.888,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "2024-09-15",
+     "2023-10-01",
+     "2023-03-06",
+     "2024-04-02",
+     "2024-02-29"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d2",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d3",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d4",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d5",
+      "ok": true,
+      "detail": "date matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "date_arith",
+   "task_id": "date_arith-004",
+   "n_units": 4,
+   "prompt_chars": 382,
+   "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-09-06 +4 months\n  2. 2024-08-01 +60 days\n  3. 2024-05-19 +45 days\n  4. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"2024-12-06\", \"2024-09-21\", \"2024-07-04\", \"2024-02-29\"]}",
+   "wall_s": 26.429,
+   "eval_count": 52,
+   "eval_duration_s": 19.417,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "2024-12-06",
+     "2024-09-21",
+     "2024-07-04",
+     "2024-02-29"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.25,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": false,
+      "detail": "expected 2025-01-06, got '2024-12-06'"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "expected 2024-09-30, got '2024-09-21'"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "expected 2024-07-03, got '2024-07-04'"
+     },
+     {
+      "unit": "d4",
+      "ok": true,
+      "detail": "date matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "date_arith",
+   "task_id": "date_arith-005",
+   "n_units": 5,
+   "prompt_chars": 408,
+   "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-05-31 -9 months\n  2. 2024-04-17 -9 days\n  3. 2024-09-14 -12 months\n  4. 2024-07-01 +48 days\n  5. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"2023-08-31\", \"2024-04-08\", \"2023-09-14\", \"2024-08-19\", \"2024-02-29\"]}",
+   "wall_s": 33.474,
+   "eval_count": 64,
+   "eval_duration_s": 25.904,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "2023-08-31",
+     "2024-04-08",
+     "2023-09-14",
+     "2024-08-19",
+     "2024-02-29"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.8,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d2",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d3",
+      "ok": true,
+      "detail": "date matches"
+     },
+     {
+      "unit": "d4",
+      "ok": false,
+      "detail": "expected 2024-08-18, got '2024-08-19'"
+     },
+     {
+      "unit": "d5",
+      "ok": true,
+      "detail": "date matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "json_schema_extract",
+   "task_id": "json_schema_extract-001",
+   "n_units": 6,
+   "prompt_chars": 438,
+   "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #4607\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 73.46\ntags: fragile, gift, return, bulk\nsteps: invoice > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"id\": 4607,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 73.46,\n  \"tags\": [\"fragile\", \"gift\", \"return\", \"bulk\"],\n  \"steps\": [\"invoice\", \"ship\"]\n}",
+   "wall_s": 32.351,
+   "eval_count": 69,
+   "eval_duration_s": 24.474,
+   "parse_status": "ok",
+   "payload": {
+    "id": 4607,
+    "customer": "Maria Curie",
+    "priority": 4,
+    "total_usd": 73.46,
+    "tags": [
+     "fragile",
+     "gift",
+     "return",
+     "bulk"
+    ],
+    "steps": [
+     "invoice",
+     "ship"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "id",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "customer",
+      "ok": true,
+      "detail": "string matches"
+     },
+     {
+      "unit": "priority",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "total_usd",
+      "ok": true,
+      "detail": "amount matches"
+     },
+     {
+      "unit": "tags",
+      "ok": true,
+      "detail": "tag set matches"
+     },
+     {
+      "unit": "steps",
+      "ok": true,
+      "detail": "ordered steps match"
+     }
+    ]
+   }
+  },
+  {
+   "family": "json_schema_extract",
+   "task_id": "json_schema_extract-002",
+   "n_units": 6,
+   "prompt_chars": 456,
+   "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5517\ncustomer: Niels Bohr\npriority: 1\ntotal_usd: 85.17\ntags: urgent, return, express, fragile\nsteps: pack > label > ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"id\": 5517,\n  \"customer\": \"Niels Bohr\",\n  \"priority\": 1,\n  \"total_usd\": 85.17,\n  \"tags\": [\"urgent\", \"return\", \"express\", \"fragile\"],\n  \"steps\": [\"pack\", \"label\", \"ship\", \"verify\"]\n}",
+   "wall_s": 34.37,
+   "eval_count": 76,
+   "eval_duration_s": 28.041,
+   "parse_status": "ok",
+   "payload": {
+    "id": 5517,
+    "customer": "Niels Bohr",
+    "priority": 1,
+    "total_usd": 85.17,
+    "tags": [
+     "urgent",
+     "return",
+     "express",
+     "fragile"
+    ],
+    "steps": [
+     "pack",
+     "label",
+     "ship",
+     "verify"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "id",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "customer",
+      "ok": true,
+      "detail": "string matches"
+     },
+     {
+      "unit": "priority",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "total_usd",
+      "ok": true,
+      "detail": "amount matches"
+     },
+     {
+      "unit": "tags",
+      "ok": true,
+      "detail": "tag set matches"
+     },
+     {
+      "unit": "steps",
+      "ok": true,
+      "detail": "ordered steps match"
+     }
+    ]
+   }
+  },
+  {
+   "family": "json_schema_extract",
+   "task_id": "json_schema_extract-003",
+   "n_units": 6,
+   "prompt_chars": 445,
+   "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #8966\ncustomer: Grace Hopper\npriority: 3\ntotal_usd: 336.70\ntags: fragile, return, express\nsteps: ship > label > invoice\n\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"id\": 8966,\n  \"customer\": \"Grace Hopper\",\n  \"priority\": 3,\n  \"total_usd\": 336.70,\n  \"tags\": [\"fragile\", \"return\", \"express\"],\n  \"steps\": [\"ship\", \"label\", \"invoice\"]\n}",
+   "wall_s": 29.066,
+   "eval_count": 70,
+   "eval_duration_s": 25.513,
+   "parse_status": "ok",
+   "payload": {
+    "id": 8966,
+    "customer": "Grace Hopper",
+    "priority": 3,
+    "total_usd": 336.7,
+    "tags": [
+     "fragile",
+     "return",
+     "express"
+    ],
+    "steps": [
+     "ship",
+     "label",
+     "invoice"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "id",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "customer",
+      "ok": true,
+      "detail": "string matches"
+     },
+     {
+      "unit": "priority",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "total_usd",
+      "ok": true,
+      "detail": "amount matches"
+     },
+     {
+      "unit": "tags",
+      "ok": true,
+      "detail": "tag set matches"
+     },
+     {
+      "unit": "steps",
+      "ok": true,
+      "detail": "ordered steps match"
+     }
+    ]
+   }
+  },
+  {
+   "family": "json_schema_extract",
+   "task_id": "json_schema_extract-004",
+   "n_units": 6,
+   "prompt_chars": 440,
+   "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #3955\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 799.72\ntags: urgent, return\nsteps: pack > label > verify > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"id\": 3955,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 799.72,\n  \"tags\": [\"urgent\", \"return\"],\n  \"steps\": [\"pack\", \"label\", \"verify\", \"ship\"]\n}",
+   "wall_s": 29.56,
+   "eval_count": 69,
+   "eval_duration_s": 25.691,
+   "parse_status": "ok",
+   "payload": {
+    "id": 3955,
+    "customer": "Maria Curie",
+    "priority": 4,
+    "total_usd": 799.72,
+    "tags": [
+     "urgent",
+     "return"
+    ],
+    "steps": [
+     "pack",
+     "label",
+     "verify",
+     "ship"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "id",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "customer",
+      "ok": true,
+      "detail": "string matches"
+     },
+     {
+      "unit": "priority",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "total_usd",
+      "ok": true,
+      "detail": "amount matches"
+     },
+     {
+      "unit": "tags",
+      "ok": true,
+      "detail": "tag set matches"
+     },
+     {
+      "unit": "steps",
+      "ok": true,
+      "detail": "ordered steps match"
+     }
+    ]
+   }
+  },
+  {
+   "family": "json_schema_extract",
+   "task_id": "json_schema_extract-005",
+   "n_units": 6,
+   "prompt_chars": 423,
+   "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5775\ncustomer: Maria Curie\npriority: 2\ntotal_usd: 494.08\ntags: urgent, gift\nsteps: ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"id\": 5775,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 2,\n  \"total_usd\": 494.08,\n  \"tags\": [\"urgent\", \"gift\"],\n  \"steps\": [\"ship\", \"verify\"]\n}",
+   "wall_s": 27.693,
+   "eval_count": 63,
+   "eval_duration_s": 23.267,
+   "parse_status": "ok",
+   "payload": {
+    "id": 5775,
+    "customer": "Maria Curie",
+    "priority": 2,
+    "total_usd": 494.08,
+    "tags": [
+     "urgent",
+     "gift"
+    ],
+    "steps": [
+     "ship",
+     "verify"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "id",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "customer",
+      "ok": true,
+      "detail": "string matches"
+     },
+     {
+      "unit": "priority",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "total_usd",
+      "ok": true,
+      "detail": "amount matches"
+     },
+     {
+      "unit": "tags",
+      "ok": true,
+      "detail": "tag set matches"
+     },
+     {
+      "unit": "steps",
+      "ok": true,
+      "detail": "ordered steps match"
+     }
+    ]
+   }
+  },
+  {
+   "family": "log_field_extraction",
+   "task_id": "log_field_extraction-001",
+   "n_units": 15,
+   "prompt_chars": 617,
+   "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T11:57:53Z level=WARN service=worker code=W480 msg=\"retrying request\"\n2024-05-21T17:32:06Z level=INFO service=billing code=I234 msg=\"handler took 320ms\"\n2024-05-25T00:42:15Z level=INFO service=auth code=W501 msg=\"connection reset by peer\"\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T11:57:53Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"W480\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-21T17:32:06Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I234\",\n    \"msg\": \"handler took 320ms\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-25T00:42:15Z\",\n    \"level\": \"INFO\",\n    \"service\": \"auth\",\n    \"code\": \"W501\",\n    \"msg\": \"connection reset by peer\"\n  }\n}",
+   "wall_s": 87.132,
+   "eval_count": 206,
+   "eval_duration_s": 74.59,
+   "parse_status": "ok",
+   "payload": {
+    "1": {
+     "ts": "2024-05-10T11:57:53Z",
+     "level": "WARN",
+     "service": "worker",
+     "code": "W480",
+     "msg": "retrying request"
+    },
+    "2": {
+     "ts": "2024-05-21T17:32:06Z",
+     "level": "INFO",
+     "service": "billing",
+     "code": "I234",
+     "msg": "handler took 320ms"
+    },
+    "3": {
+     "ts": "2024-05-25T00:42:15Z",
+     "level": "INFO",
+     "service": "auth",
+     "code": "W501",
+     "msg": "connection reset by peer"
+    }
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "L1.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L1.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L1.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L1.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L1.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L2.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L2.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L2.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L2.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L2.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L3.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L3.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L3.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L3.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L3.msg",
+      "ok": true,
+      "detail": "message matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "log_field_extraction",
+   "task_id": "log_field_extraction-002",
+   "n_units": 15,
+   "prompt_chars": 612,
+   "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-24T17:42:24Z level=ERROR service=worker code=E737 msg=\"retrying request\"\n2024-05-02T22:44:31Z level=ERROR service=search code=D863 msg=\"timeout after 5s\"\n2024-05-15T18:39:40Z level=WARN service=worker code=I305 msg=\"handler took 320ms\"\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-24T17:42:24Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"E737\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-02T22:44:31Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"search\",\n    \"code\": \"D863\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-15T18:39:40Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"I305\",\n    \"msg\": \"handler took 320ms\"\n  }\n}",
+   "wall_s": 92.172,
+   "eval_count": 207,
+   "eval_duration_s": 83.535,
+   "parse_status": "ok",
+   "payload": {
+    "1": {
+     "ts": "2024-05-24T17:42:24Z",
+     "level": "ERROR",
+     "service": "worker",
+     "code": "E737",
+     "msg": "retrying request"
+    },
+    "2": {
+     "ts": "2024-05-02T22:44:31Z",
+     "level": "ERROR",
+     "service": "search",
+     "code": "D863",
+     "msg": "timeout after 5s"
+    },
+    "3": {
+     "ts": "2024-05-15T18:39:40Z",
+     "level": "WARN",
+     "service": "worker",
+     "code": "I305",
+     "msg": "handler took 320ms"
+    }
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "L1.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L1.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L1.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L1.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L1.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L2.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L2.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L2.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L2.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L2.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L3.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L3.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L3.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L3.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L3.msg",
+      "ok": true,
+      "detail": "message matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "log_field_extraction",
+   "task_id": "log_field_extraction-003",
+   "n_units": 15,
+   "prompt_chars": 604,
+   "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-22T12:47:38Z level=WARN service=api code=I742 msg=\"timeout after 5s\"\n2024-05-03T01:56:22Z level=WARN service=auth code=I921 msg=\"timeout after 5s\"\n2024-05-23T20:45:04Z level=INFO service=billing code=I777 msg=\"retrying request\"\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-22T12:47:38Z\",\n    \"level\": \"WARN\",\n    \"service\": \"api\",\n    \"code\": \"I742\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-03T01:56:22Z\",\n    \"level\": \"WARN\",\n    \"service\": \"auth\",\n    \"code\": \"I921\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-23T20:45:04Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I777\",\n    \"msg\": \"retrying request\"\n  }\n}",
+   "wall_s": 84.391,
+   "eval_count": 205,
+   "eval_duration_s": 76.484,
+   "parse_status": "ok",
+   "payload": {
+    "1": {
+     "ts": "2024-05-22T12:47:38Z",
+     "level": "WARN",
+     "service": "api",
+     "code": "I742",
+     "msg": "timeout after 5s"
+    },
+    "2": {
+     "ts": "2024-05-03T01:56:22Z",
+     "level": "WARN",
+     "service": "auth",
+     "code": "I921",
+     "msg": "timeout after 5s"
+    },
+    "3": {
+     "ts": "2024-05-23T20:45:04Z",
+     "level": "INFO",
+     "service": "billing",
+     "code": "I777",
+     "msg": "retrying request"
+    }
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "L1.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L1.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L1.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L1.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L1.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L2.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L2.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L2.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L2.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L2.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L3.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L3.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L3.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L3.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L3.msg",
+      "ok": true,
+      "detail": "message matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "log_field_extraction",
+   "task_id": "log_field_extraction-004",
+   "n_units": 15,
+   "prompt_chars": 618,
+   "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T18:37:21Z level=ERROR service=worker code=W622 msg=\"cache miss for key\"\n2024-05-16T06:18:30Z level=ERROR service=billing code=E375 msg=\"cache miss for key\"\n2024-05-27T12:43:50Z level=ERROR service=worker code=I408 msg=\"cache miss for key\"\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T18:37:21Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"W622\",\n    \"msg\": \"cache miss for key\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-16T06:18:30Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"billing\",\n    \"code\": \"E375\",\n    \"msg\": \"cache miss for key\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-27T12:43:50Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"I408\",\n    \"msg\": \"cache miss for key\"\n  }\n}",
+   "wall_s": 95.569,
+   "eval_count": 204,
+   "eval_duration_s": 87.288,
+   "parse_status": "ok",
+   "payload": {
+    "1": {
+     "ts": "2024-05-10T18:37:21Z",
+     "level": "ERROR",
+     "service": "worker",
+     "code": "W622",
+     "msg": "cache miss for key"
+    },
+    "2": {
+     "ts": "2024-05-16T06:18:30Z",
+     "level": "ERROR",
+     "service": "billing",
+     "code": "E375",
+     "msg": "cache miss for key"
+    },
+    "3": {
+     "ts": "2024-05-27T12:43:50Z",
+     "level": "ERROR",
+     "service": "worker",
+     "code": "I408",
+     "msg": "cache miss for key"
+    }
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "L1.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L1.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L1.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L1.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L1.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L2.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L2.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L2.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L2.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L2.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L3.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L3.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L3.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L3.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L3.msg",
+      "ok": true,
+      "detail": "message matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "log_field_extraction",
+   "task_id": "log_field_extraction-005",
+   "n_units": 15,
+   "prompt_chars": 617,
+   "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-26T04:17:29Z level=ERROR service=billing code=D201 msg=\"retrying request\"\n2024-05-04T08:59:10Z level=WARN service=search code=I841 msg=\"connection reset by peer\"\n2024-05-22T19:11:23Z level=WARN service=api code=W865 msg=\"handler took 320ms\"\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-26T04:17:29Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"billing\",\n    \"code\": \"D201\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-04T08:59:10Z\",\n    \"level\": \"WARN\",\n    \"service\": \"search\",\n    \"code\": \"I841\",\n    \"msg\": \"connection reset by peer\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-22T19:11:23Z\",\n    \"level\": \"WARN\",\n    \"service\": \"api\",\n    \"code\": \"W865\",\n    \"msg\": \"handler took 320ms\"\n  }\n}",
+   "wall_s": 88.409,
+   "eval_count": 206,
+   "eval_duration_s": 80.447,
+   "parse_status": "ok",
+   "payload": {
+    "1": {
+     "ts": "2024-05-26T04:17:29Z",
+     "level": "ERROR",
+     "service": "billing",
+     "code": "D201",
+     "msg": "retrying request"
+    },
+    "2": {
+     "ts": "2024-05-04T08:59:10Z",
+     "level": "WARN",
+     "service": "search",
+     "code": "I841",
+     "msg": "connection reset by peer"
+    },
+    "3": {
+     "ts": "2024-05-22T19:11:23Z",
+     "level": "WARN",
+     "service": "api",
+     "code": "W865",
+     "msg": "handler took 320ms"
+    }
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "L1.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L1.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L1.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L1.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L1.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L2.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L2.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L2.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L2.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L2.msg",
+      "ok": true,
+      "detail": "message matches"
+     },
+     {
+      "unit": "L3.ts",
+      "ok": true,
+      "detail": "timestamp matches"
+     },
+     {
+      "unit": "L3.level",
+      "ok": true,
+      "detail": "level matches"
+     },
+     {
+      "unit": "L3.service",
+      "ok": true,
+      "detail": "service matches"
+     },
+     {
+      "unit": "L3.code",
+      "ok": true,
+      "detail": "code matches"
+     },
+     {
+      "unit": "L3.msg",
+      "ok": true,
+      "detail": "message matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "template_render",
+   "task_id": "template_render-001",
+   "n_units": 5,
+   "prompt_chars": 563,
+   "prompt": "Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, \" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.\n  NAME: {v:upper}\n  TOTAL: {v:money}\n  NOTE: {v:html}\n  CODE: {v:raw}\n  STATUS: {v:default:UNKNOWN}\n  data = {'name': 'Ada', 'amount': 853.35, 'note': 'say \"hi\" & <ok>', 'code': 'A-860'}\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"NAME: ADA\", \"TOTAL: 853.35\", \"NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;\", \"CODE: A-860\", \"STATUS: UNKNOWN\"]}",
+   "wall_s": 30.418,
+   "eval_count": 53,
+   "eval_duration_s": 19.428,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "NAME: ADA",
+     "TOTAL: 853.35",
+     "NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;",
+     "CODE: A-860",
+     "STATUS: UNKNOWN"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected 'ADA', got 'NAME: ADA'"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected '853.35', got 'TOTAL: 853.35'"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected 'say &quot;hi&quot; &amp; &lt;ok&gt;', got 'NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;'"
+     },
+     {
+      "unit": "s4",
+      "ok": false,
+      "detail": "expected 'A-860', got 'CODE: A-860'"
+     },
+     {
+      "unit": "s5",
+      "ok": false,
+      "detail": "expected 'UNKNOWN', got 'STATUS: UNKNOWN'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "template_render",
+   "task_id": "template_render-002",
+   "n_units": 5,
+   "prompt_chars": 560,
+   "prompt": "Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, \" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.\n  NAME: {v:upper}\n  TOTAL: {v:money}\n  NOTE: {v:html}\n  CODE: {v:raw}\n  STATUS: {v:default:UNKNOWN}\n  data = {'name': 'Alan', 'amount': 800.58, 'note': 'a > b & \"c\"', 'code': 'C-258'}\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"NAME: ALAN\", \"TOTAL: 800.58\", \"NOTE: a &gt; b &amp; \\\"c\\\"\", \"CODE: C-258\", \"STATUS: UNKNOWN\"]}",
+   "wall_s": 23.132,
+   "eval_count": 49,
+   "eval_duration_s": 17.823,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "NAME: ALAN",
+     "TOTAL: 800.58",
+     "NOTE: a &gt; b &amp; \"c\"",
+     "CODE: C-258",
+     "STATUS: UNKNOWN"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected 'ALAN', got 'NAME: ALAN'"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected '800.58', got 'TOTAL: 800.58'"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected 'a &gt; b &amp; &quot;c&quot;', got 'NOTE: a &gt; b &amp; \"c\"'"
+     },
+     {
+      "unit": "s4",
+      "ok": false,
+      "detail": "expected 'C-258', got 'CODE: C-258'"
+     },
+     {
+      "unit": "s5",
+      "ok": false,
+      "detail": "expected 'UNKNOWN', got 'STATUS: UNKNOWN'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "template_render",
+   "task_id": "template_render-003",
+   "n_units": 5,
+   "prompt_chars": 569,
+   "prompt": "Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, \" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.\n  NAME: {v:upper}\n  TOTAL: {v:money}\n  NOTE: {v:html}\n  CODE: {v:raw}\n  STATUS: {v:default:UNKNOWN}\n  data = {'name': 'Alan', 'amount': 271.52, 'note': '<b>fast & \"safe\"</b>', 'code': 'A-843'}\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"NAME: ALAN\", \"TOTAL: 271.52\", \"NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;\", \"CODE: A-843\", \"STATUS: UNKNOWN\"]}",
+   "wall_s": 25.909,
+   "eval_count": 58,
+   "eval_duration_s": 20.621,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "NAME: ALAN",
+     "TOTAL: 271.52",
+     "NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;",
+     "CODE: A-843",
+     "STATUS: UNKNOWN"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected 'ALAN', got 'NAME: ALAN'"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected '271.52', got 'TOTAL: 271.52'"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected '&lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;', got 'NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;'"
+     },
+     {
+      "unit": "s4",
+      "ok": false,
+      "detail": "expected 'A-843', got 'CODE: A-843'"
+     },
+     {
+      "unit": "s5",
+      "ok": false,
+      "detail": "expected 'UNKNOWN', got 'STATUS: UNKNOWN'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "template_render",
+   "task_id": "template_render-004",
+   "n_units": 5,
+   "prompt_chars": 568,
+   "prompt": "Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, \" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.\n  NAME: {v:upper}\n  TOTAL: {v:money}\n  NOTE: {v:html}\n  CODE: {v:raw}\n  STATUS: {v:default:UNKNOWN}\n  data = {'name': 'Ada', 'amount': 978.85, 'note': '<b>fast & \"safe\"</b>', 'code': 'B-993'}\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"NAME: ADA\", \"TOTAL: 978.85\", \"NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;\", \"CODE: B-993\", \"STATUS: UNKNOWN\"]}",
+   "wall_s": 25.339,
+   "eval_count": 57,
+   "eval_duration_s": 20.934,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "NAME: ADA",
+     "TOTAL: 978.85",
+     "NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;",
+     "CODE: B-993",
+     "STATUS: UNKNOWN"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected 'ADA', got 'NAME: ADA'"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected '978.85', got 'TOTAL: 978.85'"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected '&lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;', got 'NOTE: &lt;b&gt;fast &amp; &quot;safe&quot;&lt;/b&gt;'"
+     },
+     {
+      "unit": "s4",
+      "ok": false,
+      "detail": "expected 'B-993', got 'CODE: B-993'"
+     },
+     {
+      "unit": "s5",
+      "ok": false,
+      "detail": "expected 'UNKNOWN', got 'STATUS: UNKNOWN'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "template_render",
+   "task_id": "template_render-005",
+   "n_units": 5,
+   "prompt_chars": 564,
+   "prompt": "Render each template line.  Filters: upper = upper-case, money = two decimals with thousands separators, html = escape &, <, >, \" and ', raw = unchanged, default:X = X when the key is absent.  Return the rendered lines as a JSON array of strings.\n  NAME: {v:upper}\n  TOTAL: {v:money}\n  NOTE: {v:html}\n  CODE: {v:raw}\n  STATUS: {v:default:UNKNOWN}\n  data = {'name': 'Alan', 'amount': 266.55, 'note': 'say \"hi\" & <ok>', 'code': 'A-517'}\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"NAME: ALAN\", \"TOTAL: 266.55\", \"NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;\", \"CODE: A-517\", \"STATUS: UNKNOWN\"]}",
+   "wall_s": 24.27,
+   "eval_count": 54,
+   "eval_duration_s": 19.285,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "NAME: ALAN",
+     "TOTAL: 266.55",
+     "NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;",
+     "CODE: A-517",
+     "STATUS: UNKNOWN"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected 'ALAN', got 'NAME: ALAN'"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected '266.55', got 'TOTAL: 266.55'"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected 'say &quot;hi&quot; &amp; &lt;ok&gt;', got 'NOTE: say &quot;hi&quot; &amp; &lt;ok&gt;'"
+     },
+     {
+      "unit": "s4",
+      "ok": false,
+      "detail": "expected 'A-517', got 'CODE: A-517'"
+     },
+     {
+      "unit": "s5",
+      "ok": false,
+      "detail": "expected 'UNKNOWN', got 'STATUS: UNKNOWN'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "table_aggregate",
+   "task_id": "table_aggregate-001",
+   "n_units": 12,
+   "prompt_chars": 609,
+   "prompt": "Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.\n  (dept, region, amount)\n  ('ENG', 'NA', 132)\n  ('HR', 'NA', 201)\n  ('HR', 'EU', 397)\n  ('SLS', 'EU', 821)\n  ('HR', 'EU', 578)\n  ('OPS', 'EU', 549)\n  ('HR', 'NA', 509)\n  ('ENG', 'NA', 561)\n  ('OPS', 'NA', 177)\n  ('HR', 'NA', 43)\n  ('HR', 'APAC', 170)\n  ('HR', 'APAC', 50)\n  ('OPS', 'EU', 859)\n  ('ENG', 'NA', 262)\n  ('OPS', 'APAC', 28)\n  ('SLS', 'APAC', 418)\n  ('SLS', 'EU', 226)\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"ENG\": {\n    \"count\": 4,\n    \"sum\": 1296,\n    \"mean\": 324.0\n  },\n  \"HR\": {\n    \"count\": 7,\n    \"sum\": 2298,\n    \"mean\": 328.285714\n  },\n  \"SLS\": {\n    \"count\": 3,\n    \"sum\": 1465,\n    \"mean\": 488.333333\n  },\n  \"OPS\": {\n    \"count\": 4,\n    \"sum\": 2073,\n    \"mean\": 518.25\n  }\n}",
+   "wall_s": 75.46,
+   "eval_count": 155,
+   "eval_duration_s": 59.479,
+   "parse_status": "ok",
+   "payload": {
+    "ENG": {
+     "count": 4,
+     "sum": 1296,
+     "mean": 324.0
+    },
+    "HR": {
+     "count": 7,
+     "sum": 2298,
+     "mean": 328.285714
+    },
+    "SLS": {
+     "count": 3,
+     "sum": 1465,
+     "mean": 488.333333
+    },
+    "OPS": {
+     "count": 4,
+     "sum": 2073,
+     "mean": 518.25
+    }
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.416667,
+    "evidence": [
+     {
+      "unit": "ENG.count",
+      "ok": false,
+      "detail": "expected 3, got 4"
+     },
+     {
+      "unit": "ENG.sum",
+      "ok": false,
+      "detail": "expected 955, got 1296"
+     },
+     {
+      "unit": "ENG.mean",
+      "ok": false,
+      "detail": "expected 318.333333, got 324.0"
+     },
+     {
+      "unit": "SLS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.sum",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.mean",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "OPS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "OPS.sum",
+      "ok": false,
+      "detail": "expected 1613, got 2073"
+     },
+     {
+      "unit": "OPS.mean",
+      "ok": false,
+      "detail": "expected 403.250000, got 518.25"
+     },
+     {
+      "unit": "HR.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "HR.sum",
+      "ok": false,
+      "detail": "expected 1948, got 2298"
+     },
+     {
+      "unit": "HR.mean",
+      "ok": false,
+      "detail": "expected 278.285714, got 328.285714"
+     }
+    ]
+   }
+  },
+  {
+   "family": "table_aggregate",
+   "task_id": "table_aggregate-002",
+   "n_units": 9,
+   "prompt_chars": 578,
+   "prompt": "Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.\n  (dept, region, amount)\n  ('OPS', 'EU', 661)\n  ('OPS', 'APAC', 561)\n  ('ENG', 'NA', 850)\n  ('OPS', 'EU', 464)\n  ('ENG', 'NA', 259)\n  ('SLS', 'APAC', 51)\n  ('OPS', 'NA', 758)\n  ('OPS', 'APAC', 825)\n  ('SLS', 'EU', 575)\n  ('SLS', 'NA', 462)\n  ('OPS', 'NA', 261)\n  ('SLS', 'APAC', 25)\n  ('OPS', 'APAC', 89)\n  ('SLS', 'APAC', 196)\n  ('ENG', 'EU', 773)\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"OPS\": {\n    \"count\": 8,\n    \"sum\": 4801,\n    \"mean\": 600.125\n  },\n  \"ENG\": {\n    \"count\": 4,\n    \"sum\": 2132,\n    \"mean\": 533\n  },\n  \"SLS\": {\n    \"count\": 5,\n    \"sum\": 1304,\n    \"mean\": 260.8\n  }\n}",
+   "wall_s": 50.933,
+   "eval_count": 109,
+   "eval_duration_s": 39.133,
+   "parse_status": "ok",
+   "payload": {
+    "OPS": {
+     "count": 8,
+     "sum": 4801,
+     "mean": 600.125
+    },
+    "ENG": {
+     "count": 4,
+     "sum": 2132,
+     "mean": 533
+    },
+    "SLS": {
+     "count": 5,
+     "sum": 1304,
+     "mean": 260.8
+    }
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.111111,
+    "evidence": [
+     {
+      "unit": "ENG.count",
+      "ok": false,
+      "detail": "expected 3, got 4"
+     },
+     {
+      "unit": "ENG.sum",
+      "ok": false,
+      "detail": "expected 1882, got 2132"
+     },
+     {
+      "unit": "ENG.mean",
+      "ok": false,
+      "detail": "expected 627.333333, got 533"
+     },
+     {
+      "unit": "SLS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.sum",
+      "ok": false,
+      "detail": "expected 1309, got 1304"
+     },
+     {
+      "unit": "SLS.mean",
+      "ok": false,
+      "detail": "expected 261.800000, got 260.8"
+     },
+     {
+      "unit": "OPS.count",
+      "ok": false,
+      "detail": "expected 7, got 8"
+     },
+     {
+      "unit": "OPS.sum",
+      "ok": false,
+      "detail": "expected 3619, got 4801"
+     },
+     {
+      "unit": "OPS.mean",
+      "ok": false,
+      "detail": "expected 517.000000, got 600.125"
+     }
+    ]
+   }
+  },
+  {
+   "family": "table_aggregate",
+   "task_id": "table_aggregate-003",
+   "n_units": 9,
+   "prompt_chars": 552,
+   "prompt": "Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.\n  (dept, region, amount)\n  ('SLS', 'APAC', 592)\n  ('SLS', 'NA', 80)\n  ('ENG', 'APAC', 518)\n  ('OPS', 'EU', 661)\n  ('SLS', 'EU', 87)\n  ('SLS', 'NA', 451)\n  ('OPS', 'NA', 204)\n  ('ENG', 'NA', 805)\n  ('ENG', 'APAC', 477)\n  ('OPS', 'NA', 700)\n  ('OPS', 'NA', 215)\n  ('SLS', 'EU', 221)\n  ('OPS', 'EU', 330)\n  ('OPS', 'EU', 730)\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"SLS\": {\n    \"count\": 7,\n    \"sum\": 2239,\n    \"mean\": 319.85714285714286\n  },\n  \"ENG\": {\n    \"count\": 3,\n    \"sum\": 1500,\n    \"mean\": 500.0\n  },\n  \"OPS\": {\n    \"count\": 6,\n    \"sum\": 2030,\n    \"mean\": 338.3333333333333\n  }\n}",
+   "wall_s": 61.805,
+   "eval_count": 134,
+   "eval_duration_s": 49.082,
+   "parse_status": "ok",
+   "payload": {
+    "SLS": {
+     "count": 7,
+     "sum": 2239,
+     "mean": 319.85714285714283
+    },
+    "ENG": {
+     "count": 3,
+     "sum": 1500,
+     "mean": 500.0
+    },
+    "OPS": {
+     "count": 6,
+     "sum": 2030,
+     "mean": 338.3333333333333
+    }
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.222222,
+    "evidence": [
+     {
+      "unit": "ENG.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "ENG.sum",
+      "ok": false,
+      "detail": "expected 1800, got 1500"
+     },
+     {
+      "unit": "ENG.mean",
+      "ok": false,
+      "detail": "expected 600.000000, got 500.0"
+     },
+     {
+      "unit": "SLS.count",
+      "ok": false,
+      "detail": "expected 5, got 7"
+     },
+     {
+      "unit": "SLS.sum",
+      "ok": false,
+      "detail": "expected 1431, got 2239"
+     },
+     {
+      "unit": "SLS.mean",
+      "ok": false,
+      "detail": "expected 286.200000, got 319.85714285714283"
+     },
+     {
+      "unit": "OPS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "OPS.sum",
+      "ok": false,
+      "detail": "expected 2840, got 2030"
+     },
+     {
+      "unit": "OPS.mean",
+      "ok": false,
+      "detail": "expected 473.333333, got 338.3333333333333"
+     }
+    ]
+   }
+  },
+  {
+   "family": "table_aggregate",
+   "task_id": "table_aggregate-004",
+   "n_units": 12,
+   "prompt_chars": 537,
+   "prompt": "Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.\n  (dept, region, amount)\n  ('OPS', 'APAC', 60)\n  ('SLS', 'NA', 159)\n  ('SLS', 'APAC', 229)\n  ('OPS', 'APAC', 337)\n  ('HR', 'NA', 224)\n  ('OPS', 'APAC', 248)\n  ('HR', 'APAC', 339)\n  ('SLS', 'NA', 336)\n  ('SLS', 'EU', 766)\n  ('SLS', 'EU', 412)\n  ('HR', 'APAC', 146)\n  ('SLS', 'NA', 392)\n  ('ENG', 'APAC', 676)\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"OPS\": {\n    \"count\": 4,\n    \"sum\": 991,\n    \"mean\": 247.75\n  },\n  \"SLS\": {\n    \"count\": 6,\n    \"sum\": 2254,\n    \"mean\": 375.666667\n  },\n  \"HR\": {\n    \"count\": 3,\n    \"sum\": 719,\n    \"mean\": 239.666667\n  },\n  \"ENG\": {\n    \"count\": 1,\n    \"sum\": 676,\n    \"mean\": 676.0\n  }\n}",
+   "wall_s": 66.64,
+   "eval_count": 152,
+   "eval_duration_s": 56.034,
+   "parse_status": "ok",
+   "payload": {
+    "OPS": {
+     "count": 4,
+     "sum": 991,
+     "mean": 247.75
+    },
+    "SLS": {
+     "count": 6,
+     "sum": 2254,
+     "mean": 375.666667
+    },
+    "HR": {
+     "count": 3,
+     "sum": 719,
+     "mean": 239.666667
+    },
+    "ENG": {
+     "count": 1,
+     "sum": 676,
+     "mean": 676.0
+    }
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.416667,
+    "evidence": [
+     {
+      "unit": "ENG.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "ENG.sum",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "ENG.mean",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "SLS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.sum",
+      "ok": false,
+      "detail": "expected 2294, got 2254"
+     },
+     {
+      "unit": "SLS.mean",
+      "ok": false,
+      "detail": "expected 382.333333, got 375.666667"
+     },
+     {
+      "unit": "OPS.count",
+      "ok": false,
+      "detail": "expected 3, got 4"
+     },
+     {
+      "unit": "OPS.sum",
+      "ok": false,
+      "detail": "expected 645, got 991"
+     },
+     {
+      "unit": "OPS.mean",
+      "ok": false,
+      "detail": "expected 215.000000, got 247.75"
+     },
+     {
+      "unit": "HR.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "HR.sum",
+      "ok": false,
+      "detail": "expected 709, got 719"
+     },
+     {
+      "unit": "HR.mean",
+      "ok": false,
+      "detail": "expected 236.333333, got 239.666667"
+     }
+    ]
+   }
+  },
+  {
+   "family": "table_aggregate",
+   "task_id": "table_aggregate-005",
+   "n_units": 9,
+   "prompt_chars": 560,
+   "prompt": "Aggregate the table below by department.  Return a JSON object mapping each department name to {count, sum, mean}; mean may have at most 1e-6 relative error.\n  (dept, region, amount)\n  ('ENG', 'NA', 582)\n  ('ENG', 'EU', 615)\n  ('ENG', 'APAC', 375)\n  ('SLS', 'APAC', 315)\n  ('ENG', 'APAC', 274)\n  ('ENG', 'EU', 620)\n  ('SLS', 'EU', 347)\n  ('ENG', 'APAC', 789)\n  ('OPS', 'NA', 200)\n  ('OPS', 'NA', 19)\n  ('OPS', 'APAC', 581)\n  ('ENG', 'APAC', 744)\n  ('SLS', 'NA', 665)\n  ('ENG', 'APAC', 47)\n\nReturn ONLY the JSON object described above. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"ENG\": {\n    \"count\": 10,\n    \"sum\": 4930,\n    \"mean\": 493.0\n  },\n  \"SLS\": {\n    \"count\": 3,\n    \"sum\": 1327,\n    \"mean\": 442.333333\n  },\n  \"OPS\": {\n    \"count\": 3,\n    \"sum\": 800,\n    \"mean\": 266.666667\n  }\n}",
+   "wall_s": 48.776,
+   "eval_count": 119,
+   "eval_duration_s": 37.831,
+   "parse_status": "ok",
+   "payload": {
+    "ENG": {
+     "count": 10,
+     "sum": 4930,
+     "mean": 493.0
+    },
+    "SLS": {
+     "count": 3,
+     "sum": 1327,
+     "mean": 442.333333
+    },
+    "OPS": {
+     "count": 3,
+     "sum": 800,
+     "mean": 266.666667
+    }
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "ENG.count",
+      "ok": false,
+      "detail": "expected 8, got 10"
+     },
+     {
+      "unit": "ENG.sum",
+      "ok": false,
+      "detail": "expected 4046, got 4930"
+     },
+     {
+      "unit": "ENG.mean",
+      "ok": false,
+      "detail": "expected 505.750000, got 493.0"
+     },
+     {
+      "unit": "SLS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.sum",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "SLS.mean",
+      "ok": true,
+      "detail": "within tolerance"
+     },
+     {
+      "unit": "OPS.count",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "OPS.sum",
+      "ok": true,
+      "detail": "integer matches"
+     },
+     {
+      "unit": "OPS.mean",
+      "ok": true,
+      "detail": "within tolerance"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sort_multikey",
+   "task_id": "sort_multikey-001",
+   "n_units": 8,
+   "prompt_chars": 942,
+   "prompt": "Sort the records below by score descending; name ascending (case-insensitive); ts ascending (case-insensitive), preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.\n  records = [{'id': 1, 'name': 'alan', 'dept': 'OPS', 'score': 80, 'ts': 4}, {'id': 2, 'name': 'Linus', 'dept': 'SLS', 'score': 70, 'ts': 5}, {'id': 3, 'name': 'grace', 'dept': 'OPS', 'score': 90, 'ts': 2}, {'id': 4, 'name': 'alan', 'dept': 'OPS', 'score': 70, 'ts': 4}, {'id': 5, 'name': 'alan', 'dept': 'OPS', 'score': 70, 'ts': 4}, {'id': 6, 'name': 'Linus', 'dept': 'ENG', 'score': 70, 'ts': 1}, {'id': 7, 'name': 'alan', 'dept': 'SLS', 'score': 80, 'ts': 4}, {'id': 8, 'name': 'Linus', 'dept': 'OPS', 'score': 70, 'ts': 4}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 8 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [3, 1, 7, 4, 5, 2, 8, 6]}",
+   "wall_s": 27.852,
+   "eval_count": 28,
+   "eval_duration_s": 8.241,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     3,
+     1,
+     7,
+     4,
+     5,
+     2,
+     8,
+     6
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p2",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p3",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p4",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p5",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p6",
+      "ok": false,
+      "detail": "expected 6, got 2"
+     },
+     {
+      "unit": "p7",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p8",
+      "ok": false,
+      "detail": "expected 2, got 6"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sort_multikey",
+   "task_id": "sort_multikey-002",
+   "n_units": 6,
+   "prompt_chars": 780,
+   "prompt": "Sort the records below by dept ascending (case-insensitive); score descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.\n  records = [{'id': 1, 'name': 'grace', 'dept': 'OPS', 'score': 90, 'ts': 2}, {'id': 2, 'name': 'Ada', 'dept': 'SLS', 'score': 80, 'ts': 2}, {'id': 3, 'name': 'Linus', 'dept': 'OPS', 'score': 70, 'ts': 3}, {'id': 4, 'name': 'alan', 'dept': 'OPS', 'score': 80, 'ts': 1}, {'id': 5, 'name': 'Linus', 'dept': 'SLS', 'score': 80, 'ts': 2}, {'id': 6, 'name': 'Linus', 'dept': 'SLS', 'score': 70, 'ts': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [3, 4, 1, 5, 6, 2]}",
+   "wall_s": 21.936,
+   "eval_count": 22,
+   "eval_duration_s": 6.78,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     3,
+     4,
+     1,
+     5,
+     6,
+     2
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.166667,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "expected 1, got 3"
+     },
+     {
+      "unit": "p2",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "expected 3, got 1"
+     },
+     {
+      "unit": "p4",
+      "ok": false,
+      "detail": "expected 2, got 5"
+     },
+     {
+      "unit": "p5",
+      "ok": false,
+      "detail": "expected 5, got 6"
+     },
+     {
+      "unit": "p6",
+      "ok": false,
+      "detail": "expected 6, got 2"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sort_multikey",
+   "task_id": "sort_multikey-003",
+   "n_units": 8,
+   "prompt_chars": 904,
+   "prompt": "Sort the records below by name ascending (case-insensitive); ts descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.\n  records = [{'id': 1, 'name': 'Ada', 'dept': 'OPS', 'score': 80, 'ts': 2}, {'id': 2, 'name': 'Ada', 'dept': 'ENG', 'score': 90, 'ts': 2}, {'id': 3, 'name': 'Linus', 'dept': 'ENG', 'score': 70, 'ts': 2}, {'id': 4, 'name': 'Linus', 'dept': 'SLS', 'score': 70, 'ts': 4}, {'id': 5, 'name': 'grace', 'dept': 'SLS', 'score': 90, 'ts': 2}, {'id': 6, 'name': 'Ada', 'dept': 'ENG', 'score': 90, 'ts': 4}, {'id': 7, 'name': 'grace', 'dept': 'ENG', 'score': 80, 'ts': 3}, {'id': 8, 'name': 'grace', 'dept': 'SLS', 'score': 70, 'ts': 5}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 8 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [1, 2, 6, 3, 4, 5, 7, 8]}",
+   "wall_s": 26.62,
+   "eval_count": 28,
+   "eval_duration_s": 7.647,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     1,
+     2,
+     6,
+     3,
+     4,
+     5,
+     7,
+     8
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.125,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "expected 6, got 1"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "expected 1, got 2"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "expected 2, got 6"
+     },
+     {
+      "unit": "p4",
+      "ok": false,
+      "detail": "expected 8, got 3"
+     },
+     {
+      "unit": "p5",
+      "ok": false,
+      "detail": "expected 7, got 4"
+     },
+     {
+      "unit": "p6",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p7",
+      "ok": false,
+      "detail": "expected 4, got 7"
+     },
+     {
+      "unit": "p8",
+      "ok": false,
+      "detail": "expected 3, got 8"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sort_multikey",
+   "task_id": "sort_multikey-004",
+   "n_units": 9,
+   "prompt_chars": 968,
+   "prompt": "Sort the records below by dept ascending (case-insensitive); score descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.\n  records = [{'id': 1, 'name': 'Linus', 'dept': 'ENG', 'score': 80, 'ts': 5}, {'id': 2, 'name': 'Ada', 'dept': 'ENG', 'score': 90, 'ts': 4}, {'id': 3, 'name': 'Ada', 'dept': 'OPS', 'score': 70, 'ts': 5}, {'id': 4, 'name': 'Linus', 'dept': 'ENG', 'score': 70, 'ts': 1}, {'id': 5, 'name': 'Ada', 'dept': 'ENG', 'score': 80, 'ts': 1}, {'id': 6, 'name': 'Ada', 'dept': 'ENG', 'score': 90, 'ts': 4}, {'id': 7, 'name': 'grace', 'dept': 'ENG', 'score': 70, 'ts': 5}, {'id': 8, 'name': 'alan', 'dept': 'ENG', 'score': 80, 'ts': 5}, {'id': 9, 'name': 'alan', 'dept': 'ENG', 'score': 90, 'ts': 5}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 9 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [3, 2, 6, 9, 5, 7, 8, 1, 4]}",
+   "wall_s": 27.205,
+   "eval_count": 31,
+   "eval_duration_s": 9.761,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     3,
+     2,
+     6,
+     9,
+     5,
+     7,
+     8,
+     1,
+     4
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.111111,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "expected 2, got 3"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "expected 6, got 2"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "expected 9, got 6"
+     },
+     {
+      "unit": "p4",
+      "ok": false,
+      "detail": "expected 1, got 9"
+     },
+     {
+      "unit": "p5",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p6",
+      "ok": false,
+      "detail": "expected 8, got 7"
+     },
+     {
+      "unit": "p7",
+      "ok": false,
+      "detail": "expected 4, got 8"
+     },
+     {
+      "unit": "p8",
+      "ok": false,
+      "detail": "expected 7, got 1"
+     },
+     {
+      "unit": "p9",
+      "ok": false,
+      "detail": "expected 3, got 4"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sort_multikey",
+   "task_id": "sort_multikey-005",
+   "n_units": 7,
+   "prompt_chars": 838,
+   "prompt": "Sort the records below by name ascending (case-insensitive); ts descending, preserving input order when all sort keys are equal (stable sort).  Name comparisons are case-insensitive.  Return the record ids as a JSON array, one per output position.\n  records = [{'id': 1, 'name': 'Ada', 'dept': 'ENG', 'score': 80, 'ts': 5}, {'id': 2, 'name': 'grace', 'dept': 'SLS', 'score': 70, 'ts': 2}, {'id': 3, 'name': 'Ada', 'dept': 'ENG', 'score': 80, 'ts': 1}, {'id': 4, 'name': 'Ada', 'dept': 'SLS', 'score': 80, 'ts': 3}, {'id': 5, 'name': 'Linus', 'dept': 'SLS', 'score': 70, 'ts': 5}, {'id': 6, 'name': 'alan', 'dept': 'SLS', 'score': 80, 'ts': 4}, {'id': 7, 'name': 'grace', 'dept': 'OPS', 'score': 80, 'ts': 5}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 7 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [1, 3, 4, 6, 2, 7, 5]}",
+   "wall_s": 24.312,
+   "eval_count": 25,
+   "eval_duration_s": 7.141,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     1,
+     3,
+     4,
+     6,
+     2,
+     7,
+     5
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.428571,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "expected 4, got 3"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "expected 3, got 4"
+     },
+     {
+      "unit": "p4",
+      "ok": true,
+      "detail": "record id matches"
+     },
+     {
+      "unit": "p5",
+      "ok": false,
+      "detail": "expected 7, got 2"
+     },
+     {
+      "unit": "p6",
+      "ok": false,
+      "detail": "expected 2, got 7"
+     },
+     {
+      "unit": "p7",
+      "ok": true,
+      "detail": "record id matches"
+     }
+    ]
+   }
+  },
+  {
+   "family": "interval_merge",
+   "task_id": "interval_merge-001",
+   "n_units": 6,
+   "prompt_chars": 376,
+   "prompt": "Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.\n  input = [(2, 4), (4, 6), (17, 19), (18, 20), (70, 71), (71, 72), (72, 78)]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[2, 6], [17, 20], [70, 78]]}",
+   "wall_s": 15.457,
+   "eval_count": 27,
+   "eval_duration_s": 8.368,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      2,
+      6
+     ],
+     [
+      17,
+      20
+     ],
+     [
+      70,
+      78
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "m1",
+      "ok": false,
+      "detail": "expected [2, 4], got [2, 6]"
+     },
+     {
+      "unit": "m2",
+      "ok": false,
+      "detail": "expected [4, 6], got [17, 20]"
+     },
+     {
+      "unit": "m3",
+      "ok": false,
+      "detail": "expected [17, 20], got [70, 78]"
+     },
+     {
+      "unit": "m4",
+      "ok": false,
+      "detail": "missing answer for unit"
+     },
+     {
+      "unit": "m5",
+      "ok": false,
+      "detail": "missing answer for unit"
+     },
+     {
+      "unit": "m6",
+      "ok": false,
+      "detail": "missing answer for unit"
+     }
+    ]
+   }
+  },
+  {
+   "family": "interval_merge",
+   "task_id": "interval_merge-002",
+   "n_units": 5,
+   "prompt_chars": 369,
+   "prompt": "Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.\n  input = [(8, 10), (10, 12), (23, 25), (24, 26), (88, 93), (78, 81)]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[8, 12], [23, 26], [78, 81], [88, 93]]}",
+   "wall_s": 16.258,
+   "eval_count": 36,
+   "eval_duration_s": 11.412,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      8,
+      12
+     ],
+     [
+      23,
+      26
+     ],
+     [
+      78,
+      81
+     ],
+     [
+      88,
+      93
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "m1",
+      "ok": false,
+      "detail": "expected [8, 10], got [8, 12]"
+     },
+     {
+      "unit": "m2",
+      "ok": false,
+      "detail": "expected [10, 12], got [23, 26]"
+     },
+     {
+      "unit": "m3",
+      "ok": false,
+      "detail": "expected [23, 26], got [78, 81]"
+     },
+     {
+      "unit": "m4",
+      "ok": false,
+      "detail": "expected [78, 81], got [88, 93]"
+     },
+     {
+      "unit": "m5",
+      "ok": false,
+      "detail": "missing answer for unit"
+     }
+    ]
+   }
+  },
+  {
+   "family": "interval_merge",
+   "task_id": "interval_merge-003",
+   "n_units": 5,
+   "prompt_chars": 366,
+   "prompt": "Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.\n  input = [(1, 3), (3, 5), (24, 26), (25, 27), (76, 78), (72, 74)]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[1, 5], [24, 27], [72, 74], [76, 78]]}",
+   "wall_s": 15.657,
+   "eval_count": 35,
+   "eval_duration_s": 11.036,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      1,
+      5
+     ],
+     [
+      24,
+      27
+     ],
+     [
+      72,
+      74
+     ],
+     [
+      76,
+      78
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "m1",
+      "ok": false,
+      "detail": "expected [1, 3], got [1, 5]"
+     },
+     {
+      "unit": "m2",
+      "ok": false,
+      "detail": "expected [3, 5], got [24, 27]"
+     },
+     {
+      "unit": "m3",
+      "ok": false,
+      "detail": "expected [24, 27], got [72, 74]"
+     },
+     {
+      "unit": "m4",
+      "ok": false,
+      "detail": "expected [72, 74], got [76, 78]"
+     },
+     {
+      "unit": "m5",
+      "ok": false,
+      "detail": "missing answer for unit"
+     }
+    ]
+   }
+  },
+  {
+   "family": "interval_merge",
+   "task_id": "interval_merge-004",
+   "n_units": 5,
+   "prompt_chars": 366,
+   "prompt": "Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.\n  input = [(3, 5), (5, 7), (23, 25), (24, 26), (88, 94), (82, 88)]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[3, 7], [23, 26], [82, 94]]}",
+   "wall_s": 11.94,
+   "eval_count": 27,
+   "eval_duration_s": 7.727,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      3,
+      7
+     ],
+     [
+      23,
+      26
+     ],
+     [
+      82,
+      94
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "m1",
+      "ok": false,
+      "detail": "expected [3, 5], got [3, 7]"
+     },
+     {
+      "unit": "m2",
+      "ok": false,
+      "detail": "expected [5, 7], got [23, 26]"
+     },
+     {
+      "unit": "m3",
+      "ok": false,
+      "detail": "expected [23, 26], got [82, 94]"
+     },
+     {
+      "unit": "m4",
+      "ok": false,
+      "detail": "missing answer for unit"
+     },
+     {
+      "unit": "m5",
+      "ok": false,
+      "detail": "missing answer for unit"
+     }
+    ]
+   }
+  },
+  {
+   "family": "interval_merge",
+   "task_id": "interval_merge-005",
+   "n_units": 5,
+   "prompt_chars": 366,
+   "prompt": "Merge the half-open intervals [start, end) below.  Intervals that only touch at an endpoint stay separate.  Return a JSON array of [start, end] pairs in ascending order.\n  input = [(4, 6), (6, 8), (26, 28), (27, 29), (80, 85), (75, 76)]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[4, 8], [26, 29], [75, 76], [80, 85]]}",
+   "wall_s": 15.406,
+   "eval_count": 35,
+   "eval_duration_s": 10.918,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      4,
+      8
+     ],
+     [
+      26,
+      29
+     ],
+     [
+      75,
+      76
+     ],
+     [
+      80,
+      85
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "m1",
+      "ok": false,
+      "detail": "expected [4, 6], got [4, 8]"
+     },
+     {
+      "unit": "m2",
+      "ok": false,
+      "detail": "expected [6, 8], got [26, 29]"
+     },
+     {
+      "unit": "m3",
+      "ok": false,
+      "detail": "expected [26, 29], got [75, 76]"
+     },
+     {
+      "unit": "m4",
+      "ok": false,
+      "detail": "expected [75, 76], got [80, 85]"
+     },
+     {
+      "unit": "m5",
+      "ok": false,
+      "detail": "missing answer for unit"
+     }
+    ]
+   }
+  },
+  {
+   "family": "grid_path",
+   "task_id": "grid_path-001",
+   "n_units": 3,
+   "prompt_chars": 501,
+   "prompt": "Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.\n  grid = ['..#...', '...#..', '.#....', '......', '.#...#', '...#..']\n  pairs = [{'start': [1, 0], 'goal': [2, 5]}, {'start': [5, 4], 'goal': [0, 3]}, {'start': [1, 1], 'goal': [3, 4]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[[1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [2, 5]], [[5, 4], [5, 3], [5, 2], [5, 1], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0], [0, 0], [0, 1], [0, 2], [0, 3]], [[1, 1], [1, 2], [1, 3], [1, 4], [2, 4], [3, 4]]]}",
+   "wall_s": 55.787,
+   "eval_count": 161,
+   "eval_duration_s": 46.196,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      [
+       1,
+       0
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       1,
+       3
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       5
+      ]
+     ],
+     [
+      [
+       5,
+       4
+      ],
+      [
+       5,
+       3
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       5,
+       0
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       1,
+       0
+      ],
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ]
+     ],
+     [
+      [
+       1,
+       1
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       1,
+       3
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       3,
+       4
+      ]
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "path crosses an obstacle"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "path crosses an obstacle; length 13 != optimal 7"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "path crosses an obstacle"
+     }
+    ]
+   }
+  },
+  {
+   "family": "grid_path",
+   "task_id": "grid_path-002",
+   "n_units": 3,
+   "prompt_chars": 486,
+   "prompt": "Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.\n  grid = ['.....', '...#.', '.....', '#....', '.....']\n  pairs = [{'start': [0, 0], 'goal': [1, 4]}, {'start': [1, 4], 'goal': [3, 1]}, {'start': [4, 4], 'goal': [1, 1]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 4]], [[1, 4], [1, 3], [1, 2], [1, 1], [0, 1], [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4], [3, 3], [3, 2], [3, 1]], [[4, 4], [4, 3], [4, 2], [4, 1], [4, 0], [3, 0], [2, 0], [1, 0], [1, 1]]]}",
+   "wall_s": 58.232,
+   "eval_count": 191,
+   "eval_duration_s": 52.323,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       1,
+       4
+      ]
+     ],
+     [
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       3
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       2,
+       4
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       3,
+       3
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       3,
+       1
+      ]
+     ],
+     [
+      [
+       4,
+       4
+      ],
+      [
+       4,
+       3
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       1,
+       0
+      ],
+      [
+       1,
+       1
+      ]
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": true,
+      "detail": "valid shortest path"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "path crosses an obstacle; length 16 != optimal 6"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "path crosses an obstacle; length 9 != optimal 7"
+     }
+    ]
+   }
+  },
+  {
+   "family": "grid_path",
+   "task_id": "grid_path-003",
+   "n_units": 3,
+   "prompt_chars": 501,
+   "prompt": "Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.\n  grid = ['.#.#..', '##...#', '.#....', '......', '......', '......']\n  pairs = [{'start': [2, 4], 'goal': [3, 0]}, {'start': [3, 0], 'goal': [0, 5]}, {'start': [5, 3], 'goal': [1, 2]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[[2, 4], [2, 3], [2, 2], [2, 1], [2, 0], [3, 0]], [[3, 0], [4, 0], [5, 0], [5, 1], [5, 2], [5, 3], [5, 4], [5, 5]], [[5, 3], [5, 2], [5, 1], [4, 1], [3, 1], [2, 1], [1, 1], [1, 2]]]}",
+   "wall_s": 42.839,
+   "eval_count": 137,
+   "eval_duration_s": 36.928,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      [
+       2,
+       4
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       1
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       3,
+       0
+      ]
+     ],
+     [
+      [
+       3,
+       0
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       5,
+       0
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       5,
+       3
+      ],
+      [
+       5,
+       4
+      ],
+      [
+       5,
+       5
+      ]
+     ],
+     [
+      [
+       5,
+       3
+      ],
+      [
+       5,
+       2
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       2,
+       1
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       1,
+       2
+      ]
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "path crosses an obstacle"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "wrong goal; length 8 != optimal 9"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "path crosses an obstacle; length 8 != optimal 6"
+     }
+    ]
+   }
+  },
+  {
+   "family": "grid_path",
+   "task_id": "grid_path-004",
+   "n_units": 3,
+   "prompt_chars": 501,
+   "prompt": "Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.\n  grid = ['......', '......', '...##.', '......', '#.##..', '....#.']\n  pairs = [{'start': [4, 5], 'goal': [3, 0]}, {'start': [5, 2], 'goal': [1, 2]}, {'start': [0, 4], 'goal': [2, 1]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[[4, 5], [3, 5], [3, 4], [3, 3], [3, 2], [3, 1], [3, 0]], [[5, 2], [4, 2], [3, 2], [2, 2], [1, 2]], [[0, 4], [0, 3], [0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1]]]}",
+   "wall_s": 39.878,
+   "eval_count": 125,
+   "eval_duration_s": 33.91,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      [
+       4,
+       5
+      ],
+      [
+       3,
+       5
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       3,
+       3
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       3,
+       0
+      ]
+     ],
+     [
+      [
+       5,
+       2
+      ],
+      [
+       4,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       1,
+       2
+      ]
+     ],
+     [
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       0
+      ],
+      [
+       1,
+       0
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       2,
+       1
+      ]
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": true,
+      "detail": "valid shortest path"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "path crosses an obstacle; length 5 != optimal 7"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "length 8 != optimal 6"
+     }
+    ]
+   }
+  },
+  {
+   "family": "grid_path",
+   "task_id": "grid_path-005",
+   "n_units": 3,
+   "prompt_chars": 518,
+   "prompt": "Find a shortest 4-connected path from S to G on each grid (# = blocked).  Return a JSON array with one path per pair; a path is a list of [row, col] cells starting at S and ending at G.\n  grid = ['..##...', '#......', '#..#...', '#..#..#', '#..#...', '##....#', '......#']\n  pairs = [{'start': [3, 2], 'goal': [0, 5]}, {'start': [1, 1], 'goal': [3, 4]}, {'start': [6, 0], 'goal': [2, 4]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[[3, 2], [2, 2], [1, 2], [0, 2], [0, 3], [0, 4], [0, 5]], [[1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [2, 5], [3, 5], [3, 4]], [[6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4]]]}",
+   "wall_s": 46.716,
+   "eval_count": 149,
+   "eval_duration_s": 40.542,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      [
+       3,
+       2
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     [
+      [
+       1,
+       1
+      ],
+      [
+       1,
+       2
+      ],
+      [
+       1,
+       3
+      ],
+      [
+       1,
+       4
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       5
+      ],
+      [
+       3,
+       4
+      ]
+     ],
+     [
+      [
+       6,
+       0
+      ],
+      [
+       5,
+       0
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       2,
+       0
+      ],
+      [
+       2,
+       1
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       2,
+       4
+      ]
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "p1",
+      "ok": false,
+      "detail": "path crosses an obstacle"
+     },
+     {
+      "unit": "p2",
+      "ok": false,
+      "detail": "length 8 != optimal 6"
+     },
+     {
+      "unit": "p3",
+      "ok": false,
+      "detail": "path crosses an obstacle"
+     }
+    ]
+   }
+  },
+  {
+   "family": "csp_assign",
+   "task_id": "csp_assign-001",
+   "n_units": 3,
+   "prompt_chars": 672,
+   "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('A', 'D'), ('B', 'D')], 'pins': {'A': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'C'), ('B', 'C'), ('B', 'D')], 'pins': {'D': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'D'), ('C', 'D')], 'pins': {}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 2},\n    {\"A\": 3, \"B\": 1, \"C\": 1, \"D\": 2},\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 2}\n  ]\n}",
+   "wall_s": 35.641,
+   "eval_count": 85,
+   "eval_duration_s": 23.292,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 2
+     },
+     {
+      "A": 3,
+      "B": 1,
+      "C": 1,
+      "D": 2
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 2
+     }
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "g1",
+      "ok": false,
+      "detail": "edge B-D has equal colours"
+     },
+     {
+      "unit": "g2",
+      "ok": false,
+      "detail": "edge B-C has equal colours"
+     },
+     {
+      "unit": "g3",
+      "ok": false,
+      "detail": "edge B-D has equal colours"
+     }
+    ]
+   }
+  },
+  {
+   "family": "csp_assign",
+   "task_id": "csp_assign-002",
+   "n_units": 3,
+   "prompt_chars": 641,
+   "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D')], 'pins': {}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('B', 'D'), ('C', 'D')], 'pins': {}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'B'), ('A', 'D'), ('B', 'C'), ('B', 'D')], 'pins': {}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [{\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 2}, {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 1}, {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 1, \"E\": 2}]}",
+   "wall_s": 30.433,
+   "eval_count": 83,
+   "eval_duration_s": 22.487,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 2
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 1
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 1,
+      "E": 2
+     }
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "g1",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     },
+     {
+      "unit": "g2",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     },
+     {
+      "unit": "g3",
+      "ok": false,
+      "detail": "edge A-D has equal colours"
+     }
+    ]
+   }
+  },
+  {
+   "family": "csp_assign",
+   "task_id": "csp_assign-003",
+   "n_units": 3,
+   "prompt_chars": 689,
+   "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('C', 'D')], 'pins': {'C': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'C'), ('B', 'D')], 'pins': {'B': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('B', 'E')], 'pins': {}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    {\"A\": 1, \"B\": 2, \"C\": 2, \"D\": 3},\n    {\"A\": 2, \"B\": 1, \"C\": 3, \"D\": 2},\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 3, \"E\": 1}\n  ]\n}",
+   "wall_s": 33.396,
+   "eval_count": 91,
+   "eval_duration_s": 24.648,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     {
+      "A": 1,
+      "B": 2,
+      "C": 2,
+      "D": 3
+     },
+     {
+      "A": 2,
+      "B": 1,
+      "C": 3,
+      "D": 2
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 3,
+      "E": 1
+     }
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "g1",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     },
+     {
+      "unit": "g2",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     },
+     {
+      "unit": "g3",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     }
+    ]
+   }
+  },
+  {
+   "family": "csp_assign",
+   "task_id": "csp_assign-004",
+   "n_units": 3,
+   "prompt_chars": 695,
+   "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('B', 'C'), ('B', 'D')], 'pins': {'C': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'C'), ('A', 'D'), ('B', 'C'), ('C', 'D')], 'pins': {'C': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'E'), ('B', 'C'), ('B', 'E')], 'pins': {'A': 1}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    {\"A\": 2, \"B\": 1, \"C\": 1, \"D\": 2},\n    {\"A\": 1, \"B\": 3, \"C\": 2, \"D\": 3},\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 2, \"E\": 3}\n  ]\n}",
+   "wall_s": 33.923,
+   "eval_count": 91,
+   "eval_duration_s": 24.562,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     {
+      "A": 2,
+      "B": 1,
+      "C": 1,
+      "D": 2
+     },
+     {
+      "A": 1,
+      "B": 3,
+      "C": 2,
+      "D": 3
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 2,
+      "E": 3
+     }
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "g1",
+      "ok": false,
+      "detail": "edge B-C has equal colours"
+     },
+     {
+      "unit": "g2",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     },
+     {
+      "unit": "g3",
+      "ok": true,
+      "detail": "all constraints satisfied"
+     }
+    ]
+   }
+  },
+  {
+   "family": "csp_assign",
+   "task_id": "csp_assign-005",
+   "n_units": 3,
+   "prompt_chars": 736,
+   "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'D'), ('B', 'C'), ('B', 'D'), ('C', 'D')], 'pins': {}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('B', 'C'), ('B', 'D'), ('B', 'E'), ('C', 'D'), ('D', 'E')], 'pins': {'E': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'D'), ('B', 'E'), ('C', 'D'), ('D', 'E')], 'pins': {}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 1},\n    {\"A\": 1, \"B\": 3, \"C\": 1, \"D\": 2, \"E\": 2},\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 1, \"E\": 2}\n  ]\n}",
+   "wall_s": 36.584,
+   "eval_count": 97,
+   "eval_duration_s": 26.277,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 1
+     },
+     {
+      "A": 1,
+      "B": 3,
+      "C": 1,
+      "D": 2,
+      "E": 2
+     },
+     {
+      "A": 1,
+      "B": 2,
+      "C": 3,
+      "D": 1,
+      "E": 2
+     }
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "g1",
+      "ok": false,
+      "detail": "edge A-D has equal colours"
+     },
+     {
+      "unit": "g2",
+      "ok": false,
+      "detail": "edge D-E has equal colours"
+     },
+     {
+      "unit": "g3",
+      "ok": false,
+      "detail": "edge A-D has equal colours"
+     }
+    ]
+   }
+  },
+  {
+   "family": "schedule_slots",
+   "task_id": "schedule_slots-001",
+   "n_units": 3,
+   "prompt_chars": 1052,
+   "prompt": "Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.\n  problems = [{'meetings': [{'id': 'm1', 'dur': 1, 'who': ['ann']}, {'id': 'm2', 'dur': 2, 'who': ['ann']}, {'id': 'm3', 'dur': 2, 'who': ['ann', 'cy']}], 'busy': {'ann': [7, 8, 9, 12], 'bob': [3, 7, 12, 13], 'cy': [2, 4, 6, 10]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'cy']}, {'id': 'm2', 'dur': 1, 'who': ['ann', 'cy']}, {'id': 'm3', 'dur': 1, 'who': ['bob']}], 'busy': {'ann': [3, 14], 'bob': [3, 5, 13, 14], 'cy': [5, 7, 10, 13]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'cy']}, {'id': 'm2', 'dur': 1, 'who': ['cy', 'bob']}, {'id': 'm3', 'dur': 2, 'who': ['bob', 'ann']}], 'busy': {'ann': [0, 1, 13], 'bob': [9, 13, 14], 'cy': [10, 11]}}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 1},\n      {\"meeting_id\": \"m3\", \"start_slot\": 3}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 3},\n      {\"meeting_id\": \"m3\", \"start_slot\": 4}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 2},\n      {\"meeting_id\": \"m2\", \"start_slot\": 4},\n      {\"meeting_id\": \"m3\", \"start_slot\": 5}\n    ]\n  ]\n}",
+   "wall_s": 68.561,
+   "eval_count": 166,
+   "eval_duration_s": 45.608,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 3
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 3
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 4
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 2
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 4
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 5
+      }
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected an object, got list"
+     }
+    ]
+   }
+  },
+  {
+   "family": "schedule_slots",
+   "task_id": "schedule_slots-002",
+   "n_units": 3,
+   "prompt_chars": 928,
+   "prompt": "Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.\n  problems = [{'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'cy']}, {'id': 'm2', 'dur': 1, 'who': ['bob', 'cy']}], 'busy': {'ann': [3, 4, 12], 'bob': [7, 10, 11, 12], 'cy': [5, 6]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob']}, {'id': 'm2', 'dur': 2, 'who': ['cy']}], 'busy': {'ann': [2, 3, 4, 9], 'bob': [5, 7], 'cy': [8, 11, 15]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob', 'ann']}, {'id': 'm2', 'dur': 2, 'who': ['cy']}, {'id': 'm3', 'dur': 1, 'who': ['ann']}], 'busy': {'ann': [2, 7], 'bob': [8, 12], 'cy': [9, 14]}}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 1}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 1}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 2},\n      {\"meeting_id\": \"m3\", \"start_slot\": 4}\n    ]\n  ]\n}",
+   "wall_s": 52.937,
+   "eval_count": 134,
+   "eval_duration_s": 37.919,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 1
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 1
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 2
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 4
+      }
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected an object, got list"
+     }
+    ]
+   }
+  },
+  {
+   "family": "schedule_slots",
+   "task_id": "schedule_slots-003",
+   "n_units": 3,
+   "prompt_chars": 894,
+   "prompt": "Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.\n  problems = [{'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob', 'ann']}, {'id': 'm2', 'dur': 2, 'who': ['bob', 'cy']}], 'busy': {'ann': [2, 4], 'bob': [2, 6, 7, 9], 'cy': [6, 14]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['ann']}, {'id': 'm2', 'dur': 2, 'who': ['bob']}], 'busy': {'ann': [0, 7, 12], 'bob': [5, 6, 12], 'cy': [1, 14, 15]}}, {'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann']}, {'id': 'm2', 'dur': 2, 'who': ['bob', 'ann']}], 'busy': {'ann': [3, 8, 12], 'bob': [3, 6, 11], 'cy': [3, 11]}}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 8}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 10}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 10}\n    ]\n  ]\n}",
+   "wall_s": 46.35,
+   "eval_count": 120,
+   "eval_duration_s": 32.49,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 8
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 10
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 10
+      }
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected an object, got list"
+     }
+    ]
+   }
+  },
+  {
+   "family": "schedule_slots",
+   "task_id": "schedule_slots-004",
+   "n_units": 3,
+   "prompt_chars": 927,
+   "prompt": "Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.\n  problems = [{'meetings': [{'id': 'm1', 'dur': 1, 'who': ['cy']}, {'id': 'm2', 'dur': 1, 'who': ['ann']}], 'busy': {'ann': [2, 9], 'bob': [3, 6, 12, 14], 'cy': [0, 15]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['cy']}, {'id': 'm2', 'dur': 1, 'who': ['cy']}, {'id': 'm3', 'dur': 2, 'who': ['bob']}], 'busy': {'ann': [0, 4, 11, 13], 'bob': [1, 3, 8, 10], 'cy': [0, 14, 15]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['cy']}, {'id': 'm2', 'dur': 1, 'who': ['cy']}], 'busy': {'ann': [3, 11, 13], 'bob': [5, 7, 10], 'cy': [5, 10, 11, 14]}}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 10}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 2},\n      {\"meeting_id\": \"m3\", \"start_slot\": 4}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 12}\n    ]\n  ]\n}",
+   "wall_s": 52.133,
+   "eval_count": 136,
+   "eval_duration_s": 37.125,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 10
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 2
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 4
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 12
+      }
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected an object, got list"
+     }
+    ]
+   }
+  },
+  {
+   "family": "schedule_slots",
+   "task_id": "schedule_slots-005",
+   "n_units": 3,
+   "prompt_chars": 967,
+   "prompt": "Schedule each meeting set into 30-minute slots 0..15 (slot 0 = 09:00).  Meetings must fit their attendees' busy slots, stay inside the day, and not overlap (single room).  Return a JSON array with one object {meeting_id: start_slot} per set, in order.\n  problems = [{'meetings': [{'id': 'm1', 'dur': 2, 'who': ['ann', 'bob']}, {'id': 'm2', 'dur': 2, 'who': ['ann', 'cy']}], 'busy': {'ann': [4, 9, 11], 'bob': [4, 5, 15], 'cy': [0, 3, 4, 10]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['ann', 'bob']}, {'id': 'm2', 'dur': 2, 'who': ['cy', 'ann']}], 'busy': {'ann': [4, 6, 11], 'bob': [3, 10, 11, 14], 'cy': [0, 2, 3, 12]}}, {'meetings': [{'id': 'm1', 'dur': 1, 'who': ['bob', 'ann']}, {'id': 'm2', 'dur': 2, 'who': ['cy', 'ann']}, {'id': 'm3', 'dur': 2, 'who': ['cy']}], 'busy': {'ann': [11, 12], 'bob': [5, 6, 8], 'cy': [2, 5, 11]}}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\n  \"answers\": [\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 1},\n      {\"meeting_id\": \"m2\", \"start_slot\": 13}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 1}\n    ],\n    [\n      {\"meeting_id\": \"m1\", \"start_slot\": 0},\n      {\"meeting_id\": \"m2\", \"start_slot\": 3},\n      {\"meeting_id\": \"m3\", \"start_slot\": 7}\n    ]\n  ]\n}",
+   "wall_s": 53.426,
+   "eval_count": 135,
+   "eval_duration_s": 37.055,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 1
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 13
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 1
+      }
+     ],
+     [
+      {
+       "meeting_id": "m1",
+       "start_slot": 0
+      },
+      {
+       "meeting_id": "m2",
+       "start_slot": 3
+      },
+      {
+       "meeting_id": "m3",
+       "start_slot": 7
+      }
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "s1",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s2",
+      "ok": false,
+      "detail": "expected an object, got list"
+     },
+     {
+      "unit": "s3",
+      "ok": false,
+      "detail": "expected an object, got list"
+     }
+    ]
+   }
+  },
+  {
+   "family": "topo_order",
+   "task_id": "topo_order-001",
+   "n_units": 3,
+   "prompt_chars": 729,
+   "prompt": "Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.\n  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'edges': [('G', 'A'), ('G', 'C'), ('G', 'E'), ('A', 'D'), ('C', 'B'), ('B', 'D'), ('B', 'F'), ('E', 'F')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('F', 'A'), ('A', 'C'), ('C', 'B'), ('F', 'E'), ('E', 'D'), ('D', 'A')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('D', 'E'), ('D', 'C'), ('D', 'A'), ('B', 'F'), ('B', 'A'), ('E', 'C'), ('E', 'A')]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[\"G\", \"A\", \"C\", \"B\", \"E\", \"F\", \"D\"], [\"F\", \"A\", \"C\", \"B\", \"E\", \"D\"], [\"D\", \"E\", \"C\", \"A\", \"B\", \"F\"]]}",
+   "wall_s": 30.686,
+   "eval_count": 62,
+   "eval_duration_s": 16.536,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      "G",
+      "A",
+      "C",
+      "B",
+      "E",
+      "F",
+      "D"
+     ],
+     [
+      "F",
+      "A",
+      "C",
+      "B",
+      "E",
+      "D"
+     ],
+     [
+      "D",
+      "E",
+      "C",
+      "A",
+      "B",
+      "F"
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "all edges respected"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "edge D->A violated"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "edge B->A violated"
+     }
+    ]
+   }
+  },
+  {
+   "family": "topo_order",
+   "task_id": "topo_order-002",
+   "n_units": 3,
+   "prompt_chars": 688,
+   "prompt": "Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.\n  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'edges': [('B', 'G'), ('E', 'F'), ('E', 'C'), ('E', 'D'), ('F', 'G'), ('C', 'A'), ('G', 'D'), ('A', 'D')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('D', 'C'), ('D', 'A'), ('C', 'A'), ('C', 'B'), ('F', 'B')]}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('E', 'C'), ('E', 'A'), ('E', 'D'), ('B', 'D'), ('A', 'D')]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[\"A\", \"C\", \"B\", \"E\", \"F\", \"G\", \"D\"], [\"A\", \"C\", \"B\", \"D\", \"F\"], [\"A\", \"C\", \"E\", \"B\", \"D\"]]}",
+   "wall_s": 24.588,
+   "eval_count": 56,
+   "eval_duration_s": 14.991,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      "A",
+      "C",
+      "B",
+      "E",
+      "F",
+      "G",
+      "D"
+     ],
+     [
+      "A",
+      "C",
+      "B",
+      "D",
+      "F"
+     ],
+     [
+      "A",
+      "C",
+      "E",
+      "B",
+      "D"
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": false,
+      "detail": "edge E->C violated"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "order must list each node exactly once"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "edge E->C violated"
+     }
+    ]
+   }
+  },
+  {
+   "family": "topo_order",
+   "task_id": "topo_order-003",
+   "n_units": 3,
+   "prompt_chars": 700,
+   "prompt": "Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.\n  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('A', 'F'), ('A', 'E'), ('F', 'C'), ('F', 'D')]}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('B', 'E'), ('B', 'D'), ('A', 'E'), ('B', 'C'), ('C', 'A'), ('E', 'D')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'edges': [('E', 'A'), ('G', 'D'), ('G', 'A'), ('F', 'C'), ('C', 'B'), ('C', 'D'), ('C', 'A'), ('B', 'D'), ('B', 'A')]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[\"A\", \"E\", \"F\", \"C\", \"D\", \"B\"], [\"B\", \"C\", \"A\", \"E\", \"D\"], [\"E\", \"G\", \"A\", \"F\", \"C\", \"B\", \"D\"]]}",
+   "wall_s": 25.861,
+   "eval_count": 59,
+   "eval_duration_s": 15.741,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      "A",
+      "E",
+      "F",
+      "C",
+      "D",
+      "B"
+     ],
+     [
+      "B",
+      "C",
+      "A",
+      "E",
+      "D"
+     ],
+     [
+      "E",
+      "G",
+      "A",
+      "F",
+      "C",
+      "B",
+      "D"
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "all edges respected"
+     },
+     {
+      "unit": "d2",
+      "ok": true,
+      "detail": "all edges respected"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "edge C->A violated"
+     }
+    ]
+   }
+  },
+  {
+   "family": "topo_order",
+   "task_id": "topo_order-004",
+   "n_units": 3,
+   "prompt_chars": 688,
+   "prompt": "Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.\n  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F', 'G'], 'edges': [('F', 'G'), ('F', 'A'), ('F', 'B'), ('D', 'A'), ('D', 'B'), ('C', 'A'), ('C', 'B'), ('G', 'A'), ('A', 'E')]}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('E', 'C'), ('E', 'B'), ('E', 'D'), ('C', 'B')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('A', 'B'), ('A', 'F'), ('B', 'D'), ('E', 'F'), ('E', 'C')]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[\"F\", \"G\", \"A\", \"B\", \"C\", \"D\", \"E\"], [\"E\", \"C\", \"B\", \"D\"], [\"A\", \"B\", \"F\", \"E\", \"C\", \"D\"]]}",
+   "wall_s": 24.523,
+   "eval_count": 56,
+   "eval_duration_s": 14.962,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      "F",
+      "G",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ],
+     [
+      "E",
+      "C",
+      "B",
+      "D"
+     ],
+     [
+      "A",
+      "B",
+      "F",
+      "E",
+      "C",
+      "D"
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": false,
+      "detail": "edge D->A violated"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "order must list each node exactly once"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "edge E->F violated"
+     }
+    ]
+   }
+  },
+  {
+   "family": "topo_order",
+   "task_id": "topo_order-005",
+   "n_units": 3,
+   "prompt_chars": 688,
+   "prompt": "Return one topological order per directed acyclic graph: every edge u -> v must have u before v.  Any valid order is accepted.  Answer with a JSON array of node arrays.\n  graphs = [{'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('D', 'E'), ('D', 'F'), ('E', 'B'), ('A', 'B'), ('F', 'B')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('D', 'E'), ('D', 'B'), ('A', 'E'), ('A', 'C'), ('E', 'C'), ('C', 'B')]}, {'nodes': ['A', 'B', 'C', 'D', 'E', 'F'], 'edges': [('E', 'F'), ('E', 'D'), ('E', 'C'), ('F', 'A'), ('F', 'C'), ('A', 'C'), ('B', 'C')]}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [[\"D\", \"E\", \"F\", \"A\", \"B\", \"C\"], [\"D\", \"A\", \"E\", \"C\", \"B\"], [\"E\", \"F\", \"A\", \"C\", \"B\", \"D\"]]}",
+   "wall_s": 24.438,
+   "eval_count": 56,
+   "eval_duration_s": 14.964,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     [
+      "D",
+      "E",
+      "F",
+      "A",
+      "B",
+      "C"
+     ],
+     [
+      "D",
+      "A",
+      "E",
+      "C",
+      "B"
+     ],
+     [
+      "E",
+      "F",
+      "A",
+      "C",
+      "B",
+      "D"
+     ]
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "d1",
+      "ok": true,
+      "detail": "all edges respected"
+     },
+     {
+      "unit": "d2",
+      "ok": false,
+      "detail": "order must list each node exactly once"
+     },
+     {
+      "unit": "d3",
+      "ok": false,
+      "detail": "edge B->C violated"
+     }
+    ]
+   }
+  },
+  {
+   "family": "life_step",
+   "task_id": "life_step-001",
+   "n_units": 5,
+   "prompt_chars": 366,
+   "prompt": "Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.\n  board = ['1100100', '1000100', '0011100', '0100010', '1101011']\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"0100000\", \"0100000\", \"0011100\", \"0100010\", \"0101010\"]}",
+   "wall_s": 19.717,
+   "eval_count": 49,
+   "eval_duration_s": 13.029,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "0100000",
+     "0100000",
+     "0011100",
+     "0100010",
+     "0101010"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "expected 1100000, got 0100000"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "expected 1010110, got 0100000"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "expected 0111110, got 0011100"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "expected 1100011, got 0100010"
+     },
+     {
+      "unit": "r5",
+      "ok": false,
+      "detail": "expected 1110111, got 0101010"
+     }
+    ]
+   }
+  },
+  {
+   "family": "life_step",
+   "task_id": "life_step-002",
+   "n_units": 6,
+   "prompt_chars": 371,
+   "prompt": "Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.\n  board = ['101101', '010010', '100000', '000010', '001110', '100011']\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"010100\", \"001010\", \"110000\", \"000110\", \"001110\", \"010011\"]}",
+   "wall_s": 18.209,
+   "eval_count": 52,
+   "eval_duration_s": 14.02,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "010100",
+     "001010",
+     "110000",
+     "000110",
+     "001110",
+     "010011"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "expected 011110, got 010100"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "expected 111110, got 001010"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "expected 000000, got 110000"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "expected 000010, got 000110"
+     },
+     {
+      "unit": "r5",
+      "ok": false,
+      "detail": "expected 000000, got 001110"
+     },
+     {
+      "unit": "r6",
+      "ok": false,
+      "detail": "expected 000011, got 010011"
+     }
+    ]
+   }
+  },
+  {
+   "family": "life_step",
+   "task_id": "life_step-003",
+   "n_units": 6,
+   "prompt_chars": 371,
+   "prompt": "Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.\n  board = ['101101', '000100', '110100', '001101', '000110', '101001']\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"010100\", \"001100\", \"110100\", \"001100\", \"000110\", \"010001\"]}",
+   "wall_s": 18.196,
+   "eval_count": 52,
+   "eval_duration_s": 13.848,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "010100",
+     "001100",
+     "110100",
+     "001100",
+     "000110",
+     "010001"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "expected 001110, got 010100"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "expected 100100, got 001100"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "expected 010100, got 110100"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "expected 010000, got 001100"
+     },
+     {
+      "unit": "r5",
+      "ok": false,
+      "detail": "expected 010001, got 000110"
+     },
+     {
+      "unit": "r6",
+      "ok": false,
+      "detail": "expected 000110, got 010001"
+     }
+    ]
+   }
+  },
+  {
+   "family": "life_step",
+   "task_id": "life_step-004",
+   "n_units": 5,
+   "prompt_chars": 366,
+   "prompt": "Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.\n  board = ['1000101', '1100010', '1000101', '0011101', '0101011']\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"0100010\", \"0100010\", \"0000000\", \"0011100\", \"0101010\"]}",
+   "wall_s": 17.333,
+   "eval_count": 49,
+   "eval_duration_s": 13.195,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "0100010",
+     "0100010",
+     "0000000",
+     "0011100",
+     "0101010"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "expected 1100010, got 0100010"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "expected 1100101, got 0100010"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "expected 1010101, got 0000000"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "expected 0110001, got 0011100"
+     },
+     {
+      "unit": "r5",
+      "ok": false,
+      "detail": "expected 0001011, got 0101010"
+     }
+    ]
+   }
+  },
+  {
+   "family": "life_step",
+   "task_id": "life_step-005",
+   "n_units": 6,
+   "prompt_chars": 371,
+   "prompt": "Apply one generation of Conway's Game of Life (B3/S23) to the board below.  Cells outside the board are dead.  Return the new board as a JSON array of row strings of 0/1.\n  board = ['111010', '000000', '010011', '000001', '101000', '000001']\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 6 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.0,
+    "seed": 20261104,
+    "num_predict": 1024,
+    "samples": 1
+   },
+   "raw_response": "{\"answers\": [\"110010\", \"000100\", \"001011\", \"000101\", \"101000\", \"000001\"]}",
+   "wall_s": 18.293,
+   "eval_count": 52,
+   "eval_duration_s": 13.907,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "110010",
+     "000100",
+     "001011",
+     "000101",
+     "101000",
+     "000001"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "expected 010000, got 110010"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "expected 101111, got 000100"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "expected 000011, got 001011"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "expected 010011, got 000101"
+     },
+     {
+      "unit": "r5",
+      "ok": false,
+      "detail": "expected 000000, got 101000"
+     },
+     {
+      "unit": "r6",
+      "ok": false,
+      "detail": "expected 000000, got 000001"
+     }
+    ]
+   }
+  }
+ ]
+}

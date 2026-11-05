@@ -1643,7 +1643,7 @@
    "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
    "host": "http://localhost:11434",
    "seed": 20261104,
-   "n_tasks": 1,
+   "n_tasks": 5,
    "families": [
     "arith_expression",
     "unit_convert",
@@ -1669,46 +1669,46 @@
    "temperature": 0.0,
    "max_tokens": 512,
    "samples_per_task": 1,
-   "date": "2026-11-03 21:44:45 PST"
+   "date": "2026-11-04 19:00:12 PST"
   },
-  "n_tasks": 20,
+  "n_tasks": 100,
   "buckets": {
    "FORMAT": 0,
    "HARD": 0,
-   "SPEC": 3,
+   "SPEC": 15,
    "STATE": 0,
-   "PARTIAL": 4,
+   "PARTIAL": 28,
    "DRIFT": 0,
-   "CALC": 8,
-   "correct": 5
+   "CALC": 35,
+   "correct": 22
   },
-  "n_failed": 15,
-  "deep_share_of_failures": 0.2,
+  "n_failed": 78,
+  "deep_share_of_failures": 0.192,
   "deep_share_of_all": 0.15,
-  "partial_share_of_failures": 0.267,
-  "shallow_share_of_failures": 0.533,
-  "accepted_tasks": 5,
-  "accept_rate": 0.25,
+  "partial_share_of_failures": 0.359,
+  "shallow_share_of_failures": 0.449,
+  "accepted_tasks": 22,
+  "accept_rate": 0.22,
   "accepted_but_gold_wrong": 0,
   "accepted_leaks": [],
   "verifier_false_rejects": [],
   "per_family": {
    "arith_expression": {
-    "tasks": 1,
-    "accepted": 0,
+    "tasks": 5,
+    "accepted": 2,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
      "SPEC": 0,
      "STATE": 0,
-     "PARTIAL": 1,
+     "PARTIAL": 3,
      "DRIFT": 0,
      "CALC": 0,
-     "correct": 0
+     "correct": 2
     }
    },
    "base_convert": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
@@ -1717,40 +1717,12 @@
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
-     "CALC": 1,
+     "CALC": 5,
      "correct": 0
     }
    },
    "code_patch": {
-    "tasks": 1,
-    "accepted": 0,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 0,
-     "DRIFT": 0,
-     "CALC": 1,
-     "correct": 0
-    }
-   },
-   "csp_assign": {
-    "tasks": 1,
-    "accepted": 0,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 0,
-     "DRIFT": 0,
-     "CALC": 1,
-     "correct": 0
-    }
-   },
-   "date_arith": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 1,
     "buckets": {
      "FORMAT": 0,
@@ -1759,17 +1731,45 @@
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
-     "CALC": 0,
+     "CALC": 4,
      "correct": 1
     }
    },
+   "csp_assign": {
+    "tasks": 5,
+    "accepted": 1,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 2,
+     "DRIFT": 0,
+     "CALC": 2,
+     "correct": 1
+    }
+   },
+   "date_arith": {
+    "tasks": 5,
+    "accepted": 2,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 3,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 2
+    }
+   },
    "grid_path": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
-     "SPEC": 1,
+     "SPEC": 5,
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
@@ -1778,7 +1778,7 @@
     }
    },
    "interval_merge": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
@@ -1787,13 +1787,13 @@
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
-     "CALC": 1,
+     "CALC": 5,
      "correct": 0
     }
    },
    "json_schema_extract": {
-    "tasks": 1,
-    "accepted": 1,
+    "tasks": 5,
+    "accepted": 5,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
@@ -1802,11 +1802,11 @@
      "PARTIAL": 0,
      "DRIFT": 0,
      "CALC": 0,
-     "correct": 1
+     "correct": 5
     }
    },
    "life_step": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
@@ -1815,13 +1815,13 @@
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
-     "CALC": 1,
+     "CALC": 5,
      "correct": 0
     }
    },
    "log_field_extraction": {
-    "tasks": 1,
-    "accepted": 1,
+    "tasks": 5,
+    "accepted": 5,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
@@ -1830,11 +1830,11 @@
      "PARTIAL": 0,
      "DRIFT": 0,
      "CALC": 0,
-     "correct": 1
+     "correct": 5
     }
    },
    "matrix_ops": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
@@ -1843,31 +1843,31 @@
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
-     "CALC": 1,
+     "CALC": 5,
      "correct": 0
     }
    },
    "regex_construct": {
-    "tasks": 1,
-    "accepted": 1,
+    "tasks": 5,
+    "accepted": 2,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
      "SPEC": 0,
      "STATE": 0,
-     "PARTIAL": 0,
+     "PARTIAL": 2,
      "DRIFT": 0,
-     "CALC": 0,
-     "correct": 1
+     "CALC": 1,
+     "correct": 2
     }
    },
    "schedule_slots": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
-     "SPEC": 1,
+     "SPEC": 5,
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
@@ -1876,50 +1876,22 @@
     }
    },
    "sort_multikey": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
      "SPEC": 0,
      "STATE": 0,
-     "PARTIAL": 1,
+     "PARTIAL": 5,
      "DRIFT": 0,
      "CALC": 0,
      "correct": 0
     }
    },
    "sql_result": {
-    "tasks": 1,
-    "accepted": 1,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 0,
-     "DRIFT": 0,
-     "CALC": 0,
-     "correct": 1
-    }
-   },
-   "stats_summary": {
-    "tasks": 1,
-    "accepted": 0,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 0,
-     "DRIFT": 0,
-     "CALC": 1,
-     "correct": 0
-    }
-   },
-   "table_aggregate": {
-    "tasks": 1,
-    "accepted": 0,
+    "tasks": 5,
+    "accepted": 4,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
@@ -1928,16 +1900,44 @@
      "PARTIAL": 1,
      "DRIFT": 0,
      "CALC": 0,
-     "correct": 0
+     "correct": 4
     }
    },
-   "template_render": {
-    "tasks": 1,
+   "stats_summary": {
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
-     "SPEC": 1,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 1,
+     "DRIFT": 0,
+     "CALC": 4,
+     "correct": 0
+    }
+   },
+   "table_aggregate": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 0,
+     "STATE": 0,
+     "PARTIAL": 5,
+     "DRIFT": 0,
+     "CALC": 0,
+     "correct": 0
+    }
+   },
+   "template_render": {
+    "tasks": 5,
+    "accepted": 0,
+    "buckets": {
+     "FORMAT": 0,
+     "HARD": 0,
+     "SPEC": 5,
      "STATE": 0,
      "PARTIAL": 0,
      "DRIFT": 0,
@@ -1946,43 +1946,43 @@
     }
    },
    "topo_order": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
      "SPEC": 0,
      "STATE": 0,
-     "PARTIAL": 1,
+     "PARTIAL": 3,
      "DRIFT": 0,
-     "CALC": 0,
+     "CALC": 2,
      "correct": 0
     }
    },
    "unit_convert": {
-    "tasks": 1,
+    "tasks": 5,
     "accepted": 0,
     "buckets": {
      "FORMAT": 0,
      "HARD": 0,
      "SPEC": 0,
      "STATE": 0,
-     "PARTIAL": 0,
+     "PARTIAL": 3,
      "DRIFT": 0,
-     "CALC": 1,
+     "CALC": 2,
      "correct": 0
     }
    }
   },
   "accuracy_by_unit_position": {
-   "1": 0.4,
-   "2": 0.3,
-   "3": 0.294,
-   "4": 0.417,
-   "5": 0.4,
-   "6": 0.6,
-   "7": 1.0,
-   "8": 0.643
+   "1": 0.39,
+   "2": 0.35,
+   "3": 0.3,
+   "4": 0.373,
+   "5": 0.321,
+   "6": 0.433,
+   "7": 0.556,
+   "8": 0.647
   },
   "rows": [
    {
@@ -1998,6 +1998,52 @@
     "verifier_false_reject": false
    },
    {
+    "family": "arith_expression",
+    "task_id": "arith_expression-002",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-003",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": true,
+    "units_ok": 2,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/5 units right",
+    "verifier_false_reject": false
+   },
+   {
     "family": "unit_convert",
     "task_id": "unit_convert-001",
     "n_units": 2,
@@ -2010,8 +2056,104 @@
     "verifier_false_reject": false
    },
    {
+    "family": "unit_convert",
+    "task_id": "unit_convert-002",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/2 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-003",
+    "n_units": 2,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-004",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "unit_convert",
+    "task_id": "unit_convert-005",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/4 units right",
+    "verifier_false_reject": false
+   },
+   {
     "family": "stats_summary",
     "task_id": "stats_summary-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/5 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "stats_summary",
+    "task_id": "stats_summary-005",
     "n_units": 5,
     "gold_mode": "reference",
     "gold_ok": 0,
@@ -2034,9 +2176,105 @@
     "verifier_false_reject": false
    },
    {
+    "family": "base_convert",
+    "task_id": "base_convert-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "base_convert",
+    "task_id": "base_convert-005",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
     "family": "matrix_ops",
     "task_id": "matrix_ops-001",
     "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-002",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-003",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-004",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "matrix_ops",
+    "task_id": "matrix_ops-005",
+    "n_units": 9,
     "gold_mode": "reference",
     "gold_ok": 0,
     "verifier_passed": false,
@@ -2057,8 +2295,99 @@
     "verifier_false_reject": false
    },
    {
+    "family": "date_arith",
+    "task_id": "date_arith-002",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": true,
+    "units_ok": 5,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-004",
+    "n_units": 4,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 4,
+    "verifier_passed": false,
+    "units_ok": 4,
+    "bucket": "PARTIAL",
+    "detail": "4/5 units right",
+    "verifier_false_reject": false
+   },
+   {
     "family": "json_schema_extract",
     "task_id": "json_schema_extract-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-004",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": true,
+    "units_ok": 6,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-005",
     "n_units": 6,
     "gold_mode": "reference",
     "gold_ok": 6,
@@ -2079,6 +2408,50 @@
     "verifier_false_reject": false
    },
    {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-002",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-003",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-004",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-005",
+    "n_units": 15,
+    "gold_mode": "reference",
+    "gold_ok": 15,
+    "verifier_passed": true,
+    "units_ok": 15,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
     "family": "regex_construct",
     "task_id": "regex_construct-001",
     "n_units": 4,
@@ -2088,272 +2461,6 @@
     "units_ok": 4,
     "bucket": "correct",
     "verifier_false_reject": false
-   },
-   {
-    "family": "template_render",
-    "task_id": "template_render-001",
-    "n_units": 5,
-    "gold_mode": "reference",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "SPEC",
-    "detail": "unit s1 answered in the wrong shape",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "sql_result",
-    "task_id": "sql_result-001",
-    "n_units": 2,
-    "gold_mode": "verifier",
-    "gold_ok": 2,
-    "verifier_passed": true,
-    "units_ok": 2,
-    "bucket": "correct",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "table_aggregate",
-    "task_id": "table_aggregate-001",
-    "n_units": 12,
-    "gold_mode": "reference",
-    "gold_ok": 5,
-    "verifier_passed": false,
-    "units_ok": 5,
-    "bucket": "PARTIAL",
-    "detail": "5/12 units right",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "sort_multikey",
-    "task_id": "sort_multikey-001",
-    "n_units": 8,
-    "gold_mode": "reference",
-    "gold_ok": 6,
-    "verifier_passed": false,
-    "units_ok": 6,
-    "bucket": "PARTIAL",
-    "detail": "6/8 units right",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "interval_merge",
-    "task_id": "interval_merge-001",
-    "n_units": 6,
-    "gold_mode": "reference",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "CALC",
-    "detail": "all units wrong, no copy/spec signature",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "grid_path",
-    "task_id": "grid_path-001",
-    "n_units": 3,
-    "gold_mode": "verifier",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "SPEC",
-    "detail": "unit p1 answered in the wrong shape",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "csp_assign",
-    "task_id": "csp_assign-001",
-    "n_units": 3,
-    "gold_mode": "verifier",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "CALC",
-    "detail": "all units wrong, no copy/spec signature",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "schedule_slots",
-    "task_id": "schedule_slots-001",
-    "n_units": 3,
-    "gold_mode": "verifier",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "SPEC",
-    "detail": "unit s1 answered in the wrong shape",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "topo_order",
-    "task_id": "topo_order-001",
-    "n_units": 3,
-    "gold_mode": "verifier",
-    "gold_ok": 1,
-    "verifier_passed": false,
-    "units_ok": 1,
-    "bucket": "PARTIAL",
-    "detail": "1/3 units right",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "life_step",
-    "task_id": "life_step-001",
-    "n_units": 5,
-    "gold_mode": "reference",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "CALC",
-    "detail": "all units wrong, no copy/spec signature",
-    "verifier_false_reject": false
-   },
-   {
-    "family": "code_patch",
-    "task_id": "code_patch-001",
-    "n_units": 5,
-    "gold_mode": "verifier",
-    "gold_ok": 0,
-    "verifier_passed": false,
-    "units_ok": 0,
-    "bucket": "CALC",
-    "detail": "all units wrong, no copy/spec signature",
-    "verifier_false_reject": false
-   }
-  ],
-  "accepted_samples_for_manual_audit": [
-   {
-    "family": "date_arith",
-    "task_id": "date_arith-001",
-    "raw_response": "{\"answers\": [\"2024-08-02\", \"2022-08-02\", \"2024-02-29\"]}",
-    "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-20 -18 days\n  2. 2023-03-02 -7 months\n  3. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences."
-   },
-   {
-    "family": "json_schema_extract",
-    "task_id": "json_schema_extract-001",
-    "raw_response": "{\n  \"id\": 4607,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 73.46,\n  \"tags\": [\"fragile\", \"gift\", \"return\", \"bulk\"],\n  \"steps\": [\"invoice\", \"ship\"]\n}",
-    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #4607\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 73.46\ntags: fragile, gift, return, bulk\nsteps: invoice > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
-   },
-   {
-    "family": "log_field_extraction",
-    "task_id": "log_field_extraction-001",
-    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T11:57:53Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"W480\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-21T17:32:06Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I234\",\n    \"msg\": \"handler took 320ms\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-25T00:42:15Z\",\n    \"level\": \"INFO\",\n    \"service\": \"auth\",\n    \"code\": \"W501\",\n    \"msg\": \"connection reset by peer\"\n  }\n}",
-    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T11:57:53Z level=WARN service=worker code=W480 msg=\"retrying request\"\n2024-05-21T17:32:06Z level=INFO service=billing code=I234 msg=\"handler took 320ms\"\n2024-05-25T00:42:15Z level=INFO service=auth code=W501 msg=\"connection reset by peer\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
-   },
-   {
-    "family": "regex_construct",
-    "task_id": "regex_construct-001",
-    "raw_response": "{\n  \"answers\": [\n    \"^\\\\d{1,3}(\\\\.\\\\d{1,3}){3}$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^(?:[0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^#([0-9a-fA-F]{6})$\"\n  ]\n}",
-    "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAn"
-   },
-   {
-    "family": "sql_result",
-    "task_id": "sql_result-001",
-    "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
-    "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
-   }
-  ]
- },
- "14bf": {
-  "model": "qwen2.5-coder:14b",
-  "manifest": {
-   "kind": "vci-realfail",
-   "version": "2.1",
-   "model": "qwen2.5-coder:14b",
-   "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
-   "host": "http://localhost:11434",
-   "seed": 20261104,
-   "n_tasks": 5,
-   "families": [
-    "regex_construct",
-    "sql_result",
-    "code_patch"
-   ],
-   "temperature": 0.0,
-   "max_tokens": 1024,
-   "samples_per_task": 1,
-   "date": "2026-11-03 23:29:55 PST"
-  },
-  "n_tasks": 15,
-  "buckets": {
-   "FORMAT": 1,
-   "HARD": 0,
-   "SPEC": 0,
-   "STATE": 0,
-   "PARTIAL": 3,
-   "DRIFT": 0,
-   "CALC": 5,
-   "correct": 6
-  },
-  "n_failed": 9,
-  "deep_share_of_failures": 0.0,
-  "deep_share_of_all": 0.0,
-  "partial_share_of_failures": 0.333,
-  "shallow_share_of_failures": 0.667,
-  "accepted_tasks": 6,
-  "accept_rate": 0.4,
-  "accepted_but_gold_wrong": 0,
-  "accepted_leaks": [],
-  "verifier_false_rejects": [],
-  "per_family": {
-   "code_patch": {
-    "tasks": 5,
-    "accepted": 1,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 0,
-     "DRIFT": 0,
-     "CALC": 4,
-     "correct": 1
-    }
-   },
-   "regex_construct": {
-    "tasks": 5,
-    "accepted": 1,
-    "buckets": {
-     "FORMAT": 1,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 2,
-     "DRIFT": 0,
-     "CALC": 1,
-     "correct": 1
-    }
-   },
-   "sql_result": {
-    "tasks": 5,
-    "accepted": 4,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 0,
-     "STATE": 0,
-     "PARTIAL": 1,
-     "DRIFT": 0,
-     "CALC": 0,
-     "correct": 4
-    }
-   }
-  },
-  "accuracy_by_unit_position": {
-   "1": 0.429,
-   "2": 0.643,
-   "3": 0.5,
-   "4": 0.5,
-   "5": 0.5
-  },
-  "rows": [
-   {
-    "family": "regex_construct",
-    "task_id": "regex_construct-001",
-    "bucket": "FORMAT",
-    "detail": "TimeoutError: timed out",
-    "parse_status": "error",
-    "passed": false
    },
    {
     "family": "regex_construct",
@@ -2400,6 +2507,66 @@
     "units_ok": 3,
     "bucket": "PARTIAL",
     "detail": "3/4 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "template_render",
+    "task_id": "template_render-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
     "verifier_false_reject": false
    },
    {
@@ -2456,6 +2623,485 @@
     "verifier_passed": true,
     "units_ok": 2,
     "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-001",
+    "n_units": 12,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/12 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-002",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-003",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-004",
+    "n_units": 12,
+    "gold_mode": "reference",
+    "gold_ok": 5,
+    "verifier_passed": false,
+    "units_ok": 5,
+    "bucket": "PARTIAL",
+    "detail": "5/12 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "table_aggregate",
+    "task_id": "table_aggregate-005",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": false,
+    "units_ok": 6,
+    "bucket": "PARTIAL",
+    "detail": "6/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-001",
+    "n_units": 8,
+    "gold_mode": "reference",
+    "gold_ok": 6,
+    "verifier_passed": false,
+    "units_ok": 6,
+    "bucket": "PARTIAL",
+    "detail": "6/8 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/6 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-003",
+    "n_units": 8,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/8 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-004",
+    "n_units": 9,
+    "gold_mode": "reference",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/9 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "sort_multikey",
+    "task_id": "sort_multikey-005",
+    "n_units": 7,
+    "gold_mode": "reference",
+    "gold_ok": 3,
+    "verifier_passed": false,
+    "units_ok": 3,
+    "bucket": "PARTIAL",
+    "detail": "3/7 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-001",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-002",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-003",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "interval_merge",
+    "task_id": "interval_merge-005",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "SPEC",
+    "detail": "unit p2 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "SPEC",
+    "detail": "unit p2 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "grid_path",
+    "task_id": "grid_path-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit p1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 3,
+    "verifier_passed": true,
+    "units_ok": 3,
+    "bucket": "correct",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "csp_assign",
+    "task_id": "csp_assign-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "schedule_slots",
+    "task_id": "schedule_slots-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "SPEC",
+    "detail": "unit s1 answered in the wrong shape",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-001",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-002",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-003",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 2,
+    "verifier_passed": false,
+    "units_ok": 2,
+    "bucket": "PARTIAL",
+    "detail": "2/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-004",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "topo_order",
+    "task_id": "topo_order-005",
+    "n_units": 3,
+    "gold_mode": "verifier",
+    "gold_ok": 1,
+    "verifier_passed": false,
+    "units_ok": 1,
+    "bucket": "PARTIAL",
+    "detail": "1/3 units right",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-001",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-002",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-003",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-004",
+    "n_units": 5,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
+    "verifier_false_reject": false
+   },
+   {
+    "family": "life_step",
+    "task_id": "life_step-005",
+    "n_units": 6,
+    "gold_mode": "reference",
+    "gold_ok": 0,
+    "verifier_passed": false,
+    "units_ok": 0,
+    "bucket": "CALC",
+    "detail": "all units wrong, no copy/spec signature",
     "verifier_false_reject": false
    },
    {
@@ -2520,6 +3166,96 @@
   ],
   "accepted_samples_for_manual_audit": [
    {
+    "family": "arith_expression",
+    "task_id": "arith_expression-002",
+    "raw_response": "{\"answers\": [10, 2.5]}",
+    "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. (3 + 2 + 15) / 2\n  2. (8 + 17 * 1) / 10\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "arith_expression",
+    "task_id": "arith_expression-003",
+    "raw_response": "{\"answers\": [19, 3.5]}",
+    "prompt": "Evaluate each expression exactly.  Answer with one value per line, in order; fractions and decimals are both acceptable.\n  1. 5 + 14\n  2. (7) / 2\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-001",
+    "raw_response": "{\"answers\": [\"2024-08-02\", \"2022-08-02\", \"2024-02-29\"]}",
+    "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-20 -18 days\n  2. 2023-03-02 -7 months\n  3. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "date_arith",
+    "task_id": "date_arith-003",
+    "raw_response": "{\"answers\": [\"2024-09-15\", \"2023-10-01\", \"2023-03-06\", \"2024-04-02\", \"2024-02-29\"]}",
+    "prompt": "Shift each date by the given amount.  Month shifts clamp to the last valid day of the target month.  Answer with ISO dates (YYYY-MM-DD), one per line.\n  1. 2024-08-31 +15 days\n  2. 2023-11-01 -31 days\n  3. 2023-04-11 -36 days\n  4. 2024-02-02 +2 months\n  5. 2024-01-31 +1 months\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-001",
+    "raw_response": "{\n  \"id\": 4607,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 73.46,\n  \"tags\": [\"fragile\", \"gift\", \"return\", \"bulk\"],\n  \"steps\": [\"invoice\", \"ship\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #4607\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 73.46\ntags: fragile, gift, return, bulk\nsteps: invoice > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-002",
+    "raw_response": "{\n  \"id\": 5517,\n  \"customer\": \"Niels Bohr\",\n  \"priority\": 1,\n  \"total_usd\": 85.17,\n  \"tags\": [\"urgent\", \"return\", \"express\", \"fragile\"],\n  \"steps\": [\"pack\", \"label\", \"ship\", \"verify\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5517\ncustomer: Niels Bohr\npriority: 1\ntotal_usd: 85.17\ntags: urgent, return, express, fragile\nsteps: pack > label > ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-003",
+    "raw_response": "{\n  \"id\": 8966,\n  \"customer\": \"Grace Hopper\",\n  \"priority\": 3,\n  \"total_usd\": 336.70,\n  \"tags\": [\"fragile\", \"return\", \"express\"],\n  \"steps\": [\"ship\", \"label\", \"invoice\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #8966\ncustomer: Grace Hopper\npriority: 3\ntotal_usd: 336.70\ntags: fragile, return, express\nsteps: ship > label > invoice\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-004",
+    "raw_response": "{\n  \"id\": 3955,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 4,\n  \"total_usd\": 799.72,\n  \"tags\": [\"urgent\", \"return\"],\n  \"steps\": [\"pack\", \"label\", \"verify\", \"ship\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #3955\ncustomer: Maria Curie\npriority: 4\ntotal_usd: 799.72\ntags: urgent, return\nsteps: pack > label > verify > ship\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "json_schema_extract",
+    "task_id": "json_schema_extract-005",
+    "raw_response": "{\n  \"id\": 5775,\n  \"customer\": \"Maria Curie\",\n  \"priority\": 2,\n  \"total_usd\": 494.08,\n  \"tags\": [\"urgent\", \"gift\"],\n  \"steps\": [\"ship\", \"verify\"]\n}",
+    "prompt": "Extract the order fields below into a JSON object with exactly the keys id (int), customer (string), priority (int), total_usd (number), tags (array of strings, order-insensitive), steps (array of strings, order matters).  Do not add extra keys.\n\nORDER #5775\ncustomer: Maria Curie\npriority: 2\ntotal_usd: 494.08\ntags: urgent, gift\nsteps: ship > verify\n\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-001",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T11:57:53Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"W480\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-21T17:32:06Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I234\",\n    \"msg\": \"handler took 320ms\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-25T00:42:15Z\",\n    \"level\": \"INFO\",\n    \"service\": \"auth\",\n    \"code\": \"W501\",\n    \"msg\": \"connection reset by peer\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T11:57:53Z level=WARN service=worker code=W480 msg=\"retrying request\"\n2024-05-21T17:32:06Z level=INFO service=billing code=I234 msg=\"handler took 320ms\"\n2024-05-25T00:42:15Z level=INFO service=auth code=W501 msg=\"connection reset by peer\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-002",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-24T17:42:24Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"E737\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-02T22:44:31Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"search\",\n    \"code\": \"D863\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-15T18:39:40Z\",\n    \"level\": \"WARN\",\n    \"service\": \"worker\",\n    \"code\": \"I305\",\n    \"msg\": \"handler took 320ms\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-24T17:42:24Z level=ERROR service=worker code=E737 msg=\"retrying request\"\n2024-05-02T22:44:31Z level=ERROR service=search code=D863 msg=\"timeout after 5s\"\n2024-05-15T18:39:40Z level=WARN service=worker code=I305 msg=\"handler took 320ms\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-003",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-22T12:47:38Z\",\n    \"level\": \"WARN\",\n    \"service\": \"api\",\n    \"code\": \"I742\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-03T01:56:22Z\",\n    \"level\": \"WARN\",\n    \"service\": \"auth\",\n    \"code\": \"I921\",\n    \"msg\": \"timeout after 5s\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-23T20:45:04Z\",\n    \"level\": \"INFO\",\n    \"service\": \"billing\",\n    \"code\": \"I777\",\n    \"msg\": \"retrying request\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-22T12:47:38Z level=WARN service=api code=I742 msg=\"timeout after 5s\"\n2024-05-03T01:56:22Z level=WARN service=auth code=I921 msg=\"timeout after 5s\"\n2024-05-23T20:45:04Z level=INFO service=billing code=I777 msg=\"retrying request\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-004",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-10T18:37:21Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"W622\",\n    \"msg\": \"cache miss for key\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-16T06:18:30Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"billing\",\n    \"code\": \"E375\",\n    \"msg\": \"cache miss for key\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-27T12:43:50Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"worker\",\n    \"code\": \"I408\",\n    \"msg\": \"cache miss for key\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-10T18:37:21Z level=ERROR service=worker code=W622 msg=\"cache miss for key\"\n2024-05-16T06:18:30Z level=ERROR service=billing code=E375 msg=\"cache miss for key\"\n2024-05-27T12:43:50Z level=ERROR service=worker code=I408 msg=\"cache miss for key\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "log_field_extraction",
+    "task_id": "log_field_extraction-005",
+    "raw_response": "{\n  \"1\": {\n    \"ts\": \"2024-05-26T04:17:29Z\",\n    \"level\": \"ERROR\",\n    \"service\": \"billing\",\n    \"code\": \"D201\",\n    \"msg\": \"retrying request\"\n  },\n  \"2\": {\n    \"ts\": \"2024-05-04T08:59:10Z\",\n    \"level\": \"WARN\",\n    \"service\": \"search\",\n    \"code\": \"I841\",\n    \"msg\": \"connection reset by peer\"\n  },\n  \"3\": {\n    \"ts\": \"2024-05-22T19:11:23Z\",\n    \"level\": \"WARN\",\n    \"service\": \"api\",\n    \"code\": \"W865\",\n    \"msg\": \"handler took 320ms\"\n  }\n}",
+    "prompt": "Parse each log line into the fields ts, level, service, code, msg.  Return a JSON object keyed by record id \"1\", \"2\", ... whose values are objects with exactly those keys.  Timestamps are ISO instants, levels are upper-case, services lower-case, codes match [A-Z][0-9]{3}, messages are unquoted.\n\n2024-05-26T04:17:29Z level=ERROR service=billing code=D201 msg=\"retrying request\"\n2024-05-04T08:59:10Z level=WARN service=search code=I841 msg=\"connection reset by peer\"\n2024-05-22T19:11:23Z level=WARN service=api code=W865 msg=\"handler took 320ms\"\n\nReturn ONLY the JSON object described above. No prose, no code fences."
+   },
+   {
+    "family": "regex_construct",
+    "task_id": "regex_construct-001",
+    "raw_response": "{\n  \"answers\": [\n    \"^\\\\d{1,3}(\\\\.\\\\d{1,3}){3}$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^(?:[0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^#([0-9a-fA-F]{6})$\"\n  ]\n}",
+    "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAn"
+   },
+   {
     "family": "regex_construct",
     "task_id": "regex_construct-004",
     "raw_response": "{\n  \"answers\": [\n    \"^#([0-9A-Fa-f]{6})$\",\n    \"^([0-9]{1,3}\\\\.){3}[0-9]{1,3}$\",\n    \"^([0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
@@ -2550,6 +3286,12 @@
     "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences."
    },
    {
+    "family": "csp_assign",
+    "task_id": "csp_assign-003",
+    "raw_response": "{\n  \"answers\": [\n    {\"A\": 1, \"B\": 2, \"C\": 2, \"D\": 3},\n    {\"A\": 2, \"B\": 1, \"C\": 3, \"D\": 2},\n    {\"A\": 1, \"B\": 2, \"C\": 3, \"D\": 3, \"E\": 1}\n  ]\n}",
+    "prompt": "Colour each graph with colours 1, 2, 3 so that adjacent nodes differ and pinned nodes keep their colour.  Return a JSON array with one object {node: colour} per graph, in order.\n  problems = [{'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('C', 'D')], 'pins': {'C': 2}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D'], 'edges': [('A', 'C'), ('B', 'D')], 'pins': {'B': 1}, 'colors': 3}, {'nodes': ['A', 'B', 'C', 'D', 'E'], 'edges': [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('B', 'E')], 'pins': {}, 'colors': 3}]\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences."
+   },
+   {
     "family": "code_patch",
     "task_id": "code_patch-004",
     "raw_response": "{\"answers\": [\"def solve(a, b):\", \"    if b == 0:\", \"        return None\", \"    else:\", \"        return float(a / b)\"]}",
@@ -2559,85 +3301,44 @@
  },
  "matched": {
   "14b": {
-   "n_pairs": 20,
+   "n_pairs": 100,
    "7b": {
-    "n_tasks": 20,
-    "buckets": {
-     "FORMAT": 1,
-     "HARD": 0,
-     "SPEC": 2,
-     "STATE": 0,
-     "PARTIAL": 6,
-     "DRIFT": 0,
-     "CALC": 9,
-     "correct": 2
-    },
-    "n_failed": 18,
-    "accepted": 2,
-    "accept_rate": 0.1,
-    "deep_share_of_failures": 0.111,
-    "partial_share_of_failures": 0.333,
-    "shallow_share_of_failures": 0.556
-   },
-   "14b": {
-    "n_tasks": 20,
-    "buckets": {
-     "FORMAT": 0,
-     "HARD": 0,
-     "SPEC": 3,
-     "STATE": 0,
-     "PARTIAL": 4,
-     "DRIFT": 0,
-     "CALC": 8,
-     "correct": 5
-    },
-    "n_failed": 15,
-    "accepted": 5,
-    "accept_rate": 0.25,
-    "deep_share_of_failures": 0.2,
-    "partial_share_of_failures": 0.267,
-    "shallow_share_of_failures": 0.533
-   }
-  },
-  "14bf": {
-   "n_pairs": 15,
-   "7b": {
-    "n_tasks": 15,
+    "n_tasks": 100,
     "buckets": {
      "FORMAT": 6,
      "HARD": 0,
-     "SPEC": 0,
+     "SPEC": 10,
      "STATE": 0,
-     "PARTIAL": 4,
+     "PARTIAL": 29,
      "DRIFT": 0,
-     "CALC": 2,
-     "correct": 3
+     "CALC": 45,
+     "correct": 10
     },
-    "n_failed": 12,
-    "accepted": 3,
-    "accept_rate": 0.2,
-    "deep_share_of_failures": 0.0,
-    "partial_share_of_failures": 0.333,
-    "shallow_share_of_failures": 0.667
+    "n_failed": 90,
+    "accepted": 10,
+    "accept_rate": 0.1,
+    "deep_share_of_failures": 0.111,
+    "partial_share_of_failures": 0.322,
+    "shallow_share_of_failures": 0.567
    },
-   "14bf": {
-    "n_tasks": 15,
+   "14b": {
+    "n_tasks": 100,
     "buckets": {
-     "FORMAT": 1,
+     "FORMAT": 0,
      "HARD": 0,
-     "SPEC": 0,
+     "SPEC": 15,
      "STATE": 0,
-     "PARTIAL": 3,
+     "PARTIAL": 28,
      "DRIFT": 0,
-     "CALC": 5,
-     "correct": 6
+     "CALC": 35,
+     "correct": 22
     },
-    "n_failed": 9,
-    "accepted": 6,
-    "accept_rate": 0.4,
-    "deep_share_of_failures": 0.0,
-    "partial_share_of_failures": 0.333,
-    "shallow_share_of_failures": 0.667
+    "n_failed": 78,
+    "accepted": 22,
+    "accept_rate": 0.22,
+    "deep_share_of_failures": 0.192,
+    "partial_share_of_failures": 0.359,
+    "shallow_share_of_failures": 0.449
    }
   }
  }

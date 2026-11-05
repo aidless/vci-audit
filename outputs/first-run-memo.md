@@ -682,57 +682,81 @@ verdict or VCI number moved.  137 tests pass, including three new adapt tests.
 
 Round-10 §5 mechanically checked the 7b run for the memorization signatures the
 synthetic leaks encode and found 0/500 units, leaving "a stronger model plausibly
-would" open.  Round 11 retests exactly that with **qwen2.5-coder:14b**
-(coding-specialised, digest `9ec8897f747e…`, temperature 0.0, same seed and same
-tasks as the 7b run): a 20-family × 1-task smoke run plus a focused 5-task run on
-the three exploit families (`regex_construct`, `sql_result`, `code_patch`;
-max_tokens 1024).  Prompt hashes verify every shared task_id is content-identical
-across runs, so all comparisons are paired.  Artifacts:
-`outputs/realfail-coder14b{,-full,-check}.json`, `outputs/realfail-compare.json`;
-analysis: `work/round11_failmix.py` (failure taxonomy), `work/realfail_real_check.py`
-(exploit signatures).
+would" open.  Round 11 retests that with **qwen2.5-coder:14b** (coding-specialised,
+digest `9ec8897f747e…`) on the *same* 100 tasks as the 7b run — 20 families × 5,
+seed 20261104, temperature 0.0, `num_predict` 512, one sample, i.e. only the model
+changes.  The 100 records are `outputs/realfail-coder14b-100.json` (0 transport
+errors).  A second 100-record replicate of the same tasks at `num_predict` 1024
+(the earlier interrupted attempt, `outputs/realfail-coder14b-full.json` +
+`outputs/realfail-coder14b-rest17.json`) reproduces the same picture and is
+reported as a within-model robustness check.  All tables live on disk:
+`outputs/realfail-compare.json` (buckets, per-family, matched pairs, leak list),
+`outputs/realfail-coder14b-100-audit.md` / `.json` (accepted samples with prompt,
+answer, reference and verifier evidence).  Analysis code: `work/round11_failmix.py`
+(taxonomy), `work/round11_audit.py` (evidence dump), `work/round11_finalize.py`
+(one-shot report), `work/realfail_real_check.py` (exploit signatures).
 
 ## R11.1 Findings
 
-1. **0 exploit signatures again.**  Across all units of the 15 exploit-family
-   records the mechanical check flags nothing — no pure-positive alternations, no
-   literal-embedding patterns, no constant queries, no lookup-table sources.  The
-   taxonomy's HARD bucket is **0/35** coder14b records (7b: 0/100).  The round-6
-   speculation that a stronger model would emit well-formed overfit exploits is
-   **not confirmed on a code-specialised model either**; the leaks remain
-   demonstrated only by synthetic probes.
-2. **0 false accepts.**  None of the 11 accepted coder14b tasks (5 smoke + 6
-   focused) is gold-wrong.  Manual audit shows general patterns
-   (`^\d{1,3}(\.\d{1,3}){3}$`, not alternations), genuine GROUP BY/HAVING queries
-   and a clean safe-divide implementation — all re-verified against held-out data
-   by the hardened verifiers.  Cumulative real-output false accepts stay at **0
-   across 135 archived records** (100 from 7b + 35 from coder14b).
-3. **The stronger model fails shallower, not differently.**  On the 15 matched
-   exploit-family tasks coder14b is accepted 6 vs 7b's 3; its residual failures
-   are CALC/PARTIAL (deep share 0.0 vs 7b's 0.111) and FORMAT drops 6 → 1 — a
-   drop confounded by harness v2.1 and num_predict 1024, so it is not attributed
-   to the model alone.  Neither model produced a DRIFT or STATE record; coder14b's
-   accuracy-by-position does not collapse at the tail (0.643 at position 8 vs
-   7b's 0.132 on the smoke run).
+1. **Acceptance doubles, deep-failure share rises modestly, nothing new appears.**
+   22/100 tasks accepted (0.22) vs 7b's 10/100 (0.10).  Buckets (14b / 7b):
+   FORMAT 0/6, HARD 0/0, SPEC 15/10, STATE 0/0, PARTIAL 28/29, DRIFT 0/0,
+   CALC 35/45, correct 22/10.  Strict deep share (HARD+SPEC+STATE+DRIFT)
+   15/78 = **0.192** vs 10/90 = **0.111**; counting PARTIAL as deep gives 0.551 vs
+   0.433.  So the stronger model does not fail *deeper* — it fails in the same
+   shallow arithmetic/partial cell — but it fails a bit more often in the SPEC
+   cell, and all 15 SPEC records sit in exactly three template-bound families
+   (`grid_path` 5, `schedule_slots` 5, `template_render` 5; 7b: `grid_path` 5,
+   `template_render` 5).  The taxonomy's HARD bucket is **0/100 coder14b records**
+   (7b: 0/100): no literal copies, no well-formed overfit exploits.
+2. **Accepted output is concentrated where the task is perception, not reasoning.**
+   10 of the 22 accepts are the two extraction families (`json_schema_extract` 5/5,
+   `log_field_extraction` 5/5), plus 4 `sql_result` accepts whose queries were
+   executed on both the primary and the second dataset.  The remaining 8 are
+   `arith_expression` 2, `date_arith` 2, `regex_construct` 2, `csp_assign` 1,
+   `code_patch` 1.  Accept rate is therefore not a reasoning score: half of it is
+   reading values out of the prompt.
+3. **0 false accepts, 0 false rejects, 0 memorization exploits.**  On the
+   reference-graded families every accepted answer equals the generator's
+   reference.  The 12 ALT-family accepts were audited by hand: `sql_result`
+   queries reproduce both result sets, `code_patch` passes all 5 hidden tests,
+   `csp_assign` gives a different but constraint-satisfying colouring, and the
+   two `regex_construct` accepts use general patterns (`^\d{1,3}(\.\d{1,3}){3}$`,
+   `^([0-9a-f]{2} ){1,2}[0-9a-f]{2}$`; the latter covers the spec's labelled
+   2–3-pair domain, and no 1-pair or 4-pair `must not` case exists, so this is
+   spec under-specification rather than a leak).  Suspected leaks: **0 of 22**
+   (cumulative real-output false accepts: 0 across 300 records, 299 scored).
+4. **The tail does not decay for the stronger model.**  Accuracy by unit position
+   for coder14b rises 0.39 → 0.65 from position 1 to 8; 7b falls 0.29 → 0.13.
+   `code_patch` improves from 5/5 FORMAT (7b) to 0 FORMAT, 1 correct, 4 CALC at
+   the *same* 512-token budget, so the round-10 FORMAT drop is model-attributable
+   after all (the 1024-token replicate only confirms it).
 
 ## R11.2 Boundaries
 
-- Still greedy single-sample local models ≤ 14B, one seed set.  A temperature
-  sweep or a frontier API model is untested — environment recon
+- Still greedy single-sample local models ≤ 14B, one seed set; the 1024-token
+  replicate is the same model, not an independent family of behaviour.  A
+  temperature sweep or a frontier API model is untested — recon
   (`outputs/realfail-recon.json`, `work/round11_keys.json`) records no API keys
-  and no usable GPU on this machine, so that path is blocked, not merely undone.
-- The taxonomy's false-reject cell is blind for the seven ALT families (their
-  gold is the verifier's own execution); the round-10 code_patch envelope defect
-  was found by the adapt regrade, not by this taxonomy.
+  (names only) and no usable GPU, so that path is blocked, not merely undone.
+  32B cannot be loaded (weights + KV exceed 14 GiB RAM and the 11 GiB free disk).
+- The taxonomy's false-reject cell is blind for the seven ALT families (gold is
+  the verifier's own execution); their 12 accepts rest on manual audit.
+- **Comparator defect found and fixed while auditing.**  `_as_num` coerced
+  zero-padded digit strings, so different `life_step` grid rows (`001011` vs
+  `0001011`) compared equal and one record was mislabelled STATE.  Labels now
+  reject `-?0\d+` strings; that record reverts to CALC and STATE is 0/100.
 - The Just et al. ceiling is untouched where no real trace exists; every
   synthetic TPR/TNR in §1–§6 stands unchanged.
 
 ## R11.3 What changes
 
-The evidence on "the verifier accepts real garbage" is now: two independent
-real-model runs, 135 records, **0 false accepts, 0 memorization exploits** —
-against synthetic probes that reliably catch authored exploits.  For natural
-outputs of local models the risk order found in round 6 is therefore doubly
-supported: **extraction/packaging strictness > memorization leaks**.  The
-synthetic leak classes stay precautionary hardening targets, not observed
+The evidence on "the verifier accepts real garbage" is now: three real-model runs
+(7b 100, coder14b 100 at 512, coder14b 100 at 1024), **0 false accepts, 0
+memorization exploits**, and 0 false rejects.  Switching to a model twice the size
+with a coding-specialised vocabulary changed *which* tasks pass (extraction and
+SQL) and *where* the residuals land (three template families), but not the
+verdict on the verifier.  For natural outputs of local models the risk order from
+round 6 stands: **extraction/packaging strictness > memorization leaks**.  The
+synthetic leak classes remain precautionary hardening targets, not observed
 deployment failures.
