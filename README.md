@@ -1,56 +1,98 @@
 # VCI audit
 
-A measurement toolkit for open-ended task verification, plus two standalone components you can
-point at **your own** benchmark:
+A measurement toolkit for open-ended task verification. Two standalone components can be pointed
+at **your own** benchmark; the rest of the repository is the artefact behind [SPEC.md](SPEC.md).
 
 | component | import | question it answers |
 |---|---|---|
 | harness differential decomposer | `from vci import decompose` | "two harnesses differ by X points — which mechanism moved?" |
 | pass@k / pass^k calculator | `from vci import compute` | "what are pass@1, pass@k and reliability over N runs?" |
 
-The rest of the repository (20 task families, adversarial probes, the VCI index) is the artefact
-behind [SPEC.md](SPEC.md); it is not required to use either component.
-
-## Quick start — three commands
+## 30 seconds — one command, three real results
 
 ```bash
 git clone <repo-url> vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
-python3 examples/decompose_realfail.py && python3 examples/passk_realfail.py
+bash examples/demo.sh
 ```
 
-What you get on the archived real traces (qwen2.5:7b and qwen2.5-coder:14b, 100 tasks each;
-no API calls, nothing downloaded):
+`demo.sh` runs the three blocks below on data committed in this repository. It needs **no model,
+no API key and no network** (Python 3.9+ and the standard library are enough; it also runs before
+`pip install`).
+
+### 1. Harness differential decomposition
+
+`python3 examples/decompose_realfail.py` — two archived qwen2.5:7b harness runs, 100 tasks:
 
 ```
 delta = +0.0300  (A 0.1000 -> B 0.1300, n=100 tasks)
+  state        tasks=   0  delta=+0.0000  share=0.0%
+  compaction   tasks=   0  delta=+0.0000  share=0.0%
   tool         tasks=   5  delta=+0.0300  share=100.0%
-  ...          code_patch-001/002/004 flipped fail -> pass
-
-qwen2.5:7b          pass@1 = 0.100 [0.050-0.160]   k=2,3 not estimable (1 sample/task)
-qwen2.5-coder:14b   pass@1 = 0.220 [0.140-0.310]   k=2,3 not estimable (1 sample/task)
+  retry        tasks=   0  delta=+0.0000  share=0.0%
+  ambiguous    tasks=   0  delta=+0.0000  share=0.0%
+  unexplained  tasks=  95  delta=+0.0000  share=0.0%
+top divergence:
+  code_patch-001           a=0 b=1 tool         tool
+  code_patch-002           a=0 b=1 tool         tool
+  code_patch-004           a=0 b=1 tool         tool
 ```
 
-See [examples/README.md](examples/README.md) for what each script does and
-`outputs/delivery-plan.md` for the design notes.
+3 points of accuracy, 100% charged to the tool layer, 5 `code_patch` tasks flipped fail -> pass.
 
-## What these components measure — and what they do not
+### 2. pass@1 on the archived single-sample runs
 
-**Measure:** the difference between two harness configurations on one benchmark/model pair
-(decomposer), and the success/reliability curves of N runs on a fixed task set (pass@k).
+`python3 examples/passk_realfail.py` — 100 tasks, one attempt each:
 
-**Do not measure, and are not intended to support:**
+```
+== qwen2.5:7b — 100 tasks, 100 attempts ==
+  as_failure         pass@k   k=1:0.100[0.050-0.160]  k=2:n/a  k=3:n/a
+== qwen2.5-coder:14b — 100 tasks, 100 attempts ==
+  as_failure         pass@k   k=1:0.220[0.140-0.310]  k=2:n/a  k=3:n/a
+```
 
-* **cross-vendor or cross-model ranking.** A decomposition across two different models is
-  invalid — the harness factors are not the only thing that changed. The tool refuses
-  aggregate-only input for exactly this reason, and a model swap is not one of its four
-  factors. The pass@k numbers are observations of one model on one task set, never a ranking.
-* causal attribution without an ablation arm. The decomposer is a **budgeted attribution**;
-  see Component 1 below.
-* partial credit. `passed` means full credit; a 3-of-5 answer is not a pass.
-* any statement about whether a model is "good enough", whether a benchmark is absolute, or
-  whether some milestone has been reached. Every number is an observation under a specific
-  tuple (benchmark × model × harness × decoding × seed).
+`n/a` is honest: one attempt per task cannot estimate k>1.
+
+### 3. pass@k and pass^k with 8 samples per task
+
+`python3 -m vci passk --input outputs/gsm8k-multisample-14b.jsonl --k-max 8 --bootstrap 2000`
+— 30 GSM8K tasks × 8 samples with qwen2.5-coder:14b (answer-only prompt, temperature 1.1,
+seeds 9000–9007; every raw reply and pass flag committed):
+
+```
+tasks=30  attempts=240  k_max=8  statuses={'pass': 76, 'fail': 164, 'timeout': 0, ...}
+  as_failure  pass@k   k=1:0.317[0.179-0.458]  k=2:0.388[0.239-0.542]  ...  k=8:0.533[0.367-0.700]
+  as_failure  pass^k   k=1:0.317[0.179-0.458]  k=2:0.245[0.112-0.385]  ...  k=8:0.167[0.033-0.300]
+```
+
+Read it as: **one sample in three passes (0.317), but only one task in six passes all eight
+times (0.167) — a 1.90× overstatement of 8-of-8 reliability.** The curve is still falling at
+k=8, so it is not saturated. Full write-up: [outputs/multisample-run.md](outputs/multisample-run.md).
+Re-running block 3 from scratch needs a local ollama model and downloads the MIT-licensed GSM8K
+test file once (`examples/gsm8k_multisample.py`); the committed data makes that optional.
+
+## What this measures — and what it does **not**
+
+**Read this before quoting any number.**
+
+**Measures:** the difference between two harness configurations on one benchmark/model pair
+(decomposer), and success/reliability curves over repeated attempts of one model on a fixed task
+set (pass@k / pass^k).
+
+**Does not measure, and must not be used to claim:**
+
+* **No cross-vendor or cross-model ranking.** A decomposition across two different models is
+  invalid — the harness is not the only thing that changed. The tool refuses aggregate-only input
+  for this reason, and a model swap is not one of its four factors. pass@k numbers are observations
+  of one model on one task set, never a leaderboard.
+* **No AGI, milestone or "is this model good enough" conclusion.** Every number is an observation
+  under a fixed tuple (benchmark × model × harness × decoding × seed).
+* **No generality beyond the measured cell.** The multi-sample result is one model, one benchmark,
+  30 tasks (95% CI ≈ ±14 points), one decoding configuration. Small n and one model family cannot
+  be extrapolated to other models, benchmarks or temperatures.
+* no causal attribution without an ablation arm — the decomposer is **budgeted attribution**;
+  confirm a source with a third arm that toggles that mechanism alone.
+* no partial credit. `passed` means full credit; a 3-of-5 answer is not a pass.
 
 ---
 
@@ -92,7 +134,7 @@ Standard library only. Python 3.9+. Nothing is fetched at run time.
 git clone <repo-url> vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 157 tests
+python3 -m pytest -q       # 177 tests
 ```
 
 Verified from a clean clone: `pip install -e .` builds an editable wheel, `from vci import
@@ -259,7 +301,7 @@ vci/audit.py            seed -> mutants + probes -> verdicts -> metrics -> resul
 vci/report.py           results.json / coverage.csv / coverage.md / dashboard.html
 vci/__main__.py         CLI (audit, harness-decomp, passk, ...)
 vci/families/           one generator + verifier per family (numeric/text/data/structural)
-examples/               two end-to-end examples on the archived real traces
+examples/               demo.sh + three end-to-end examples (two offline, one local-model runner)
 tests/                  formula, contract, component, labeler, probe-independence and e2e tests
 work/                   intermediate artefacts (git-ignored)
 outputs/                deliverables
