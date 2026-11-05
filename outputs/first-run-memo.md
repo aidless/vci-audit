@@ -812,4 +812,41 @@ family whose payload is an executable procedure; for the 17 fixture-replay
 families cross-task state is *not constructible*, not merely unmeasured), and
 whether real model output carries process-level side effects is untested —
 scanning the archived real traces for side-effect signatures is the named
-follow-up.
+follow-up.  **Closed in round 14 (below): zero.**
+
+---
+
+# Round-14 addendum — real traces carry zero process-level side effects (2026-11-05)
+
+Round 12's named follow-up: does *real* model output carry the side effects
+that made strategy B collapse synthetically?  Round 14 scans all archived
+real traces without re-running any model (`work/side_effect_scan.py`,
+artifact `outputs/realfail-side-effects.json`).  AST scan of every
+`code_patch` payload plus a regex scan of every verbatim `raw_response`
+(covering the families whose payload is not executable), for:
+`builtins.X =` / `setattr(builtins,…)`, `sys.modules[…]` writes,
+`os.environ` writes (all process-level, contamination-capable),
+`globals()[…] =` and top-level builtin shadowing (namespace-local), and
+`import builtins` (precursor).
+
+**Result [M]: 0 / 450 records across all five archived runs** (round-6 0.5b
+150, round-10 7b 100, round-11 coder14b 100@512, and the 100@1024 replicate
+in two segments).  Zero contamination-capable, zero namespace-local, zero
+precursor hits — including a zero from the raw-response regex channel, so
+the claim does not rest on parser reach.  Construct validity is pinned by
+test: the scanner flags all three round-12 poison vectors and none of the
+five correct template implementations.  The only unscannable payloads are
+4 coder14b `code_patch` answers truncated mid-function by the 512-token
+budget (verbatim text still regex-scanned, 0 hits).
+
+Interpretation, kept narrow: for greedy single-sample local models ≤ 14B on
+this task suite, cross-task contamination via process-level side effects is
+a *harness-design* risk, not an *observed output* risk — real candidates do
+not even attempt the vector.  The round-12 advice stands on different
+footing: isolation defends against a synthetic adversary, not against
+anything these models actually emit.  Bounds: greedy decoding only, no
+frontier model, no agentic tool-use traces (an agent that *runs* code is
+the population where side effects would plausibly appear); the scan covers
+Python process state, not filesystem or network effects.  The Just et al.
+ceiling is untouched — this round added real-distribution evidence *about a
+synthetic vector's absence*, not about defect coverage.

@@ -1,0 +1,104 @@
+{
+ "kind": "vci-realfail-side-effect-scan",
+ "note": "AST scan of code_patch payloads + regex scan of every verbatim raw_response; no model re-run; verifier-side only",
+ "runs": [
+  {
+   "source_run": "work/realfail.json",
+   "model": "evalsft-qwen25-05b:latest",
+   "decoding": null,
+   "n_records": 150,
+   "code_patch_records": 0,
+   "code_patch_parse_failures": 0,
+   "flagged_code_patch": [],
+   "raw_response_regex_hits": {
+    "builtins_mutate": 0,
+    "import_builtins": 0,
+    "sys_modules_write": 0,
+    "env_write": 0,
+    "globals_write": 0
+   },
+   "contamination_capable_records": 0
+  },
+  {
+   "source_run": "outputs/realfail-real.json",
+   "model": "qwen2.5:7b",
+   "decoding": null,
+   "n_records": 100,
+   "code_patch_records": 5,
+   "code_patch_parse_failures": 0,
+   "flagged_code_patch": [],
+   "raw_response_regex_hits": {
+    "builtins_mutate": 0,
+    "import_builtins": 0,
+    "sys_modules_write": 0,
+    "env_write": 0,
+    "globals_write": 0
+   },
+   "contamination_capable_records": 0
+  },
+  {
+   "source_run": "outputs/realfail-coder14b-100.json",
+   "model": "qwen2.5-coder:14b",
+   "decoding": null,
+   "n_records": 100,
+   "code_patch_records": 5,
+   "code_patch_parse_failures": 4,
+   "flagged_code_patch": [],
+   "raw_response_regex_hits": {
+    "builtins_mutate": 0,
+    "import_builtins": 0,
+    "sys_modules_write": 0,
+    "env_write": 0,
+    "globals_write": 0
+   },
+   "contamination_capable_records": 0
+  },
+  {
+   "source_run": "outputs/realfail-coder14b-full.json",
+   "model": "qwen2.5-coder:14b",
+   "decoding": null,
+   "n_records": 15,
+   "code_patch_records": 5,
+   "code_patch_parse_failures": 4,
+   "flagged_code_patch": [],
+   "raw_response_regex_hits": {
+    "builtins_mutate": 0,
+    "import_builtins": 0,
+    "sys_modules_write": 0,
+    "env_write": 0,
+    "globals_write": 0
+   },
+   "contamination_capable_records": 0
+  },
+  {
+   "source_run": "outputs/realfail-coder14b-rest17.json",
+   "model": "qwen2.5-coder:14b",
+   "decoding": null,
+   "n_records": 85,
+   "code_patch_records": 0,
+   "code_patch_parse_failures": 0,
+   "flagged_code_patch": [],
+   "raw_response_regex_hits": {
+    "builtins_mutate": 0,
+    "import_builtins": 0,
+    "sys_modules_write": 0,
+    "env_write": 0,
+    "globals_write": 0
+   },
+   "contamination_capable_records": 0
+  }
+ ],
+ "totals": {
+  "records": 450,
+  "code_patch_records": 15,
+  "flagged_code_patch": 0,
+  "contamination_capable": 0,
+  "raw_hits": {
+   "builtins_mutate": 0,
+   "import_builtins": 0,
+   "sys_modules_write": 0,
+   "env_write": 0,
+   "globals_write": 0
+  }
+ }
+}
