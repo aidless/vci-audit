@@ -13,6 +13,9 @@ dependencies = []
 [project.optional-dependencies]
 dev = ["pytest>=7"]
 
+[project.scripts]
+vci = "vci.__main__:main"
+
 [tool.setuptools]
 packages = ["vci", "vci.families"]
 

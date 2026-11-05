@@ -1,0 +1,19 @@
+{
+ "ok": true,
+ "decomposable": false,
+ "reason": "aggregate_only",
+ "detail": "only aggregate scores were supplied; a total delta cannot be attributed to per-task mechanisms from aggregates alone",
+ "observed_delta": 0.12,
+ "scores": {
+  "a": 0.1,
+  "b": 0.22,
+  "delta": 0.12
+ },
+ "required": [
+  "per-task outcomes for both harnesses (passed or score)",
+  "at least one per-task mechanism flag on both sides (state, compaction, tool, retry)"
+ ],
+ "harness_a": "qwen2.5:7b (100 tasks)",
+ "harness_b": "qwen2.5-coder:14b (100 tasks)",
+ "note": "two different models: a harness decomposition would be invalid even with per-task rows"
+}

@@ -1,0 +1,704 @@
+{
+ "tasks": [
+  {
+   "task_id": "arith_expression/arith_expression-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "arith_expression/arith_expression-002",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "arith_expression/arith_expression-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "arith_expression/arith_expression-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "arith_expression/arith_expression-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "unit_convert/unit_convert-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "unit_convert/unit_convert-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "unit_convert/unit_convert-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "unit_convert/unit_convert-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "unit_convert/unit_convert-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "stats_summary/stats_summary-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "stats_summary/stats_summary-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "stats_summary/stats_summary-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "stats_summary/stats_summary-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "stats_summary/stats_summary-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "base_convert/base_convert-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "base_convert/base_convert-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "base_convert/base_convert-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "base_convert/base_convert-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "base_convert/base_convert-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "matrix_ops/matrix_ops-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "matrix_ops/matrix_ops-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "matrix_ops/matrix_ops-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "matrix_ops/matrix_ops-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "matrix_ops/matrix_ops-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "date_arith/date_arith-001",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "date_arith/date_arith-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "date_arith/date_arith-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "date_arith/date_arith-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "date_arith/date_arith-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "json_schema_extract/json_schema_extract-001",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "json_schema_extract/json_schema_extract-002",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "json_schema_extract/json_schema_extract-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "json_schema_extract/json_schema_extract-004",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "json_schema_extract/json_schema_extract-005",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "log_field_extraction/log_field_extraction-001",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "log_field_extraction/log_field_extraction-002",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "log_field_extraction/log_field_extraction-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "log_field_extraction/log_field_extraction-004",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "log_field_extraction/log_field_extraction-005",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "regex_construct/regex_construct-001",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "regex_construct/regex_construct-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "regex_construct/regex_construct-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "regex_construct/regex_construct-004",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "regex_construct/regex_construct-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "template_render/template_render-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "template_render/template_render-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "template_render/template_render-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "template_render/template_render-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "template_render/template_render-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sql_result/sql_result-001",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "sql_result/sql_result-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sql_result/sql_result-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "sql_result/sql_result-004",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "sql_result/sql_result-005",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "table_aggregate/table_aggregate-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "table_aggregate/table_aggregate-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "table_aggregate/table_aggregate-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "table_aggregate/table_aggregate-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "table_aggregate/table_aggregate-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sort_multikey/sort_multikey-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sort_multikey/sort_multikey-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sort_multikey/sort_multikey-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sort_multikey/sort_multikey-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "sort_multikey/sort_multikey-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "interval_merge/interval_merge-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "interval_merge/interval_merge-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "interval_merge/interval_merge-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "interval_merge/interval_merge-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "interval_merge/interval_merge-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "grid_path/grid_path-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "grid_path/grid_path-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "grid_path/grid_path-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "grid_path/grid_path-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "grid_path/grid_path-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "csp_assign/csp_assign-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "csp_assign/csp_assign-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "csp_assign/csp_assign-003",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "csp_assign/csp_assign-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "csp_assign/csp_assign-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "schedule_slots/schedule_slots-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "schedule_slots/schedule_slots-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "schedule_slots/schedule_slots-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "schedule_slots/schedule_slots-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "schedule_slots/schedule_slots-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "topo_order/topo_order-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "topo_order/topo_order-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "topo_order/topo_order-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "topo_order/topo_order-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "topo_order/topo_order-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "life_step/life_step-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "life_step/life_step-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "life_step/life_step-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "life_step/life_step-004",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "life_step/life_step-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "code_patch/code_patch-001",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "code_patch/code_patch-002",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "code_patch/code_patch-003",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  },
+  {
+   "task_id": "code_patch/code_patch-004",
+   "seed": 20261104,
+   "runs": [
+    "pass"
+   ]
+  },
+  {
+   "task_id": "code_patch/code_patch-005",
+   "seed": 20261104,
+   "runs": [
+    "fail"
+   ]
+  }
+ ]
+}

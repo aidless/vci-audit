@@ -1,4 +1,58 @@
-# VCI audit — round 3
+# VCI audit
+
+A measurement toolkit for open-ended task verification, plus two standalone components you can
+point at **your own** benchmark:
+
+| component | import | question it answers |
+|---|---|---|
+| harness differential decomposer | `from vci import decompose` | "two harnesses differ by X points — which mechanism moved?" |
+| pass@k / pass^k calculator | `from vci import compute` | "what are pass@1, pass@k and reliability over N runs?" |
+
+The rest of the repository (20 task families, adversarial probes, the VCI index) is the artefact
+behind [SPEC.md](SPEC.md); it is not required to use either component.
+
+## Quick start — three commands
+
+```bash
+git clone <repo-url> vci-audit && cd vci-audit
+python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
+python3 examples/decompose_realfail.py && python3 examples/passk_realfail.py
+```
+
+What you get on the archived real traces (qwen2.5:7b and qwen2.5-coder:14b, 100 tasks each;
+no API calls, nothing downloaded):
+
+```
+delta = +0.0300  (A 0.1000 -> B 0.1300, n=100 tasks)
+  tool         tasks=   5  delta=+0.0300  share=100.0%
+  ...          code_patch-001/002/004 flipped fail -> pass
+
+qwen2.5:7b          pass@1 = 0.100 [0.050-0.160]   k=2,3 not estimable (1 sample/task)
+qwen2.5-coder:14b   pass@1 = 0.220 [0.140-0.310]   k=2,3 not estimable (1 sample/task)
+```
+
+See [examples/README.md](examples/README.md) for what each script does and
+`outputs/delivery-plan.md` for the design notes.
+
+## What these components measure — and what they do not
+
+**Measure:** the difference between two harness configurations on one benchmark/model pair
+(decomposer), and the success/reliability curves of N runs on a fixed task set (pass@k).
+
+**Do not measure, and are not intended to support:**
+
+* **cross-vendor or cross-model ranking.** A decomposition across two different models is
+  invalid — the harness factors are not the only thing that changed. The tool refuses
+  aggregate-only input for exactly this reason, and a model swap is not one of its four
+  factors. The pass@k numbers are observations of one model on one task set, never a ranking.
+* causal attribution without an ablation arm. The decomposer is a **budgeted attribution**;
+  see Component 1 below.
+* partial credit. `passed` means full credit; a 3-of-5 answer is not a pass.
+* any statement about whether a model is "good enough", whether a benchmark is absolute, or
+  whether some milestone has been reached. Every number is an observation under a specific
+  tuple (benchmark × model × harness × decoding × seed).
+
+---
 
 A runnable, re-runnable measurement of **VCI** (Verification Coverage Index): the fraction of an
 open-ended task distribution that can be checked *cheaply*, *trustworthily* and *densely*, and
@@ -6,7 +60,7 @@ therefore absorbed as training signal by an RL loop.
 
 This repository is the artefact, not the essay. The definition lives in [SPEC.md](SPEC.md), the
 annotation rulebook in [annotations/PROTOCOL.md](annotations/PROTOCOL.md), the numbers live in
-`outputs/`, and the conclusion lives in `outputs/first-run-memo.md`.
+`outputs/`, and the reading of the first run lives in `outputs/first-run-memo.md`.
 
 ```
 VCI = (C * T^2 * D) ** 0.25
@@ -32,16 +86,86 @@ synthetic because no human sheet exists.
 
 ## Install
 
-Standard library only. Python 3.9+.
+Standard library only. Python 3.9+. Nothing is fetched at run time.
 
 ```bash
 git clone <repo-url> vci-audit && cd vci-audit
-python3 -m venv .venv && . .venv/bin/activate     # optional but recommended
-python3 -m pytest -q                                # 137 tests, ~2 s
+python3 -m venv .venv && . .venv/bin/activate
+pip install -e ".[dev]"    # editable install + the `vci` console script
+python3 -m pytest -q       # 157 tests, a few seconds
 ```
 
-No `pip install` is required to run the audit; `pyproject.toml` exists so `pip install -e .[dev]`
-also works. (On systems where the interpreter is only available as `python3`, use `python3` below.)
+Verified from a clean clone: `pip install -e .` builds an editable wheel, `from vci import
+Task, Candidate, Verdict, decompose, compute` works, and `vci --help` lists the
+subcommands. No machine-specific path appears in the package. Running without installing
+also works (`python3 -m vci ...`).
+
+## Component 1 — harness differential decomposer
+
+```python
+from vci import decompose
+
+doc = {"benchmark": "...", "model": "...",
+       "tasks": [{"task_id": "t1",
+                  "a": {"passed": False, "tool_sig": "json_list"},
+                  "b": {"passed": True,  "tool_sig": "joined_source"}}]}
+result = decompose(doc)          # also decompose(run_a, run_b) or decompose_file("x.json")
+```
+
+The four named sources and what each reads from the per-task record:
+
+| source | field | means |
+|---|---|---|
+| `state` | `state_retained` | reasoning/scratchpad state kept across the task |
+| `compaction` | `compaction_events` | context compactions performed |
+| `tool` | `tool_sig` / `tool_calls` / `tool_errors` | what the execution layer saw or did |
+| `retry` | `retries` | extra attempts the budget allowed |
+
+Output: `scores.delta`, the four named buckets plus `ambiguous` and `unexplained`, and
+`top_divergence`. **The buckets sum to `scores.delta` exactly** (`n_tasks`-normalised task
+contributions). A task is charged to a named source only when exactly one measured
+mechanism differs; two or more differing mechanisms land in `ambiguous`; no differing
+mechanism lands in `unexplained`. That is *budgeted attribution, not causal identification*
+— confirm a source with a third arm that toggles that mechanism alone. The report repeats
+this under `assumption`.
+
+Degraded input is refused, never guessed: aggregate scores only → `decomposable: false`,
+`reason: "aggregate_only"` plus the observed delta; outcomes with no mechanism flags →
+`reason: "no_factor_flags"`.
+
+Inputs accepted: one combined JSON/CSV document (`tasks[]` with `a`/`b` sides, or flat
+`a_passed`/`b_passed`/`a_tool_sig`/... columns), or two single-harness files aligned on
+`(task_id, seed)`. `score` (0–1) is used when present, otherwise `passed`.
+
+CLI: `vci harness-decomp --input x.json --out work/decomp.json [--b y.json] [--top-n 10]`
+
+## Component 2 — pass@k / pass^k calculator
+
+```python
+from vci import compute
+
+doc = {"tasks": [{"task_id": "t1", "seed": 0, "runs": ["pass", "fail", "timeout"]}]}
+result = compute(doc, k_max=3)   # also compute_file("attempts.json")
+```
+
+Definitions — the same text is written into every output under `definitions`:
+
+* `pass@k = mean_tasks [1 - C(n-c, k) / C(n, k)]` — at least one of k attempts passes.
+* `pass^k = mean_tasks [C(c, k) / C(n, k)]` — every one of k attempts passes (reliability).
+* At `k = 1` both are the mean per-task success rate; `pass@1` is that value.
+* Attempts are **never pooled across tasks**: a task with 2 runs and one with 8 contribute
+  their own per-task estimate.
+* `k > n` is **not estimable** for that task and is reported as `estimable: false`,
+  `value: null` — never interpolated.
+* Statuses are `pass` / `fail` / `timeout` / `refusal` / `error`. `as_failure` (default)
+  counts every attempt; `exclude_nonattest` drops timeout/refusal/error and recomputes.
+  Both curves are reported.
+* The bootstrap CI resamples **tasks** (the unit of generalisation), not runs; `n_boot`,
+  `seed` and `alpha` are recorded.
+* Duplicate `(task_id, seed, run)` triples **raise**: they mean two run files were merged
+  twice. Different seeds for one task are legitimate independent attempts and are counted.
+
+CLI: `vci passk --input attempts.json --k-max 3 [--bootstrap 1000] [--seed 0]`
 
 ## Run the whole audit
 
@@ -122,15 +246,18 @@ SPEC.md                 the computable definition (v0.2)
 annotations/PROTOCOL.md the blind-labelling rulebook (pass/fail/undecidable)
 vci/schema.py           Task, Candidate, Verdict — one fixed return type
 vci/metrics.py          VCI, TPR/TNR/FAR90, Cohen's kappa, Wilson/bootstrap intervals
+vci/harness_decomp.py   standalone 4-source harness differential decomposer
+vci/passk.py            standalone pass@1 / pass@k / pass^k calculator with bootstrap CI
 vci/util.py             normalisation helpers
 vci/registry.py         the 20-family registry + inclusion criteria
 vci/adversarial.py      round-2 non-aligned probes (independent of every verifier)
 vci/labeler.py          blind terminal labelling CLI (resume, retest pass)
 vci/audit.py            seed -> mutants + probes -> verdicts -> metrics -> results.json
 vci/report.py           results.json / coverage.csv / coverage.md / dashboard.html
-vci/__main__.py         CLI
+vci/__main__.py         CLI (audit, harness-decomp, passk, ...)
 vci/families/           one generator + verifier per family (numeric/text/data/structural)
-tests/                  formula, contract, labeler, probe-independence and end-to-end tests
+examples/               two end-to-end examples on the archived real traces
+tests/                  formula, contract, component, labeler, probe-independence and e2e tests
 work/                   intermediate artefacts (git-ignored)
 outputs/                deliverables
 annotations/            blind sheet, protocol and your labels (labels are git-ignored)

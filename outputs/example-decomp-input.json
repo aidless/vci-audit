@@ -1,0 +1,1109 @@
+{
+ "benchmark": "vci-audit/realfail (20 families x 5 tasks, seed 20261104)",
+ "model": "qwen2.5:7b",
+ "harness_a": "archived payload envelope (strict JSON)",
+ "harness_b": "round-10 realfail_adapt envelope (joined source)",
+ "note": "same model, same replies, same tasks; only the execution-layer payload envelope differs on the 5 code_patch tasks",
+ "tasks": [
+  {
+   "task_id": "arith_expression-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "arith_expression-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "arith_expression-003",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "arith_expression-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "arith_expression-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "unit_convert-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "unit_convert-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "unit_convert-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "unit_convert-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "unit_convert-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "stats_summary-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "stats_summary-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "stats_summary-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "stats_summary-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "stats_summary-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "base_convert-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "base_convert-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "base_convert-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "base_convert-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "base_convert-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "matrix_ops-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "matrix_ops-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "matrix_ops-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "matrix_ops-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "matrix_ops-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "date_arith-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "date_arith-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "date_arith-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "date_arith-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "date_arith-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "json_schema_extract-001",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "json_schema_extract-002",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "json_schema_extract-003",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "json_schema_extract-004",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "json_schema_extract-005",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "log_field_extraction-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "log_field_extraction-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "log_field_extraction-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "log_field_extraction-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "log_field_extraction-005",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "regex_construct-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "regex_construct-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "regex_construct-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "regex_construct-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "regex_construct-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "template_render-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "template_render-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "template_render-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "template_render-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "template_render-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sql_result-001",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sql_result-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sql_result-003",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sql_result-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sql_result-005",
+   "a": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "table_aggregate-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "table_aggregate-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "table_aggregate-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "table_aggregate-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "table_aggregate-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sort_multikey-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sort_multikey-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sort_multikey-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sort_multikey-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "sort_multikey-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "interval_merge-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "interval_merge-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "interval_merge-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "interval_merge-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "interval_merge-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "grid_path-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "grid_path-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "grid_path-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "grid_path-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "grid_path-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "csp_assign-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "csp_assign-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "csp_assign-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "csp_assign-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "csp_assign-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "schedule_slots-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "schedule_slots-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "schedule_slots-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "schedule_slots-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "schedule_slots-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "topo_order-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "topo_order-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "topo_order-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "topo_order-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "topo_order-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "life_step-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "life_step-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "life_step-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "life_step-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "life_step-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "native_payload"
+   }
+  },
+  {
+   "task_id": "code_patch-001",
+   "a": {
+    "passed": false,
+    "tool_sig": "json_list_envelope"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "joined_source"
+   }
+  },
+  {
+   "task_id": "code_patch-002",
+   "a": {
+    "passed": false,
+    "tool_sig": "json_list_envelope"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "joined_source"
+   }
+  },
+  {
+   "task_id": "code_patch-003",
+   "a": {
+    "passed": false,
+    "tool_sig": "json_list_envelope"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "joined_source"
+   }
+  },
+  {
+   "task_id": "code_patch-004",
+   "a": {
+    "passed": false,
+    "tool_sig": "json_list_envelope"
+   },
+   "b": {
+    "passed": true,
+    "tool_sig": "joined_source"
+   }
+  },
+  {
+   "task_id": "code_patch-005",
+   "a": {
+    "passed": false,
+    "tool_sig": "json_list_envelope"
+   },
+   "b": {
+    "passed": false,
+    "tool_sig": "joined_source"
+   }
+  }
+ ]
+}

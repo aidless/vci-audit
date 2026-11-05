@@ -1,0 +1,98 @@
+{
+ "ok": true,
+ "decomposable": true,
+ "benchmark": "vci-audit/realfail (20 families x 5 tasks, seed 20261104)",
+ "model": "qwen2.5:7b",
+ "harnesses": {
+  "a": "archived payload envelope (strict JSON)",
+  "b": "round-10 realfail_adapt envelope (joined source)"
+ },
+ "n_tasks": 100,
+ "n_tasks_a": 100,
+ "n_tasks_b": 100,
+ "n_unmatched": 0,
+ "scores": {
+  "a": 0.1,
+  "b": 0.13,
+  "delta": 0.03
+ },
+ "sources": {
+  "state": {
+   "n_tasks": 0,
+   "delta": 0.0,
+   "share_of_abs_delta": 0.0
+  },
+  "compaction": {
+   "n_tasks": 0,
+   "delta": 0.0,
+   "share_of_abs_delta": 0.0
+  },
+  "tool": {
+   "n_tasks": 5,
+   "delta": 0.03,
+   "share_of_abs_delta": 1.0
+  },
+  "retry": {
+   "n_tasks": 0,
+   "delta": 0.0,
+   "share_of_abs_delta": 0.0
+  }
+ },
+ "ambiguous": {
+  "n_tasks": 0,
+  "delta": 0.0,
+  "share_of_abs_delta": 0.0
+ },
+ "unexplained": {
+  "n_tasks": 95,
+  "delta": 0.0,
+  "share_of_abs_delta": 0.0
+ },
+ "attribution_sums_to_total_delta": true,
+ "factors_observed": [
+  "tool"
+ ],
+ "factors_unpaired": [],
+ "top_divergence": [
+  {
+   "task_id": "code_patch-001",
+   "seed": 0,
+   "label": "code_patch-001",
+   "a": 0.0,
+   "b": 1.0,
+   "delta": 1.0,
+   "contribution": 0.01,
+   "differing_factors": [
+    "tool"
+   ],
+   "source": "tool"
+  },
+  {
+   "task_id": "code_patch-002",
+   "seed": 0,
+   "label": "code_patch-002",
+   "a": 0.0,
+   "b": 1.0,
+   "delta": 1.0,
+   "contribution": 0.01,
+   "differing_factors": [
+    "tool"
+   ],
+   "source": "tool"
+  },
+  {
+   "task_id": "code_patch-004",
+   "seed": 0,
+   "label": "code_patch-004",
+   "a": 0.0,
+   "b": 1.0,
+   "delta": 1.0,
+   "contribution": 0.01,
+   "differing_factors": [
+    "tool"
+   ],
+   "source": "tool"
+  }
+ ],
+ "assumption": "Observational attribution, not a causal decomposition.  A task is charged to a source only when exactly one of the four measured mechanisms differs between the two harness records; tasks with several differing mechanisms are kept in 'ambiguous' and tasks with none in 'unexplained'.  Confirm any source with a third arm that toggles that mechanism alone."
+}

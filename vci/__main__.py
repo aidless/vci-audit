@@ -219,6 +219,25 @@ def cmd_realfail_analyze(args):
     return 0
 
 
+def cmd_harness_decomp(args):
+    from . import harness_decomp
+    result = harness_decomp.decompose_file(args.input, args.b, top_n=args.top_n)
+    harness_decomp.write_report(result, args.out)
+    print(harness_decomp.format_summary(result))
+    print("wrote " + args.out)
+    return 0 if result.get("ok") else 2
+
+
+def cmd_passk(args):
+    from . import passk
+    result = passk.compute_file(args.input, k_max=args.k_max, n_boot=args.bootstrap,
+                                seed=args.seed)
+    passk.write_report(result, args.out)
+    print(passk.format_summary(result))
+    print("wrote " + args.out)
+    return 0 if result.get("ok") else 2
+
+
 def cmd_selfcheck(args):
     problems = audit.selfcheck(families=registry.resolve(args.families),
                                n_tasks=args.tasks, seed=args.seed)
@@ -326,6 +345,25 @@ def build_parser():
     s = sub.add_parser("selfcheck", help="find mutants that contradict their own label")
     _add_common(s)
     s.set_defaults(fn=cmd_selfcheck)
+
+    hd = sub.add_parser("harness-decomp",
+                        help="decompose a two-harness score difference into "
+                             "state / compaction / tool / retry")
+    hd.add_argument("--input", required=True,
+                    help="combined JSON/CSV (both harnesses per task) or harness A")
+    hd.add_argument("--b", default=None, help="optional second file (harness B)")
+    hd.add_argument("--out", default="work/harness_decomp.json")
+    hd.add_argument("--top-n", type=int, default=10, dest="top_n")
+    hd.set_defaults(fn=cmd_harness_decomp)
+
+    pk = sub.add_parser("passk",
+                        help="pass@1, pass@k and pass^k curves with bootstrap CI")
+    pk.add_argument("--input", required=True)
+    pk.add_argument("--out", default="work/passk.json")
+    pk.add_argument("--k-max", type=int, default=None, dest="k_max")
+    pk.add_argument("--bootstrap", type=int, default=1000)
+    pk.add_argument("--seed", type=int, default=0)
+    pk.set_defaults(fn=cmd_passk)
 
     h = sub.add_parser("harness-diff",
                        help="compare harness strategies A (single pass) and B "
