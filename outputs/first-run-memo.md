@@ -7,6 +7,14 @@ Numbers: `outputs/results.json`; per-family table: `outputs/coverage.md`; every 
 and basis: `outputs/attribution.csv`; dashboard: `outputs/dashboard.html`.
 Round-1 and round-2 memos are preserved in git history.
 
+> **Round labels matter — this memo is cumulative.** Each section's numbers hold only under
+> its own round's口径. **Current values (round 10)**: median VCI **0.969** (aligned **0.986**
+> on the round-10 machine; the 2026-11-05 rerun reads 0.978 because aligned VCI consumes
+> latency-driven `cheapness`, §8), `families ≥ 0.70` **17/20**, directional **771** (pos 173 / neg 598).
+> Round 3's 0.934 / 16/20 / 425 and round 5's 575 / 0.934 are **historical** values of the
+> same quantities, not contradictions. Per-number audit:
+> [`outputs/number-reconciliation.md`](number-reconciliation.md).
+
 ---
 
 ## Round-5 addendum — positive directional probes, authored where they are measurable (2026-11-04)
@@ -19,7 +27,7 @@ against the override.  Accept probes submit the independently recomputed correct
 to the perturbed input; reject probes submit the answer that was correct *before* the
 change.
 
-**Result:** the `directional` row is now measured — n=575, pos=75/neg=500, **TPR 1.00,
+**Result (round 5 口径; round 10 later reads n=771, pos=173/neg=598):** the `directional` row is now measured — n=575, pos=75/neg=500, **TPR 1.00,
 TNR 1.00, FAR90 0.00**, zero false rejects, zero stale accepts.  The sharp side is the
 stale-answer one: the sql constant-queries that memorise the visible primary result
 (the two HARD leaks of §4) are now caught 25/25 once the dataset shifts; the regex
@@ -29,8 +37,8 @@ alternation of the original positives fails on fresh unseen strings 25/25; the
 
 **Structural finding (why 3 families, not 20):** seventeen verifiers in this suite grade
 the payload against expected values stored in the task itself.  There, a perturbed
-(input, truth) pair is accepted *by construction* — authoring 425 positive directional
-probes would manufacture a meaningless TPR 1.00.  Only verifiers that re-derive truth by
+(input, truth) pair is accepted *by construction* — authoring positive directional
+probes in their round-3 quantity (425 negatives, zero positives) would manufacture a meaningless TPR 1.00.  Only verifiers that re-derive truth by
 executing the candidate against task-carried data (sql runs the query on shifted rows,
 regex re-tests fresh strings, code_patch re-runs hidden cases) can express directional
 risk at all.  Stated plainly: for fixture-replay verifiers the directional risk class
@@ -50,7 +58,7 @@ not evidence of robustness.  Their per-family directional cells stay `–`.
   `regex_construct` thereby crosses the provisional bar (0.690 → 0.797; the ≥0.70 count
   moves 16/20 → 17/20).  **The leaks themselves are unchanged** — regex
   minimum-functionality trust is still 0.500 and the per-category cells show it.  Median
-  VCI is unchanged (0.934).  Probe κ 0.664 → 0.701 [0.662, 0.736], α 0.666 → 0.701
+  VCI is unchanged within round 5 (0.934; the round-10 rerun later reads 0.969).  Probe κ 0.664 → 0.701 [0.662, 0.736], α 0.666 → 0.701
   (n=1,381 scored probes).
 
 The validity ceiling of §7 is unchanged: all new probes are still synthetic, and the
@@ -58,7 +66,7 @@ directional row additionally measures only execution-derived verifiers by constr
 
 ---
 
-## 1. Headline
+## 1. Headline (round 3 — historical; current = round 10 box above)
 
 | quantity | round 1 | round 2 | **round 3** |
 |---|---|---|---|
@@ -71,6 +79,10 @@ directional row additionally measures only execution-derived verifiers by constr
 | Core list (human-backed) | 0 | 0 | **0** |
 | κ source | synthetic | synthetic | **synthetic (no human sheet)** |
 | α source | — | synthetic (value was wrong, §5) | **synthetic** |
+
+Table values are **round-3** (0.934 / 16/20). Round 5 onwards the count is **17/20**
+(`regex_construct` crosses 0.70 after the directional addendum); the round-10 rerun reads
+median **0.969** (aligned **0.986** at round 10; 0.978 on the 2026-11-05 rerun, see §8). Same quantities, different rounds — not two values of one number.
 
 The median did not move. Only `code_patch` moved (0.131 → **0.756**, CI 0.746-0.764; a second
 run on a quieter machine gave 0.760 because `C` is measured from p95 latency), and that movement
@@ -107,7 +119,7 @@ rejected correct answers (75 equivalent timestamps + 50 defensible second readin
 prompt problems (§4). `regex_construct` (0.690) and `sql_result` (0.781) are the two genuine
 verifier-side gaps below 0.80.
 
-## 3. Per category (CheckList): TPR / TNR / FAR90
+## 3. Per category (CheckList, round 3): TPR / TNR / FAR90
 
 | category | n | pos | neg | TPR | TNR | FAR90 |
 |---|---|---|---|---|---|---|
@@ -374,7 +386,7 @@ tasks = 750 tasks) checks `expected == eval(expr)` using Python's own evaluator 
 independent implementation; selfcheck stays clean.
 
 The full audit was rerun after the fix.  **No metric moved**: arith VCI 0.9722 → 0.9722,
-median VCI 0.9342 (CI 0.904–1.000), families ≥ 0.70 stays 17/20, both core lists unchanged.
+median VCI 0.9342 (CI 0.904–1.000; round-10 rerun later reads 0.969), families ≥ 0.70 stays 17/20, both core lists unchanged.
 That is expected, not a disappointment: the fix changes task *content*, and every aligned
 mutant and probe derives its expected verdict from the reference values, so the synthetic
 audit is internally invariant to the change.  Where the defect actually bit was grading
@@ -558,11 +570,17 @@ families × 5 tasks = 100 tasks**; 100 scored, 0 transport errors.  Every record
 splits each task into units with the model answer, the gold reference and the per-unit
 verdict.  One record (`regex_construct`) failed to produce parseable JSON.
 
-Results: **10/100 tasks accepted by the verifier, 89 real failures** (1 parse failure, 88
-semantic/format failures).  Against the strict gold reference at unit level, **131/146
-gold-correct real answers were accepted** and **0/288 wrong real answers were accepted**
-(earlier wording said 131/131 and 0/303; the code_patch regrade in §6 moved 15 units from
-"wrong" to "gold-correct", so the denominators are 146/288).  The labels in that sentence
+Results: **10/100 tasks accepted by the verifier, 90 real failures** (1 parse failure, 89
+semantic/format failures; 10 + 90 = 100).  Against the strict gold reference at unit level,
+**131/146 gold-correct real answers were accepted** and **0/288 wrong real answers were
+accepted** — this is the round-10 **regraded oracle** (denominators are gold-checked units
+with an extracted answer, 146 + 288 = 434, not the 529 sheet rows).  Two口径 labels apply:
+(1) 529 sheet rows vs 434 units with an extracted answer (95 units have no parseable answer);
+(2) 146/288 uses the code_patch regrade (+15 units) and treats `base_convert`'s representation
+as verifier-adjudicated.  A strict-gold recheck on the same artifact instead yields
+**128/306 with 3 accepted negatives**, all `base_convert` (expected stores the decimal input,
+the model answers in the target base; the verifier decodes it correctly).  Full derivation:
+[`outputs/number-reconciliation.md`](number-reconciliation.md).  The labels in that sentence
 are gold-checked, **not human**; the raw replies are archived for review.  `sql_result` was
 re-sampled after the second-dataset change and the manifest records the two segments.
 These traces are deliberately **not merged into the VCI headline**: without a human sheet,
@@ -604,7 +622,8 @@ test), so the TPR is not produced by an override that accepts everything.
 
 ## 4. Rerun and artifact self-check
 
-Full rerun, same seed: median **VCI 0.969** [0.904, 1.000] (aligned 0.986), 17/20 families
+Full rerun, same seed: median **VCI 0.969** [0.904, 1.000] (aligned 0.986 at round 10;
+the 2026-11-05 rerun reads 0.978 — see §8), 17/20 families
 ≥ 0.70, 20/20 reliable.  Pooled categories:
 
 | category | n | n_pos | n_neg | TPR | TNR |

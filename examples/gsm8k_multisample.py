@@ -133,12 +133,14 @@ def main():
     by_task = {}
     for rec in records:
         by_task.setdefault(rec["task_id"], []).append(rec)
+    # One task entry per (task_id, seed) so the summary records every seed that
+    # was actually sampled instead of just the first one.
     for tid in sorted(by_task):
         by_task[tid].sort(key=lambda r: r["seed"])
-        doc["tasks"].append({"task_id": tid, "seed": 0,
-                             "runs": [r["status"] for r in by_task[tid]]})
-    for t in doc["tasks"]:
-        t["seed"] = by_task[t["task_id"]][0]["seed"]
+        for rec in by_task[tid]:
+            doc["tasks"].append({"task_id": tid, "seed": rec["seed"],
+                                 "runs": [{"run": rec["attempt"],
+                                           "status": rec["status"]}]})
 
     result = passk.compute(doc, k_max=args.samples, n_boot=2000, seed=0)
     walls = [r["wall_s"] for r in records]
