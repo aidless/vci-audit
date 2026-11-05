@@ -110,6 +110,25 @@ def cmd_harness_diff(args):
     return 0
 
 
+def cmd_cross_task_diff(args):
+    from . import cross_task
+    result = cross_task.run_experiment()
+    cross_task.write_report(result, args.out)
+    ag = result["aggregate"]
+    print(f"cross-task contamination on {result['family']}: "
+          f"{ag['contaminant_victim_pairs']} contaminant-victim pairs "
+          f"({result['n_vectors']} vectors x {result['n_slots_per_vector']} slots)")
+    print(f"victim flips: A={ag['victim_flips_under_A']} (isolated) -> "
+          f"B={ag['victim_flips_under_B']} (shared process): "
+          f"{ag['false_accepts']} false accepts, {ag['false_rejects']} false rejects")
+    print(f"contaminants caught by static filter: "
+          f"{ag['contaminants_caught_by_static_filter']}")
+    print(f"controls (no contaminant / reversed) match A: "
+          f"{ag['controls_match_A']}")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_realfail(args):
     import json
     from . import realfail
@@ -374,6 +393,13 @@ def build_parser():
                    help="number of task seeds for the delta spread")
     h.add_argument("--out", default="work/harness_diff.json")
     h.set_defaults(fn=cmd_harness_diff)
+
+    ct = sub.add_parser("cross-task-diff",
+                        help="cross-task contamination differential: isolated "
+                             "per-candidate subprocesses (A) vs one shared-process "
+                             "batch (B), measured with contaminant-victim pairs")
+    ct.add_argument("--out", default="work/cross_task_diff.json")
+    ct.set_defaults(fn=cmd_cross_task_diff)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

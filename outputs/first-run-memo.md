@@ -760,3 +760,56 @@ verdict on the verifier.  For natural outputs of local models the risk order fro
 round 6 stands: **extraction/packaging strictness > memorization leaks**.  The
 synthetic leak classes remain precautionary hardening targets, not observed
 deployment failures.
+
+---
+
+# Round-12 addendum — cross-task contamination: the round-9 "undecidable" is quantified (2026-11-05)
+
+Round 9 declared cross-task memory contamination *undecidable at the verifier
+level* because the production harness verifies every candidate in its own
+subprocess.  Round 12 turns that qualitative statement into a measured one with
+a second harness-level differential (the round-4 experiment measured execution
+strategy *within* a task; this one measures isolation strategy *across* tasks).
+New module `vci/cross_task.py`, CLI `cross-task-diff`, artifact
+`work/cross_task_diff.json`; no production code, probe, or VCI number moved.
+
+**Design.**  Strategy A is production: one fresh subprocess per candidate, the
+numeric judge in the parent.  Strategy B is a naive batch harness: a whole run
+of candidates `exec`ed sequentially in ONE shared process, judge included — the
+shape a real harness takes when it trades isolation for spawn cost.  The probe
+is a contaminant–victim pair: the contaminant is fully correct code for its own
+template plus one poison line (`import builtins`; rewrite `abs`/`sum`/`sorted`),
+and the victim is a later candidate whose verdict depends on the poisoned
+primitive.  Three vectors: `judge_abs` (the in-process near-equality judge
+degenerates → a wrong `safe_div` off-by-0.1 answer is accepted — a
+contamination-driven *false accept*), `candidate_sum` and `candidate_sorted`
+(correct victims compute garbage → *false rejects*).  Two controls pin the
+attribution: a no-contaminant batch and a reversed batch must both reproduce A.
+
+**Results [M]** (3 vectors × 5 contaminant slots = 15 pairs):
+
+| quantity | A (isolated) | B (shared process) |
+|---|---|---|
+| victim verdict flips | **0 / 15** | **15 / 15** (5 false accepts, 10 false rejects) |
+| contaminant accepted | 15 / 15 | 15 / 15 (it *is* correct code) |
+| contaminant caught by the static `_BANNED` filter | 0 / 15 (`import builtins` is not banned) | – |
+| controls (no contaminant / reversed order) | – | both match A exactly |
+
+The flips are order-dependent state leakage, not a bias of the batch runner:
+with the victim scheduled before the contaminant, B agrees with A on every pair.
+
+**What this changes.**  "Undecidable" is refined: cross-task contamination is
+*decided by the harness's process model, not by verifier logic*.  Per-candidate
+isolation decides it to zero (invisible = defended); a shared process decides
+it to 15/15 against the run — including corruption of the judge itself, which
+no per-task verifier can see.  For real harnesses that batch candidates into
+one process to save spawn cost, part of any score difference may be a
+contamination component, and the static filter does not see the vector
+(0/15): isolation, not screening, is the defence.  The validity ceiling is
+unchanged: contaminant and victim are synthetic constructions (the Just et al.
+ceiling is untouched), the experiment covers only `code_patch` (the single
+family whose payload is an executable procedure; for the 17 fixture-replay
+families cross-task state is *not constructible*, not merely unmeasured), and
+whether real model output carries process-level side effects is untested —
+scanning the archived real traces for side-effect signatures is the named
+follow-up.

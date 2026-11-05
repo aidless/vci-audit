@@ -195,6 +195,9 @@ python3 -m vci label --qualification --group-by-family --shuffle-seed 7
 python3 -m vci score-annotations         # recompute kappa from labels.csv without a full rerun
 python3 -m vci realfail-tolerant         # counterfactual: re-grade the archived realfail run
                                          # with schema-tolerant extraction (round 8, offline)
+python3 -m vci cross-task-diff           # cross-task contamination differential:
+                                         # isolated per-candidate subprocesses vs one
+                                         # shared-process batch (round 12, offline)
 ```
 
 One command reproduces every deliverable in `outputs/`:
