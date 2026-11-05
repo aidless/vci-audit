@@ -8,9 +8,15 @@ carry zero contamination-capable signatures.
 import json
 import sys
 
+import pytest
+
 sys.path.insert(0, ".")
 sys.path.insert(0, "work")
 
+pytest.importorskip(
+    "side_effect_scan",
+    reason="work/ is git-ignored; the round-14 scanner ships only in the working tree",
+)
 from side_effect_scan import (RUNS, scan_run, scan_source,  # noqa: E402
                               CAPABLE)
 from vci import registry  # noqa: E402
