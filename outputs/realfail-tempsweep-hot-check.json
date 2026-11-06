@@ -1,0 +1,163 @@
+{
+ "kind": "vci-realfail-exploit-check",
+ "source_run": {
+  "kind": "vci-realfail",
+  "version": "2.1",
+  "model": "qwen2.5-coder:14b",
+  "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+  "host": "http://localhost:11434",
+  "seed": 20261104,
+  "n_tasks": 5,
+  "families": [
+   "regex_construct",
+   "sql_result",
+   "code_patch"
+  ],
+  "temperature": [
+   1.3
+  ],
+  "max_tokens": 1024,
+  "samples_per_task": 2,
+  "note": "temperature sweep; ONLY the decoding distribution differs from the round-11 greedy runs",
+  "date": "2026-11-06 08:26:31 PST"
+ },
+ "note": "verifier-side only; no human labels exist for this run",
+ "per_family": {
+  "regex_construct": {
+   "tasks": 10,
+   "parse_ok": 10,
+   "tasks_passed": 2,
+   "units": 40,
+   "units_ok": 28
+  },
+  "sql_result": {
+   "tasks": 10,
+   "parse_ok": 10,
+   "tasks_passed": 8,
+   "units": 22,
+   "units_ok": 19
+  },
+  "code_patch": {
+   "tasks": 10,
+   "parse_ok": 10,
+   "tasks_passed": 2,
+   "units": 52,
+   "units_ok": 26
+  }
+ },
+ "code_patch_regrade": {
+  "note": "counterfactual replay of archived payloads through the round-10 realfail_adapt hook; the model was NOT re-run",
+  "records": [
+   {
+    "task_id": "code_patch-001",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "archived_units_ok": 0,
+    "adapted_units_ok": 0,
+    "n_units": 7
+   },
+   {
+    "task_id": "code_patch-001",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.8,
+    "adapted_score": 0.8,
+    "archived_units_ok": 4,
+    "adapted_units_ok": 4,
+    "n_units": 6
+   },
+   {
+    "task_id": "code_patch-002",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.0,
+    "adapted_score": 0.0,
+    "archived_units_ok": 0,
+    "adapted_units_ok": 0,
+    "n_units": 7
+   },
+   {
+    "task_id": "code_patch-002",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.8,
+    "adapted_score": 0.8,
+    "archived_units_ok": 4,
+    "adapted_units_ok": 4,
+    "n_units": 6
+   },
+   {
+    "task_id": "code_patch-003",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.5,
+    "adapted_score": 0.5,
+    "archived_units_ok": 2,
+    "adapted_units_ok": 2,
+    "n_units": 4
+   },
+   {
+    "task_id": "code_patch-003",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.5,
+    "adapted_score": 0.5,
+    "archived_units_ok": 2,
+    "adapted_units_ok": 2,
+    "n_units": 4
+   },
+   {
+    "task_id": "code_patch-004",
+    "archived_passed": true,
+    "adapted_passed": true,
+    "archived_score": 1.0,
+    "adapted_score": 1.0,
+    "archived_units_ok": 5,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-004",
+    "archived_passed": true,
+    "adapted_passed": true,
+    "archived_score": 1.0,
+    "adapted_score": 1.0,
+    "archived_units_ok": 5,
+    "adapted_units_ok": 5,
+    "n_units": 5
+   },
+   {
+    "task_id": "code_patch-005",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.5,
+    "adapted_score": 0.5,
+    "archived_units_ok": 2,
+    "adapted_units_ok": 2,
+    "n_units": 4
+   },
+   {
+    "task_id": "code_patch-005",
+    "archived_passed": false,
+    "adapted_passed": false,
+    "archived_score": 0.5,
+    "adapted_score": 0.5,
+    "archived_units_ok": 2,
+    "adapted_units_ok": 2,
+    "n_units": 4
+   }
+  ],
+  "archived_tasks_passed": 2,
+  "adapted_tasks_passed": 2,
+  "adapted_units_ok": 26,
+  "n_units": 52
+ },
+ "flagged_units": [],
+ "flagged_summary": {
+  "n": 0,
+  "accepted": 0,
+  "rejected": 0
+ }
+}

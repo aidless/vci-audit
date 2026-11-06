@@ -1,0 +1,2970 @@
+{
+ "manifest": {
+  "kind": "vci-realfail",
+  "version": "2.1",
+  "model": "qwen2.5-coder:14b",
+  "model_digest": "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849",
+  "host": "http://localhost:11434",
+  "seed": 20261104,
+  "n_tasks": 5,
+  "families": [
+   "regex_construct",
+   "sql_result",
+   "code_patch"
+  ],
+  "temperature": [
+   0.7,
+   1.0
+  ],
+  "max_tokens": 1024,
+  "samples_per_task": 2,
+  "note": "temperature sweep; ONLY the decoding distribution differs from the round-11 greedy runs",
+  "date": "2026-11-06 08:17:25 PST"
+ },
+ "records": [
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-001",
+   "sample_id": "t0.7s0",
+   "n_units": 4,
+   "prompt_chars": 1026,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^(\\\\d{1,3}\\\\.){3}\\\\d{1,3}$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^(\\\\p{Ll}{1,2} \\\\p{Ll}{1,2})+$\",\n    \"^#([a-fA-F0-9]{6})$\"\n  ]\n}",
+   "wall_s": 15.631,
+   "eval_count": 90,
+   "eval_duration_s": 15.4,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(\\d{1,3}\\.){3}\\d{1,3}$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^(\\p{Ll}{1,2} \\p{Ll}{1,2})+$",
+     "^#([a-fA-F0-9]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "pattern does not compile: bad escape \\p at position 2"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-001",
+   "sample_id": "t0.7s1",
+   "n_units": 4,
+   "prompt_chars": 1026,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^(\\\\d{1,3})\\\\.(\\\\d{1,3})\\\\.(\\\\d{1,3})\\\\.(\\\\d{1,3})$\",\n    \"^(\\\\d{4})-(\\\\d{2})-(\\\\d{2})$\",\n    \"^([0-9a-f]{2} [0-9a-f]{2})+$\",\n    \"^#([0-9a-f]{6})$\"\n  ]\n}",
+   "wall_s": 18.519,
+   "eval_count": 107,
+   "eval_duration_s": 18.326,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$",
+     "^(\\d{4})-(\\d{2})-(\\d{2})$",
+     "^([0-9a-f]{2} [0-9a-f]{2})+$",
+     "^#([0-9a-f]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.5,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects '0a 1b 2c'; rejects 'ff 00 7e'; rejects held-out '01 02 03'"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "rejects '#A05813'; rejects held-out '#4B2E11'; rejects held-out '#aBcDeF'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-001",
+   "sample_id": "t1s0",
+   "n_units": 4,
+   "prompt_chars": 1026,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^(\\\\d{1,3}\\\\.){3}\\\\d{1,3}$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^([0-9a-f]{2}\\\\s){1,2}[0-9a-f]{2}$\",\n    \"^#[0-9a-fA-F]{6}$\"\n  ]\n}",
+   "wall_s": 15.485,
+   "eval_count": 89,
+   "eval_duration_s": 15.285,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(\\d{1,3}\\.){3}\\d{1,3}$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^([0-9a-f]{2}\\s){1,2}[0-9a-f]{2}$",
+     "^#[0-9a-fA-F]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-001",
+   "sample_id": "t1s1",
+   "n_units": 4,
+   "prompt_chars": 1026,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. four dot-separated groups of 1-3 digits\n     match:     28.85.105.134 | 175.59.181.163 | 78.243.191.200\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  2. four-digit year, two-digit month and day, dash separated\n     match:     2024-05-14 | 2024-02-01 | 2024-07-06\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. exactly #RRGGBB with six hex digits\n     match:     #0c207a | #9cf13e | #8138e6 | #A05813\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"^(\\\\d{1,3})\\\\.(\\\\d{1,3})\\\\.(\\\\d{1,3})\\\\.(\\\\d{1,3})$\",\n    \"^(\\\\d{4})-(\\\\d{2})-(\\\\d{2})$\",\n    \"^([0-9a-f]{2}\\\\s){1,}[0-9a-f]{2}$\",\n    \"^#[0-9a-f]{6}$\"\n  ]\n}\n```",
+   "wall_s": 19.394,
+   "eval_count": 112,
+   "eval_duration_s": 19.21,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$",
+     "^(\\d{4})-(\\d{2})-(\\d{2})$",
+     "^([0-9a-f]{2}\\s){1,}[0-9a-f]{2}$",
+     "^#[0-9a-f]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": false,
+      "detail": "rejects '#A05813'; rejects held-out '#4B2E11'; rejects held-out '#aBcDeF'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-002",
+   "sample_id": "t0.7s0",
+   "n_units": 3,
+   "prompt_chars": 820,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  2. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     gx_1 | citem_2 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  3. exactly #RRGGBB with six hex digits\n     match:     #b0fcf1 | #ace8fe | #849bbf | #532E32\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"^(?:[0-9a-f]{2}\\\\s){2}[0-9a-f]{2}$\",\"^[a-z][a-z0-9_]{2,15}$\",\"^#[0-9a-f]{6}$\"]}",
+   "wall_s": 10.713,
+   "eval_count": 57,
+   "eval_duration_s": 9.518,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(?:[0-9a-f]{2}\\s){2}[0-9a-f]{2}$",
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#[0-9a-f]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "rejects 'aa bb'; rejects held-out 'ab cd'"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects '#532E32'; rejects held-out '#4B2E11'; rejects held-out '#aBcDeF'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-002",
+   "sample_id": "t0.7s1",
+   "n_units": 3,
+   "prompt_chars": 820,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  2. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     gx_1 | citem_2 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  3. exactly #RRGGBB with six hex digits\n     match:     #b0fcf1 | #ace8fe | #849bbf | #532E32\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"^(?:[0-9a-f]{2} [0-9a-f]{2})+$\", \"^[a-z][a-z0-9_]{2,15}$\", \"^#[0-9a-f]{6}$\"]}",
+   "wall_s": 9.656,
+   "eval_count": 56,
+   "eval_duration_s": 9.472,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(?:[0-9a-f]{2} [0-9a-f]{2})+$",
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#[0-9a-f]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "rejects '0a 1b 2c'; rejects 'ff 00 7e'; rejects held-out '01 02 03'"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects '#532E32'; rejects held-out '#4B2E11'; rejects held-out '#aBcDeF'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-002",
+   "sample_id": "t1s0",
+   "n_units": 3,
+   "prompt_chars": 820,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  2. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     gx_1 | citem_2 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  3. exactly #RRGGBB with six hex digits\n     match:     #b0fcf1 | #ace8fe | #849bbf | #532E32\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"^(?:[0-9a-f]{2} ){2}[0-9a-f]{2}$\", \"^[a-z][a-z0-9_]{2,15}$\", \"^#([0-9a-fA-F]{6})$\"]}",
+   "wall_s": 10.618,
+   "eval_count": 61,
+   "eval_duration_s": 10.444,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^(?:[0-9a-f]{2} ){2}[0-9a-f]{2}$",
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#([0-9a-fA-F]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.333333,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "rejects 'aa bb'; rejects held-out 'ab cd'"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-002",
+   "sample_id": "t1s1",
+   "n_units": 3,
+   "prompt_chars": 820,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  2. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     gx_1 | citem_2 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  3. exactly #RRGGBB with six hex digits\n     match:     #b0fcf1 | #ace8fe | #849bbf | #532E32\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"^([0-9a-f]{2} [0-9a-f]{2})+$\",\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^#[0-9a-f]{6}$\"\n  ]\n}\n```",
+   "wall_s": 11.626,
+   "eval_count": 67,
+   "eval_duration_s": 11.437,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^([0-9a-f]{2} [0-9a-f]{2})+$",
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#[0-9a-f]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "rejects '0a 1b 2c'; rejects 'ff 00 7e'; rejects held-out '01 02 03'"
+     },
+     {
+      "unit": "r2",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects '#532E32'; rejects held-out '#4B2E11'; rejects held-out '#aBcDeF'"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-003",
+   "sample_id": "t0.7s0",
+   "n_units": 4,
+   "prompt_chars": 1000,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     ex_1 | etag9 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. exactly #RRGGBB with six hex digits\n     match:     #37b37d | #60e995 | #1ad167 | #783753\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  3. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  4. four-digit year, two-digit month and day, dash separated\n     match:     2024-11-16 | 2024-09-02 | 2024-09-07\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^#[0-9a-fA-F]{6}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 14.434,
+   "eval_count": 77,
+   "eval_duration_s": 13.243,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#[0-9a-fA-F]{6}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-003",
+   "sample_id": "t0.7s1",
+   "n_units": 4,
+   "prompt_chars": 1000,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     ex_1 | etag9 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. exactly #RRGGBB with six hex digits\n     match:     #37b37d | #60e995 | #1ad167 | #783753\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  3. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  4. four-digit year, two-digit month and day, dash separated\n     match:     2024-11-16 | 2024-09-02 | 2024-09-07\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^#([a-fA-F0-9]{6})$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 13.988,
+   "eval_count": 79,
+   "eval_duration_s": 13.809,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#([a-fA-F0-9]{6})$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-003",
+   "sample_id": "t1s0",
+   "n_units": 4,
+   "prompt_chars": 1000,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     ex_1 | etag9 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. exactly #RRGGBB with six hex digits\n     match:     #37b37d | #60e995 | #1ad167 | #783753\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  3. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  4. four-digit year, two-digit month and day, dash separated\n     match:     2024-11-16 | 2024-09-02 | 2024-09-07\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^#([a-fA-F0-9]{6})$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 13.839,
+   "eval_count": 79,
+   "eval_duration_s": 13.655,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^#([a-fA-F0-9]{6})$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-003",
+   "sample_id": "t1s1",
+   "n_units": 4,
+   "prompt_chars": 1000,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     ex_1 | etag9 | dtag9\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. exactly #RRGGBB with six hex digits\n     match:     #37b37d | #60e995 | #1ad167 | #783753\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  3. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  4. four-digit year, two-digit month and day, dash separated\n     match:     2024-11-16 | 2024-09-02 | 2024-09-07\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{3,16}$\",\n    \"^#[0-9a-fA-F]{6}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}\n```",
+   "wall_s": 14.212,
+   "eval_count": 81,
+   "eval_duration_s": 14.027,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{3,16}$",
+     "^#[0-9a-fA-F]{6}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-004",
+   "sample_id": "t0.7s0",
+   "n_units": 5,
+   "prompt_chars": 1179,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. exactly #RRGGBB with six hex digits\n     match:     #5b3c79 | #4f0c7f | #c92dff | #D838DC\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  2. four dot-separated groups of 1-3 digits\n     match:     29.115.220.102 | 164.105.199.228 | 216.187.199.12\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  5. four-digit year, two-digit month and day, dash separated\n     match:     2024-09-08 | 2024-09-27 | 2024-12-16\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^#[0-9A-Fa-f]{6}$\",\n    \"^(\\\\d{1,3}\\\\.){3}\\\\d{1,3}$\",\n    \"^(?:[0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 19.956,
+   "eval_count": 106,
+   "eval_duration_s": 18.621,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^#[0-9A-Fa-f]{6}$",
+     "^(\\d{1,3}\\.){3}\\d{1,3}$",
+     "^(?:[0-9a-f]{2} ){1,2}[0-9a-f]{2}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r5",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-004",
+   "sample_id": "t0.7s1",
+   "n_units": 5,
+   "prompt_chars": 1179,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. exactly #RRGGBB with six hex digits\n     match:     #5b3c79 | #4f0c7f | #c92dff | #D838DC\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  2. four dot-separated groups of 1-3 digits\n     match:     29.115.220.102 | 164.105.199.228 | 216.187.199.12\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  5. four-digit year, two-digit month and day, dash separated\n     match:     2024-09-08 | 2024-09-27 | 2024-12-16\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^#([A-Fa-f0-9]{6})$\",\n    \"^((\\\\d{1,3}\\\\.){3}\\\\d{1,3})$\",\n    \"^([0-9a-f]{2} ){1,2}[0-9a-f]{2}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 19.038,
+   "eval_count": 107,
+   "eval_duration_s": 18.835,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^#([A-Fa-f0-9]{6})$",
+     "^((\\d{1,3}\\.){3}\\d{1,3})$",
+     "^([0-9a-f]{2} ){1,2}[0-9a-f]{2}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r5",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-004",
+   "sample_id": "t1s0",
+   "n_units": 5,
+   "prompt_chars": 1179,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. exactly #RRGGBB with six hex digits\n     match:     #5b3c79 | #4f0c7f | #c92dff | #D838DC\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  2. four dot-separated groups of 1-3 digits\n     match:     29.115.220.102 | 164.105.199.228 | 216.187.199.12\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  5. four-digit year, two-digit month and day, dash separated\n     match:     2024-09-08 | 2024-09-27 | 2024-12-16\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^#([0-9a-fA-F]{6})$\",\n    \"^([0-9]{1,3})\\\\.([0-9]{1,3})\\\\.([0-9]{1,3})\\\\.([0-9]{1,3})$\",\n    \"^([0-9a-f]{2} [0-9a-f]{2} ){1,}[0-9a-f]{2}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"\n  ]\n}",
+   "wall_s": 24.645,
+   "eval_count": 136,
+   "eval_duration_s": 24.448,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^#([0-9a-fA-F]{6})$",
+     "^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$",
+     "^([0-9a-f]{2} [0-9a-f]{2} ){1,}[0-9a-f]{2}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.8,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects 'aa bb'; rejects held-out 'ab cd'"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r5",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-004",
+   "sample_id": "t1s1",
+   "n_units": 5,
+   "prompt_chars": 1179,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. exactly #RRGGBB with six hex digits\n     match:     #5b3c79 | #4f0c7f | #c92dff | #D838DC\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n  2. four dot-separated groups of 1-3 digits\n     match:     29.115.220.102 | 164.105.199.228 | 216.187.199.12\n     must not:  192.168.1 | 192.168.1.10.1 | 192-168-1-10 | 1.2.3\n  3. space-separated pairs of lower-case hex digits\n     match:     0a 1b 2c | ff 00 7e | aa bb\n     must not:  0a1b | 0a 1b 2 | 0a 1b 2c 3 | zz 00\n  4. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  5. four-digit year, two-digit month and day, dash separated\n     match:     2024-09-08 | 2024-09-27 | 2024-12-16\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"^#([A-Fa-f0-9]{6})$\", \"^(\\\\d{1,3}\\\\.){3}\\\\d{1,3}$\", \"^([a-f0-9]{2} ){2}[a-f0-9]{2}$\", \"^[A-Za-z0-9_.-]+\\\\.py$\", \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"]}",
+   "wall_s": 16.408,
+   "eval_count": 92,
+   "eval_duration_s": 16.211,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^#([A-Fa-f0-9]{6})$",
+     "^(\\d{1,3}\\.){3}\\d{1,3}$",
+     "^([a-f0-9]{2} ){2}[a-f0-9]{2}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.8,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": false,
+      "detail": "rejects 'aa bb'; rejects held-out 'ab cd'"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r5",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-005",
+   "sample_id": "t0.7s0",
+   "n_units": 4,
+   "prompt_chars": 1001,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     btag9 | hx_1 | fmain7\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  3. four-digit year, two-digit month and day, dash separated\n     match:     2024-07-11 | 2024-05-13 | 2024-11-25\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  4. exactly #RRGGBB with six hex digits\n     match:     #773210 | #907d26 | #19dd1e | #E12153\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^#([A-Fa-f0-9]{6})$\"\n  ]\n}",
+   "wall_s": 14.922,
+   "eval_count": 79,
+   "eval_duration_s": 13.719,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^#([A-Fa-f0-9]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-005",
+   "sample_id": "t0.7s1",
+   "n_units": 4,
+   "prompt_chars": 1001,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     btag9 | hx_1 | fmain7\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  3. four-digit year, two-digit month and day, dash separated\n     match:     2024-07-11 | 2024-05-13 | 2024-11-25\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  4. exactly #RRGGBB with six hex digits\n     match:     #773210 | #907d26 | #19dd1e | #E12153\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^#[0-9a-fA-F]{6}$\"\n  ]\n}",
+   "wall_s": 13.551,
+   "eval_count": 77,
+   "eval_duration_s": 13.363,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^#[0-9a-fA-F]{6}$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-005",
+   "sample_id": "t1s0",
+   "n_units": 4,
+   "prompt_chars": 1001,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     btag9 | hx_1 | fmain7\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  3. four-digit year, two-digit month and day, dash separated\n     match:     2024-07-11 | 2024-05-13 | 2024-11-25\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  4. exactly #RRGGBB with six hex digits\n     match:     #773210 | #907d26 | #19dd1e | #E12153\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{2,15}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^#([0-9A-Fa-f]{6})$\"\n  ]\n}",
+   "wall_s": 13.573,
+   "eval_count": 79,
+   "eval_duration_s": 13.393,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{2,15}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^#([0-9A-Fa-f]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.75,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": false,
+      "detail": "accepts held-out 'a_b'"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "regex_construct",
+   "task_id": "regex_construct-005",
+   "sample_id": "t1s1",
+   "n_units": 4,
+   "prompt_chars": 1001,
+   "prompt": "For each specification write a regular expression that fully matches every 'match' string and none of the 'must not' strings.  Patterns are applied with full-string matching semantics (equivalent to re.fullmatch).  Answer with one pattern per line.\n  1. starts with a lower-case letter, then 3-16 chars of [a-z0-9_]\n     match:     btag9 | hx_1 | fmain7\n     must not:  1abc | ab | ABC_DEF | a-b\n  2. ends in .py, base name from [A-Za-z0-9_.-]\n     match:     main.py | my_script.py | lib-2.py\n     must not:  main.pyc | main.PY | x | main.py.bak\n  3. four-digit year, two-digit month and day, dash separated\n     match:     2024-07-11 | 2024-05-13 | 2024-11-25\n     must not:  2024-2-29 | 2024/02/29 | 24-02-29 | 2024-02-29x\n  4. exactly #RRGGBB with six hex digits\n     match:     #773210 | #907d26 | #19dd1e | #E12153\n     must not:  abc123 | #abc | #abcdef0 | #12345g\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"^[a-z][a-z0-9_]{3,16}$\",\n    \"^[A-Za-z0-9_.-]+\\\\.py$\",\n    \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\n    \"^#([0-9A-Fa-f]{6})$\"\n  ]\n}\n```",
+   "wall_s": 14.216,
+   "eval_count": 83,
+   "eval_duration_s": 14.027,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "^[a-z][a-z0-9_]{3,16}$",
+     "^[A-Za-z0-9_.-]+\\.py$",
+     "^\\d{4}-\\d{2}-\\d{2}$",
+     "^#([0-9A-Fa-f]{6})$"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "r1",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r2",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r3",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     },
+     {
+      "unit": "r4",
+      "ok": true,
+      "detail": "all labelled and held-out strings classified correctly"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-001",
+   "sample_id": "t0.7s0",
+   "n_units": 2,
+   "prompt_chars": 564,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+   "wall_s": 7.306,
+   "eval_count": 38,
+   "eval_duration_s": 6.228,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT COUNT(*) FROM orders WHERE status = 'paid'"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-001",
+   "sample_id": "t0.7s1",
+   "n_units": 2,
+   "prompt_chars": 564,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+   "wall_s": 6.339,
+   "eval_count": 38,
+   "eval_duration_s": 6.16,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT COUNT(*) FROM orders WHERE status = 'paid'"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-001",
+   "sample_id": "t1s0",
+   "n_units": 2,
+   "prompt_chars": 564,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"]}",
+   "wall_s": 6.394,
+   "eval_count": 38,
+   "eval_duration_s": 6.215,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT COUNT(*) FROM orders WHERE status = 'paid'"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-001",
+   "sample_id": "t1s1",
+   "n_units": 2,
+   "prompt_chars": 564,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. number of orders with status 'paid' (result order matters)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT COUNT(*) FROM orders WHERE status = 'paid'\"\n  ]\n}\n```",
+   "wall_s": 8.197,
+   "eval_count": 49,
+   "eval_duration_s": 8.019,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT COUNT(*) FROM orders WHERE status = 'paid'"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-002",
+   "sample_id": "t0.7s0",
+   "n_units": 3,
+   "prompt_chars": 707,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. the two departments with the highest total amount, ordered by total descending (result order matters)\n  2. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  3. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2\",\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(id) > 3\"\n  ]\n}",
+   "wall_s": 12.372,
+   "eval_count": 69,
+   "eval_duration_s": 11.43,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2",
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(id) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "primary mismatch: expected [['HR', 3398], ['OPS', 2667]] got [['HR'], ['OPS']]; probe mismatch: expected [['ENG', 13059], ['HR', 4480]] g..."
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-002",
+   "sample_id": "t0.7s1",
+   "n_units": 3,
+   "prompt_chars": 707,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. the two departments with the highest total amount, ordered by total descending (result order matters)\n  2. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  3. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2\",\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"\n  ]\n}",
+   "wall_s": 11.498,
+   "eval_count": 68,
+   "eval_duration_s": 11.309,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2",
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "primary mismatch: expected [['HR', 3398], ['OPS', 2667]] got [['HR'], ['OPS']]; probe mismatch: expected [['ENG', 13059], ['HR', 4480]] g..."
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-002",
+   "sample_id": "t1s0",
+   "n_units": 3,
+   "prompt_chars": 707,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. the two departments with the highest total amount, ordered by total descending (result order matters)\n  2. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  3. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2\",\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"\n  ]\n}",
+   "wall_s": 11.519,
+   "eval_count": 68,
+   "eval_duration_s": 11.34,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2",
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "primary mismatch: expected [['HR', 3398], ['OPS', 2667]] got [['HR'], ['OPS']]; probe mismatch: expected [['ENG', 13059], ['HR', 4480]] g..."
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-002",
+   "sample_id": "t1s1",
+   "n_units": 3,
+   "prompt_chars": 707,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. the two departments with the highest total amount, ordered by total descending (result order matters)\n  2. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  3. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 3 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2\", \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 9.97,
+   "eval_count": 59,
+   "eval_duration_s": 9.784,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept FROM orders GROUP BY dept ORDER BY SUM(amount) DESC LIMIT 2",
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": false,
+    "score": 0.666667,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": false,
+      "detail": "primary mismatch: expected [['HR', 3398], ['OPS', 2667]] got [['HR'], ['OPS']]; probe mismatch: expected [['ENG', 13059], ['HR', 4480]] g..."
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q3",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-003",
+   "sample_id": "t0.7s0",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 7.668,
+   "eval_count": 41,
+   "eval_duration_s": 6.769,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-003",
+   "sample_id": "t0.7s1",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 6.861,
+   "eval_count": 41,
+   "eval_duration_s": 6.681,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-003",
+   "sample_id": "t1s0",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 6.846,
+   "eval_count": 41,
+   "eval_duration_s": 6.67,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-003",
+   "sample_id": "t1s1",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"\n  ]\n}\n```",
+   "wall_s": 9.11,
+   "eval_count": 53,
+   "eval_duration_s": 8.939,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-004",
+   "sample_id": "t0.7s0",
+   "n_units": 2,
+   "prompt_chars": 589,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. total amount per department, ordered by department ascending (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT dept, SUM(amount) as total_amount FROM orders GROUP BY dept ORDER BY dept ASC\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 7.906,
+   "eval_count": 40,
+   "eval_duration_s": 6.984,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept, SUM(amount) as total_amount FROM orders GROUP BY dept ORDER BY dept ASC",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-004",
+   "sample_id": "t0.7s1",
+   "n_units": 2,
+   "prompt_chars": 589,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. total amount per department, ordered by department ascending (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 7.04,
+   "eval_count": 40,
+   "eval_duration_s": 6.849,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-004",
+   "sample_id": "t1s0",
+   "n_units": 2,
+   "prompt_chars": 589,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. total amount per department, ordered by department ascending (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 7.057,
+   "eval_count": 40,
+   "eval_duration_s": 6.877,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-004",
+   "sample_id": "t1s1",
+   "n_units": 2,
+   "prompt_chars": 589,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. total amount per department, ordered by department ascending (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "{\n  \"answers\": [\n    \"SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"\n  ]\n}",
+   "wall_s": 8.436,
+   "eval_count": 48,
+   "eval_duration_s": 8.255,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT dept, SUM(amount) AS total_amount FROM orders GROUP BY dept ORDER BY dept ASC",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-005",
+   "sample_id": "t0.7s0",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 6.977,
+   "eval_count": 41,
+   "eval_duration_s": 6.756,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-005",
+   "sample_id": "t0.7s1",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 6.88,
+   "eval_count": 41,
+   "eval_duration_s": 6.708,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-005",
+   "sample_id": "t1s0",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\", \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"]}",
+   "wall_s": 6.822,
+   "eval_count": 41,
+   "eval_duration_s": 6.65,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "sql_result",
+   "task_id": "sql_result-005",
+   "sample_id": "t1s1",
+   "n_units": 2,
+   "prompt_chars": 600,
+   "prompt": "Write one SQL query per question for the schema orders(id, dept, region, amount, status) and depts(name, head, budget).  Answers are executed on this dataset and on a held-out dataset with the same schema.  Return a JSON array of SQL strings, one per question, in order.\n  1. name, head and budget of departments with budget > 600, ordered by name (result order matters)\n  2. regions whose order count is strictly greater than 3, without ordering (order does not matter)\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 2 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name\",\n    \"SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3\"\n  ]\n}\n```",
+   "wall_s": 8.899,
+   "eval_count": 53,
+   "eval_duration_s": 8.724,
+   "parse_status": "ok",
+   "payload": {
+    "answers": [
+     "SELECT name, head, budget FROM depts WHERE budget > 600 ORDER BY name",
+     "SELECT region FROM orders GROUP BY region HAVING COUNT(*) > 3"
+    ]
+   },
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "q1",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     },
+     {
+      "unit": "q2",
+      "ok": true,
+      "detail": "result set matches on primary and probe data"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-001",
+   "sample_id": "t0.7s0",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = float('-inf')\", \"    for x in nums:\", \"        if x > best: best = x\", \"        out.append(best)\", \"    return out\"]}",
+   "wall_s": 9.841,
+   "eval_count": 54,
+   "eval_duration_s": 8.905,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = float('-inf')\n    for x in nums:\n        if x > best: best = x\n        out.append(best)\n    return out",
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-001",
+   "sample_id": "t0.7s1",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = float('-inf')\", \"    for x in nums:\", \"        if x > best:\"]}",
+   "wall_s": 6.65,
+   "eval_count": 40,
+   "eval_duration_s": 6.467,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = float('-inf')\n    for x in nums:\n        if x > best:",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t5",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input [[5, 2, 9, 1, 7]]: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-001",
+   "sample_id": "t1s0",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = 0\", \"    for x in nums:\", \"        if x > best:\"]}",
+   "wall_s": 6.325,
+   "eval_count": 38,
+   "eval_duration_s": 6.144,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t5",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input [[5, 2, 9, 1, 7]]: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-001",
+   "sample_id": "t1s1",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"def solve(nums):\",\n    \"    out = []\",\n    \"    best = 0\",\n    \"    for x in nums:\",\n    \"        if x > best:\",\n    \"            best = x\",\n    \"        out.append(best)\",\n    \"    return out\"\n  ]\n}\n```",
+   "wall_s": 12.038,
+   "eval_count": 72,
+   "eval_duration_s": 11.853,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out",
+   "verdict": {
+    "passed": false,
+    "score": 0.8,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "expected [-5, -2, -2], got [0, 0, 0]"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: expected [-1, -1, -1, 0], got [0, 0, 0, 0]"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-002",
+   "sample_id": "t0.7s0",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = float('-inf')\", \"    for x in nums:\", \"        if x > best:\"]}",
+   "wall_s": 6.676,
+   "eval_count": 40,
+   "eval_duration_s": 6.501,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = float('-inf')\n    for x in nums:\n        if x > best:",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t5",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input [[5, 2, 9, 1, 7]]: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-002",
+   "sample_id": "t0.7s1",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = float('-inf')\", \"    for x in nums:\", \"        if x > best:\"]}",
+   "wall_s": 6.618,
+   "eval_count": 40,
+   "eval_duration_s": 6.447,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = float('-inf')\n    for x in nums:\n        if x > best:",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t5",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input [[5, 2, 9, 1, 7]]: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-002",
+   "sample_id": "t1s0",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(nums):\", \"    out = []\", \"    best = 0\", \"    for x in nums:\", \"        if x > best:\"]}",
+   "wall_s": 6.382,
+   "eval_count": 38,
+   "eval_duration_s": 6.205,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t5",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input [[5, 2, 9, 1, 7]]: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-002",
+   "sample_id": "t1s1",
+   "n_units": 5,
+   "prompt_chars": 414,
+   "prompt": "Fix the function below so that it satisfies: return the running maximum after each element.  Return the full module source defining solve.\n\ndef solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"def solve(nums):\",\n    \"    out = []\",\n    \"    best = 0\",\n    \"    for x in nums:\",\n    \"        if x > best:\",\n    \"            best = x\",\n    \"        out.append(best)\",\n    \"    return out\"\n  ]\n}\n```",
+   "wall_s": 12.078,
+   "eval_count": 72,
+   "eval_duration_s": 11.907,
+   "parse_status": "ok",
+   "payload": "def solve(nums):\n    out = []\n    best = 0\n    for x in nums:\n        if x > best:\n            best = x\n        out.append(best)\n    return out",
+   "verdict": {
+    "passed": false,
+    "score": 0.8,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "expected [-5, -2, -2], got [0, 0, 0]"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input [[-1, -3, -2, 0]]: expected [-1, -1, -1, 0], got [0, 0, 0, 0]"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-003",
+   "sample_id": "t0.7s0",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}",
+   "wall_s": 6.517,
+   "eval_count": 34,
+   "eval_duration_s": 5.53,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-003",
+   "sample_id": "t0.7s1",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}",
+   "wall_s": 5.672,
+   "eval_count": 34,
+   "eval_duration_s": 5.496,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-003",
+   "sample_id": "t1s0",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\", \"            n += 1\", \"    return n\"]}",
+   "wall_s": 7.707,
+   "eval_count": 46,
+   "eval_duration_s": 7.538,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':\n            n += 1\n    return n",
+   "verdict": {
+    "passed": false,
+    "score": 0.5,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "expected 6, got 5"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "expected 5, got 0"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-003",
+   "sample_id": "t1s1",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}\n```",
+   "wall_s": 6.354,
+   "eval_count": 38,
+   "eval_duration_s": 6.17,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-004",
+   "sample_id": "t0.7s0",
+   "n_units": 5,
+   "prompt_chars": 304,
+   "prompt": "Fix the function below so that it satisfies: return a/b as a float, or null when b is zero.  Return the full module source defining solve.\n\ndef solve(a, b):\n    return a / b\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(a, b):\", \"    if b == 0:\", \"        return None\", \"    return float(a / b)\"]}",
+   "wall_s": 6.335,
+   "eval_count": 34,
+   "eval_duration_s": 5.449,
+   "parse_status": "ok",
+   "payload": "def solve(a, b):\n    if b == 0:\n        return None\n    return float(a / b)",
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-004",
+   "sample_id": "t0.7s1",
+   "n_units": 5,
+   "prompt_chars": 304,
+   "prompt": "Fix the function below so that it satisfies: return a/b as a float, or null when b is zero.  Return the full module source defining solve.\n\ndef solve(a, b):\n    return a / b\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(a, b):\", \"    if b == 0:\", \"        return None\", \"    else:\", \"        return float(a / b)\"]}",
+   "wall_s": 6.35,
+   "eval_count": 38,
+   "eval_duration_s": 6.166,
+   "parse_status": "ok",
+   "payload": "def solve(a, b):\n    if b == 0:\n        return None\n    else:\n        return float(a / b)",
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-004",
+   "sample_id": "t1s0",
+   "n_units": 5,
+   "prompt_chars": 304,
+   "prompt": "Fix the function below so that it satisfies: return a/b as a float, or null when b is zero.  Return the full module source defining solve.\n\ndef solve(a, b):\n    return a / b\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(a, b):\", \"    if b == 0:\", \"        return None\", \"    else:\", \"        return float(a / b)\"]}",
+   "wall_s": 6.268,
+   "eval_count": 38,
+   "eval_duration_s": 6.098,
+   "parse_status": "ok",
+   "payload": "def solve(a, b):\n    if b == 0:\n        return None\n    else:\n        return float(a / b)",
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-004",
+   "sample_id": "t1s1",
+   "n_units": 5,
+   "prompt_chars": 304,
+   "prompt": "Fix the function below so that it satisfies: return a/b as a float, or null when b is zero.  Return the full module source defining solve.\n\ndef solve(a, b):\n    return a / b\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 5 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\n  \"answers\": [\n    \"def solve(a, b):\",\n    \"    if b == 0:\",\n    \"        return None\",\n    \"    return float(a / b)\"\n  ]\n}\n```",
+   "wall_s": 7.842,
+   "eval_count": 47,
+   "eval_duration_s": 7.646,
+   "parse_status": "ok",
+   "payload": "def solve(a, b):\n    if b == 0:\n        return None\n    return float(a / b)",
+   "verdict": {
+    "passed": true,
+    "score": 1.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t5",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-005",
+   "sample_id": "t0.7s0",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20261174,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}",
+   "wall_s": 5.717,
+   "eval_count": 34,
+   "eval_duration_s": 5.505,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-005",
+   "sample_id": "t0.7s1",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 0.7,
+    "seed": 20269093,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}",
+   "wall_s": 5.652,
+   "eval_count": 34,
+   "eval_duration_s": 5.477,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-005",
+   "sample_id": "t1s0",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20261204,
+    "num_predict": 1024
+   },
+   "raw_response": "{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\", \"            n += 1\", \"    return n\"]}",
+   "wall_s": 7.706,
+   "eval_count": 46,
+   "eval_duration_s": 7.532,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':\n            n += 1\n    return n",
+   "verdict": {
+    "passed": false,
+    "score": 0.5,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "expected 6, got 5"
+     },
+     {
+      "unit": "t2",
+      "ok": true,
+      "detail": "test passed"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "expected 5, got 0"
+     },
+     {
+      "unit": "t4",
+      "ok": true,
+      "detail": "test passed"
+     }
+    ]
+   }
+  },
+  {
+   "family": "code_patch",
+   "task_id": "code_patch-005",
+   "sample_id": "t1s1",
+   "n_units": 4,
+   "prompt_chars": 362,
+   "prompt": "Fix the function below so that it satisfies: count lower/upper case vowels a e i o u.  Return the full module source defining solve.\n\ndef solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeio':\n            n += 1\n    return n\n\n\nAnswer with ONLY a JSON object of the form {\"answers\": [a1, a2, ...]} with exactly 4 entries in order. No prose, no code fences.",
+   "decoding": {
+    "temperature": 1.0,
+    "seed": 20269123,
+    "num_predict": 1024
+   },
+   "raw_response": "```json\n{\"answers\": [\"def solve(s):\", \"    n = 0\", \"    for ch in s:\", \"        if ch in 'aeiou':\"]}\n```",
+   "wall_s": 6.387,
+   "eval_count": 38,
+   "eval_duration_s": 6.218,
+   "parse_status": "ok",
+   "payload": "def solve(s):\n    n = 0\n    for ch in s:\n        if ch in 'aeiou':",
+   "verdict": {
+    "passed": false,
+    "score": 0.0,
+    "evidence": [
+     {
+      "unit": "t1",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t2",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t3",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "t4",
+      "ok": false,
+      "detail": "process exited with status 1"
+     },
+     {
+      "unit": "holdout1",
+      "ok": false,
+      "detail": "held-out input ['Beautiful sunrise']: process exited with status 1"
+     },
+     {
+      "unit": "holdout2",
+      "ok": false,
+      "detail": "held-out input ['bananaaaaa']: process exited with status 1"
+     }
+    ]
+   }
+  }
+ ]
+}

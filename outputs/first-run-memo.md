@@ -869,3 +869,60 @@ the population where side effects would plausibly appear); the scan covers
 Python process state, not filesystem or network effects.  The Just et al.
 ceiling is untouched — this round added real-distribution evidence *about a
 synthetic vector's absence*, not about defect coverage.
+
+---
+
+# Round-15 addendum — temperature sweep: the exploit hypothesis fails a third time (2026-11-07)
+
+Round-10 §5 and round-11 R11.2 left one named hypothesis open: every real
+trace so far was a *greedy* single sample, so "a temperature sweep would
+settle" whether well-formed overfit exploits — the synthetic leak classes of
+§4 (HARD/OVF memorization) — appear once the decoding distribution has
+variance.  Round 15 runs that sweep.  Script `work/temp_sweep.py` (local,
+like the other round scripts); artifacts `outputs/realfail-tempsweep.json`
+(+ `-check.json`) and `outputs/realfail-tempsweep-hot.json` (+ `-check.json`).
+
+**Design.**  The three exploit-prone families only (`regex_construct`,
+`sql_result`, `code_patch` — the ones the signature scanner encodes), 5
+tasks each, model **qwen2.5-coder:14b** — the *same checkpoint* as round 11
+(digest `9ec8897f747e…`), so only the decoding distribution differs from the
+greedy archive.  Samples: 2 per task at temperature 0.7 and 1.0 (main arm,
+60 records), plus a supplementary arm at temperature 1.3, 2 per task
+(30 records), because at ≤ 1.0 several tasks produced near-identical
+answers across samples (all 4 sql samples of task 001 were the same query —
+low-entropy sampling would have made a null verdict weak).  Distinct seeds
+per sample; prompts byte-identical to the round-11 protocol; every sample
+goes through the same parse → `realfail_adapt` → verify path as `realfail
+run`; 90/90 parsed, 0 transport errors, total wall 937 s (mean 10.4 s).
+
+**Result [M]: 0 / 90 units flagged by the round-10 exploit-signature scan,
+0 accepted flagged units** (regex pure-alternation / ≥ 2-literal
+memorization, sql constant or ≥ 2-literal queries, code_patch ≥ 2-literal
+lookup tables).  Accepts under sampling: 26/60 at ≤ 1.0 (sql 16/20 — each
+verified by execution on *both* the primary and the held-out dataset;
+code_patch 5/20 — hidden-test 5/5; regex 5/20) and 12/30 at 1.3.  All 38
+accepted samples were audited by hand: canonical general solutions of the
+same classes round 11 audited (real `GROUP BY … HAVING` queries, character-
+class patterns like `^(\d{1,3}\.){3}\d{1,3}$`, a genuine `safe_div`
+implementation), none a disguised overfit.  Sampling diversity was real
+where it matters: at 1.3, regex emitted 10/10 distinct payloads.
+
+**What this settles.**  The memorization-exploit question is now closed
+along both axes it could be tested on locally: model strength (7b → 14b
+coder-specialised, round 11) *and* decoding diversity (greedy → temp 1.3).
+Cumulative real-output evidence stands at **0 well-formed overfit exploits
+across 390 archived real records** (7b greedy 100, 14b greedy 200, 14b
+sampled 90).  The synthetic leak classes remain what rounds 9–10 made them:
+precautionary hardening targets demonstrated only by authored probes; the
+already-hardened verifiers (held-out regex strings, second sql dataset,
+two-pass code harness) never met an exploit-shaped payload, because the
+sweep produced none.  The validity ceiling of §7 is unchanged: this round
+adds real-distribution evidence about a synthetic vector's *absence*, not
+defect coverage.
+
+Bounds: local models ≤ 14B, temperature ≤ 1.3, one task suite, no frontier
+model, 4 samples per task per temperature.  The signature scan is
+mechanical and shape-based; subtle overfits are caught by the held-out
+verification plus the manual audit of accepts, not by the scan alone.
+Suite size is now **201 tests** (§9's count below is historical).
+
