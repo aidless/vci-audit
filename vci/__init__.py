@@ -9,7 +9,7 @@ Public surface (``pip install -e .`` then ``from vci import ...``)::
 
 The CLI stays available as ``vci ...`` and ``python -m vci ...``.
 """
-__version__ = "0.1.0"
+__version__ = "0.3.0"
 
 from .schema import Candidate, Task, Verdict
 from .harness_decomp import FACTORS, decompose, decompose_file

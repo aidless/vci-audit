@@ -118,22 +118,20 @@
 
 ---
 
-## 发布前检查清单（仅检查，未推送）
+## 发布前检查清单（发布提交 `chore: prepare for public release` 后的状态）
 
-远端状态：`git remote -v` 输出为空 → **没有配置任何远端**，未推送任何内容。
+远端状态：发布时配置 `origin = https://github.com/aidless/vci-audit.git`。
 
-需要补 / 需要决定：
-
-1. **LICENSE**：仓库根目录没有 `LICENSE`/`COPYING`。公开前必须选一个（代码用 MIT/Apache-2.0 均可；
-   `outputs/gsm8k-test.jsonl` 是 GSM8K 数据，需保留其 MIT 归属与来源说明）。
-2. **仓库名/URL**：`pyproject.toml` 里 `name = "vci-audit"`，但没有 `[project.urls]`；
-   README 的克隆示例仍是占位 `git clone <repo-url>`，发布时替换成真实地址。
-3. **版本号不一致**：`vci/__init__.py` 与 `pyproject.toml` 都是 `0.1.0`，但 `vci/audit.py:625`
-   把 `manifest.vci_version` 硬编码为 `"0.3.0"`（重跑后仍是 0.3.0）。这是真实的代码/元数据不一致，
-   未改（不属于本轮"只修文档、不动测量逻辑"的范围）；发布前应统一。
+1. **LICENSE**：已补根目录 `LICENSE`（MIT，`Copyright (c) 2026 Liu Zewen (aidless)`）；
+   `outputs/gsm8k-test.jsonl` 的 GSM8K 来源与 MIT 归属在 README 说明。
+2. **仓库名/URL**：`pyproject.toml` 已加 `[project.urls] Repository = "https://github.com/aidless/vci-audit"`；
+   README 两处克隆示例的 `<repo-url>` 已替换为真实地址。
+3. **版本号**：已统一到 `0.3.0` —— `vci/__init__.py` 与 `pyproject.toml` 升到 0.3.0，向
+   `vci/audit.py:625` 的 `manifest.vci_version` 对齐。向上统一而不是把 audit 改成 0.1.0，
+   是因为已发布的 `outputs/results.json` 记录的就是 0.3.0，改 audit 侧会让既有产物的版本标签失效。
 4. **.gitignore 与大文件**：最大 tracked 文件是 `outputs/gsm8k-test.jsonl`（749 KB），
    全部 < 1 MB，无需 LFS；`work/` 已忽略（LOGBOOK 与 round-12/14 脚本不入库），
-   干净 clone 中 `test_side_effect_scan.py` 已自行 skip（176 passed + 1 skipped）。
-5. **本机路径**：代码目录无 `/home/liuzewen` 命中；`outputs` 内的真实轨迹记录含
+   干净 clone 中 `test_side_effect_scan.py` 已自行 skip。
+5. **本机路径**：代码目录无本机绝对路径命中（`/home/<user>` 形式）；`outputs` 内的真实轨迹记录含
    `http://localhost:11434` 与模型 digest（这是可复现性证据，建议保留，但在 README 说明"本地模型、非云 API"）。
 6. 可选：给 `outputs/` 增加 `README` 索引（哪些是原始数据、哪些是报告）——发布前非阻塞项。

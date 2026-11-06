@@ -129,6 +129,54 @@ def cmd_cross_task_diff(args):
     return 0
 
 
+def cmd_agent_trace(args):
+    from . import agent_trace
+    archive = agent_trace.run(model=args.model, host=args.host,
+                              n_tasks=args.tasks, seed=args.seed,
+                              max_turns=args.max_turns,
+                              num_predict=args.num_predict,
+                              timeout_s=args.timeout, out_path=args.out)
+    recs = archive["records"]
+    n_code = sum(len(agent_trace.task_snippets(r)) for r in recs)
+    n_pass = sum(1 for r in recs if r["grade"])
+    print(f"agent-trace: {len(recs)} tasks archived "
+          f"({n_code} run_python snippets), graded pass {n_pass}/{len(recs)}")
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_agent_trace_analyze(args):
+    import json
+    from . import agent_trace
+    with open(args.archive, encoding="utf-8") as fh:
+        archive = json.load(fh)
+    rep = agent_trace.analyze_archive(archive)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    perf = rep["agent_performance"]
+    scan = rep["signature_scan"]
+    rp = rep["replay"]
+    ctrl = rep["injected_poison_control"]
+    print(f"agent-trace-analyze: {perf['n_tasks']} tasks, "
+          f"pass {perf['passed']}, snippets {perf['n_snippets']} "
+          f"(with code {perf['tasks_with_code']})")
+    print(f"signature scan: capable={scan['contamination_capable']} "
+          f"namespace={scan['namespace_local']} precursor={scan['precursor']}")
+    print(f"replay: nondet={len(rp['nondeterministic_snippets'])} "
+          f"fidelity_mismatch={len(rp['fidelity_mismatch'])} "
+          f"flips_shared={len(rp['flips_shared_vs_fresh'])} "
+          f"flips_reversed={len(rp['flips_shared_reversed_vs_fresh'])}")
+    if ctrl.get("attempted"):
+        print(f"poison control ({ctrl['primitive']} @ {ctrl['task_id']}): "
+              f"propagated={ctrl['propagated']} "
+              f"flagged_by_scan={ctrl['flagged_by_scan']}")
+    else:
+        print("poison control: not attempted (" + ctrl.get("reason", "") + ")")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_realfail(args):
     import json
     from . import realfail
@@ -400,6 +448,30 @@ def build_parser():
                              "batch (B), measured with contaminant-victim pairs")
     ct.add_argument("--out", default="work/cross_task_diff.json")
     ct.set_defaults(fn=cmd_cross_task_diff)
+
+    at = sub.add_parser(
+        "agent-trace",
+        help="run a tool-using agent (ollama native tool calling) on small "
+             "computational tasks and archive every executed run_python "
+             "snippet (round-15 agentic population)")
+    at.add_argument("--model", default="qwen2.5-coder:14b")
+    at.add_argument("--host", default="http://localhost:11434")
+    at.add_argument("--tasks", type=int, default=6)
+    at.add_argument("--seed", type=int, default=20261105)
+    at.add_argument("--max-turns", type=int, default=6, dest="max_turns")
+    at.add_argument("--num-predict", type=int, default=448, dest="num_predict")
+    at.add_argument("--timeout", type=float, default=600.0)
+    at.add_argument("--out", default="outputs/agent-traces.json")
+    at.set_defaults(fn=cmd_agent_trace)
+
+    aa = sub.add_parser(
+        "agent-trace-analyze",
+        help="offline analysis of an agent-trace archive: signature scan over "
+             "executed snippets + fresh/shared/reversed session replay "
+             "differential + injected-poison control (no model re-run)")
+    aa.add_argument("--archive", default="outputs/agent-traces.json")
+    aa.add_argument("--out", default="outputs/agent-trace-analysis.json")
+    aa.set_defaults(fn=cmd_agent_trace_analyze)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

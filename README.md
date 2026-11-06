@@ -11,7 +11,7 @@ at **your own** benchmark; the rest of the repository is the artefact behind [SP
 ## 30 seconds — one command, three real results
 
 ```bash
-git clone <repo-url> vci-audit && cd vci-audit
+git clone https://github.com/aidless/vci-audit.git vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
 bash examples/demo.sh
 ```
@@ -90,6 +90,13 @@ set (pass@k / pass^k).
 * **No generality beyond the measured cell.** The multi-sample result is one model, one benchmark,
   30 tasks (95% CI ≈ ±14 points), one decoding configuration. Small n and one model family cannot
   be extrapolated to other models, benchmarks or temperatures.
+* **No population estimate from a selected sample.** The 30 GSM8K tasks are a fixed slice, and the
+  0.5B control is a subset filtered for at least one pass on the test split — a selection effect
+  that inflates the estimator gap. Read these as properties of the chosen task sets, not of
+  open-ended task distributions at large.
+* **Trust is graded on synthetic probes, not human labels.** TPR/TNR come from programmatic
+  mutants, so they are an upper bound on real behaviour; κ/α are computed against the generator's
+  own labels (a synthetic upper bound) because no human annotation sheet exists yet.
 * no causal attribution without an ablation arm — the decomposer is **budgeted attribution**;
   confirm a source with a third arm that toggles that mechanism alone.
 * no partial credit. `passed` means full credit; a 3-of-5 answer is not a pass.
@@ -131,10 +138,11 @@ synthetic because no human sheet exists.
 Standard library only. Python 3.9+. Nothing is fetched at run time.
 
 ```bash
-git clone <repo-url> vci-audit && cd vci-audit
+git clone https://github.com/aidless/vci-audit.git vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 177 tests; 1 self-skips in a clean clone (needs git-ignored work/)
+python3 -m pytest -q       # 198 tests locally; a clean clone runs 191 and the
+                           # side-effect scanner module self-skips (needs git-ignored work/)
 ```
 
 Verified from a clean clone: `pip install -e .` builds an editable wheel, `from vci import
@@ -240,6 +248,11 @@ python3 -m vci realfail-tolerant         # counterfactual: re-grade the archived
 python3 -m vci cross-task-diff           # cross-task contamination differential:
                                          # isolated per-candidate subprocesses vs one
                                          # shared-process batch (round 12, offline)
+python3 -m vci agent-trace               # tool-using agent on small tasks; archives every
+                                         # executed run_python snippet (round 15, needs ollama)
+python3 -m vci agent-trace-analyze       # offline: signature scan over the executed snippets
+                                         # + fresh/shared/reversed session replay differential
+                                         # + injected-poison control (round 15, no model re-run)
 ```
 
 One command reproduces every deliverable in `outputs/`:
