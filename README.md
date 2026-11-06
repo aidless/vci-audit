@@ -3,6 +3,10 @@
 A measurement toolkit for open-ended task verification. Two standalone components can be pointed
 at **your own** benchmark; the rest of the repository is the artefact behind [SPEC.md](SPEC.md).
 
+**Scope caveat:** the 20 families were selected for verifiability, not representativeness — these
+numbers describe that selected sample and are not evidence for the central hypothesis that most
+open-ended RL tasks are densely verifiable.
+
 | component | import | question it answers |
 |---|---|---|
 | harness differential decomposer | `from vci import decompose` | "two harnesses differ by X points — which mechanism moved?" |
