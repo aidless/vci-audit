@@ -221,6 +221,36 @@ def cmd_agent_grade_probes(args):
     return 0
 
 
+def cmd_agent_replicate(args):
+    import json
+    from . import agent_trace
+    with open(args.archive, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    archives = doc["replicas"] if "replicas" in doc else [doc]
+    rep = agent_trace.replicate_report(archives)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    p = rep["pooled"]
+    print(f"agent-replicate: {p['n_replicas']} replicas x {p['n_tasks_complete']} "
+          f"complete tasks ({p['n_runs']} runs), pass@1 = {p['pass_at_1']}")
+    print(f"verdict-unstable tasks: {p['verdict_unstable_tasks']}")
+    print(f"answer-unstable tasks:  {p['answer_unstable_tasks']}")
+    if p["partial_tasks"]:
+        print(f"partial tasks excluded: {p['partial_tasks']}")
+    if p["grader_drift"]:
+        print(f"grader drift (stored vs recomputed): {p['grader_drift']}")
+    if rep["passk"].get("ok"):
+        from . import passk
+        for line in passk.format_summary(rep["passk"]).splitlines()[1:]:
+            if "as_failure" in line:
+                print(line)
+    else:
+        print("pass^k: " + rep["passk"].get("reason", "n/a"))
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_realfail(args):
     import json
     from . import realfail
@@ -533,6 +563,17 @@ def build_parser():
              "equivalence / defect / packaging probes")
     ag.add_argument("--out", default="outputs/agent-grade-probes.json")
     ag.set_defaults(fn=cmd_agent_grade_probes)
+
+    arp = sub.add_parser(
+        "agent-replicate",
+        help="compare R replays of the same agent suite (same weights, same "
+             "seed, temperature 0.0) and report verdict/answer stability plus "
+             "pass^k over replicas")
+    arp.add_argument("--archive", default="outputs/agent-replicates.json",
+                     help="{'replicas': [archive, ...]} or one archive "
+                          "(treated as a single replica)")
+    arp.add_argument("--out", default="outputs/agent-replicate-summary.json")
+    arp.set_defaults(fn=cmd_agent_replicate)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

@@ -400,3 +400,102 @@ def test_newline_separated_lists_are_packaging_not_equivalence():
     rows = [r for r in rep["rows"] if r["label"] == "newline-separated"]
     assert len(rows) == 2 and all(r["cls"] == "packaging" for r in rows)
     assert rep["pooled"]["packaging_accepted"] == 0
+
+
+# ----------------------------------------- replicate stability (round 17)
+
+def _arc(records, date="d"):
+    return {"manifest": {"model": "m", "model_digest": "d", "seed": 20261105,
+                         "temperature": 0.0, "num_predict": 448,
+                         "max_turns": 6, "date": date},
+            "records": records}
+
+
+def _rec(tid, ref, ans, grade=None, turns=None):
+    rec = {"task_id": tid, "reference": ref, "final_answer": ans}
+    if grade is not None:
+        rec["grade"] = grade
+    if turns is not None:
+        rec["turns"] = turns
+    return rec
+
+
+def test_replicate_report_identical_runs_are_stable():
+    a = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20")])
+    b = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20")])
+    rep = at.replicate_report([a, b])
+    p = rep["pooled"]
+    assert p["n_tasks_complete"] == 2 and p["n_runs"] == 4
+    assert p["pass_at_1"] == 1.0
+    assert p["verdict_unstable_tasks"] == []
+    assert p["answer_unstable_tasks"] == []
+    for k in ("t1", "t2"):
+        assert rep["tasks"][k]["verdict_stable"]
+        assert rep["tasks"][k]["n_distinct_answers"] == 1
+
+
+def test_replicate_report_detects_a_flipped_verdict():
+    a = _arc([_rec("t1", 10, "10"), _rec("t2", 100, "100")])
+    b = _arc([_rec("t1", 10, "9"), _rec("t2", 100, "100")])
+    rep = at.replicate_report([a, b])
+    p = rep["pooled"]
+    assert p["verdict_unstable_tasks"] == ["t1"]
+    assert p["answer_unstable_tasks"] == ["t1"]
+    assert rep["tasks"]["t1"]["passes"] == 1
+    assert rep["tasks"]["t2"]["verdict_stable"]
+    assert p["pass_at_1"] == 0.75
+
+
+def test_replicate_report_partial_replica_is_excluded():
+    a = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20")])
+    b = _arc([_rec("t1", 10, "10")])
+    rep = at.replicate_report([a, b])
+    p = rep["pooled"]
+    assert p["n_tasks_complete"] == 1 and p["partial_tasks"] == ["t2"]
+    assert p["n_runs"] == 2  # t2's single observation must not be pooled
+
+
+def test_replicate_report_recomputes_grade_and_flags_drift():
+    # stored True on a wrong answer: metrics must use the recomputed verdict
+    a = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "19", grade=True)])
+    b = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "19", grade=True)])
+    rep = at.replicate_report([a, b])
+    assert rep["pooled"]["grader_drift"] == [
+        {"task_id": "t2", "replica": 0, "stored": True, "recomputed": False},
+        {"task_id": "t2", "replica": 1, "stored": True, "recomputed": False}]
+    assert rep["tasks"]["t2"]["passes"] == 0
+    assert rep["pooled"]["pass_at_1"] == 0.5
+
+
+def test_replicate_report_separates_turn_drift_from_verdict_drift():
+    # same accepted answer, but the emitted trajectory (and its tool args)
+    # differs: the verdict is stable while the run is not
+    a = _arc([_rec("t1", 10, "10", turns=[{"content": "run",
+                                           "tool_calls": [{"name": "run_python",
+                                                           "arguments": {"code": "print(9+1)"}}]},
+                                          {"content": "final 10"}])])
+    b = _arc([_rec("t1", 10, "10", turns=[{"content": "run",
+                                           "tool_calls": [{"name": "run_python",
+                                                           "arguments": {"code": "print(sum([10]))"}}]},
+                                          {"content": "final 10"}])])
+    rep = at.replicate_report([a, b])
+    t = rep["tasks"]["t1"]
+    assert t["answer_stable"] and t["verdict_stable"]
+    assert not t["turn_stable"]
+    assert rep["pooled"]["turn_unstable_tasks"] == ["t1"]
+    assert rep["pooled"]["answer_unstable_tasks"] == []
+
+
+def test_replicate_report_passk_k1_matches_pass_at_1():
+    a = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "1")])
+    b = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20")])
+    c = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20")])
+    rep = at.replicate_report([a, b, c])
+    curve = rep["passk"]["curves"]["as_failure"]
+    k1 = curve["pass@k"][0]["value"]
+    assert abs(k1 - rep["pooled"]["pass_at_1"]) < 1e-9
+    # t2 passes 2 of 3 repeats: pass^3 is 0, pass^2 is 1/3
+    pk = {p["k"]: p["value"] for p in curve["pass^k"]}
+    assert abs(pk[2] - (1.0 + 1.0 / 3.0) / 2.0) < 1e-9
+    assert pk[3] == 0.5
+

@@ -926,3 +926,70 @@ mechanical and shape-based; subtle overfits are caught by the held-out
 verification plus the manual audit of accepts, not by the scan alone.
 Suite size is now **201 tests** (§9's count below is historical).
 
+
+---
+
+# Round-17 addendum — is one agent run the run's verdict? Replays of the agent suite (2026-11-07)
+
+Every agent verdict in this repo (§R15/§R16) is a **single greedy sample**.
+The 11-05 and 11-06 archives of the same 6-task suite were produced at
+temperature 0.0 with the same seed and the *same served weights*
+(`9ec8897f747e…`) — and they disagreed on `agt-02-running-max` (pass → fail).
+That makes "a repeated run reproduces the run" a testable claim instead of a
+premise.  This round replays the suite and measures it.
+
+**Design.**  6 tasks × 7 replicas = 42 task-runs, 126 emitted turns, same
+model digest, seed `20261105`, `num_predict 448`, `max_turns 6`, fresh
+session per task, prompts byte-identical across archives.  Replica 0 is the
+11-06 archive; replicas 1–4 are fresh runs under the continuously loaded
+model; replicas 5–6 run after `keep_alive: 0` evicted the model, i.e. under
+fresh loads (each re-loaded with the same 4,791,247,830 / 9,953,733,507-byte
+VRAM split, ctx 4096).  Code `work/agent_replicate_run.py` +
+`work/agent_reload_run.py`, analysis in `vci/agent_trace.replicate_report`
+(CLI `vci agent-replicate`, offline), artifacts
+`outputs/agent-replicates.json` + `outputs/agent-replicate-summary.json`.
+
+**Result [M]: 6/6 tasks turn-identical across all 7 replicas** — text and
+tool arguments byte-for-byte, 0 verdict flips, 0 answer differences, 0 grader
+drift between stored and recomputed grades.  `pass@1 = 4/6 = 0.667` in every
+replica, and `pass^k = 0.667` for k = 2…7: the repeat axis carries no
+variance, so reliability equals single-sample accuracy here.  Forced
+unload/reload did not change a byte either.
+
+**The one flip that exists.**  Comparing the 11-05 archive with the 11-06
+archive over 5 tasks the older run covers (`agt-06` is absent there, so it
+is excluded as partial): `verdict-unstable = [agt-02-running-max]`,
+`pass@1 = 0.625` vs `pass^k = 0.600`.  The divergence is inside turn 0 at
+character 276, *before* the 448-token cap: 11-05 chose a `for`-loop,
+11-06 a list comprehension; the loop's turn then ran into `num_predict` and
+its stored text ends mid-string, so the harness executed a salvaged
+truncated call.  So the difference starts in the solver's greedy choice, not
+in the harness — and the harness diff between those two commits touched
+output parsing and `task_ids` only, never the request body.  Same weights,
+same seed, same temperature, same prompt bytes: this is one unresolved
+server-side nondeterminism event, n = 1, not reproducible in 6 controlled
+replays.
+
+**Quantified risk.**  Same-protocol instability: 0 / 42 cells → 95% upper
+bound 7.1% per cell (rule of three).  Cover from the single cross-archive
+pair: 1 / 6 tasks, which with n = 1 bounds nothing — it is an existence
+proof, not a rate.
+
+**What this changes.**  The archived single-run agent evidence can be cited
+as "reproducible within one serving generation, and reproducible across
+reloads on this host", instead of being an untested assumption.  It also
+puts a number on the harness-version effect already measured in §R16: the
+pre-fix parser lost 2 of 12 turns (16.7%) in `agt-05`, which changes the
+conversation the model sees and is a protocol change, not a model change —
+so pre-fix and post-fix archives must never be pooled.
+
+Bounds: temperature 0.0 only, so this is *reproducibility of one greedy
+sample*, **not** sampling variance (that is measured on GSM8K with
+temperature > 0, round 13); one 6-task suite, one 14B local model, four
+model load generations on one host (the 11-06 archive, one continuous
+08:06–08:47 load, and two forced evict/reload cycles); the manifest does not
+record the ollama version or the VRAM split of the historical runs, which is
+exactly what would be needed to name the cause of the single flip.  The
+Just et al. ceiling is untouched — synthetic lab tasks, no human labels.
+Suite size is now **214 tests locally / 204 in a clean clone** (the earlier
+counts here are historical).

@@ -907,6 +907,152 @@ def _packaging_probes(ref: Any, kind: str) -> List[Dict[str, str]]:
              "guess": "observe"}]
 
 
+def _answer_norm(answer: Any) -> Optional[str]:
+    if answer is None:
+        return None
+    return re.sub(r"\s+", "", str(answer))
+
+
+def _turn_signature(rec: Dict[str, Any]) -> str:
+    """Byte-level identity of one trajectory: the text and calls it emitted."""
+    parts = []
+    for t in rec.get("turns") or []:
+        calls = [{"name": c.get("name"), "args": c.get("arguments")}
+                 for c in (t.get("tool_calls") or [])]
+        parts.append({"content": t.get("content") or "", "calls": calls})
+    return json.dumps(parts, sort_keys=True, ensure_ascii=False)
+
+
+def replicate_report(archives: List[Dict[str, Any]], n_boot: int = 1000,
+                     seed: int = 0) -> Dict[str, Any]:
+    """How stable is one agent verdict?  Run the same suite R times, compare.
+
+    Every archived run so far is a single greedy sample, and the memo treats
+    each verdict as the harness's output.  Two archived runs of this suite
+    used the same weights (digest checked) at temperature 0.0 with the same
+    seed and still disagreed on one task's answer, so "repeated greedy runs
+    are the same run" is a testable claim rather than a given.
+
+    The unit of measurement is the *verdict* (``grade_answer``), not the text:
+    a task counts as unstable when the grader's accept/reject differs across
+    replicas, and separately when the answer string differs while the verdict
+    does not.  ``pass^k`` over replicas is the reliability number (round-13's
+    estimator, reused via :mod:`vci.passk`): the chance that all k repeats of
+    the same task pass.
+
+    Tasks missing from any replica are excluded from the pooled numbers and
+    listed separately -- a suite that was only partially re-run must not be
+    scored as if it were complete.
+    """
+    from . import passk
+
+    replicas: List[Dict[str, Any]] = []
+    for i, a in enumerate(archives):
+        m = a.get("manifest") or {}
+        recs = a.get("records") or []
+        replicas.append({
+            "index": i,
+            "model": m.get("model"), "model_digest": m.get("model_digest"),
+            "seed": m.get("seed"), "temperature": m.get("temperature"),
+            "num_predict": m.get("num_predict"), "max_turns": m.get("max_turns"),
+            "date": m.get("date"), "n_tasks": len(recs),
+            "passed": sum(1 for r in recs if r.get("grade")),
+            "passed_ids": [r["task_id"] for r in recs if r.get("grade")],
+        })
+
+    seen: Dict[str, Dict[int, Dict[str, Any]]] = {}
+    for i, a in enumerate(archives):
+        for r in a.get("records") or []:
+            seen.setdefault(r["task_id"], {})[i] = r
+
+    all_reps = set(range(len(archives)))
+    tasks: Dict[str, Any] = {}
+    grader_drift: List[Dict[str, Any]] = []
+    for tid in sorted(seen):
+        by_rep = seen[tid]
+        grades, answers = [], []
+        sigs = []
+        for i in sorted(by_rep):
+            rec = by_rep[i]
+            got = bool(grade_answer(rec.get("reference"), rec.get("final_answer")))
+            if "grade" in rec and bool(rec.get("grade")) != got:
+                grader_drift.append({"task_id": tid, "replica": i,
+                                     "stored": bool(rec.get("grade")),
+                                     "recomputed": got})
+            grades.append(got)
+            answers.append(_answer_norm(rec.get("final_answer")))
+            sigs.append(_turn_signature(rec))
+        distinct = []
+        for a in answers:
+            if a not in distinct:
+                distinct.append(a)
+        turn_stable = len(set(sigs)) == 1
+        tasks[tid] = {
+            "replicas_present": sorted(by_rep),
+            "complete": set(by_rep) == all_reps,
+            "n": len(grades),
+            "passes": sum(grades),
+            "grades": {str(i): g for i, g in zip(sorted(by_rep), grades)},
+            "verdict_stable": len(set(grades)) == 1,
+            "n_distinct_answers": len(distinct),
+            "answer_stable": len(distinct) == 1,
+            "turn_stable": turn_stable,
+        }
+
+    complete = [t for t in tasks if tasks[t]["complete"]]
+    partial = [t for t in tasks if not tasks[t]["complete"]]
+    attempts = []
+    for i in range(len(archives)):
+        for tid in complete:
+            attempts.append({"task_id": tid, "seed": i, "run": i,
+                             "passed": bool(tasks[tid]["grades"][str(i)])})
+    curve = passk.compute(attempts, n_boot=n_boot, seed=seed) \
+        if attempts else {"ok": False, "reason": "no_complete_tasks"}
+
+    n_cell = sum(tasks[t]["n"] for t in complete)
+    pass_cell = sum(tasks[t]["passes"] for t in complete)
+    return {
+        "kind": "vci-agent-replicates", "version": AGENT_TRACE_VERSION,
+        "replicas": replicas,
+        "tasks": tasks,
+        "pooled": {
+            "n_replicas": len(archives),
+            "n_tasks": len(tasks),
+            "n_tasks_complete": len(complete),
+            "n_tasks_partial": len(partial),
+            "partial_tasks": partial,
+            "n_runs": n_cell,
+            "pass_at_1": (pass_cell / n_cell) if n_cell else None,
+            "verdict_unstable_tasks": [t for t in complete
+                                       if not tasks[t]["verdict_stable"]],
+            "answer_unstable_tasks": [t for t in complete
+                                      if not tasks[t]["answer_stable"]],
+            "answer_stable_tasks": [t for t in complete
+                                    if tasks[t]["answer_stable"]],
+            "turn_unstable_tasks": [t for t in complete
+                                    if not tasks[t]["turn_stable"]],
+            "turn_stable_tasks": [t for t in complete if tasks[t]["turn_stable"]],
+            "grader_drift": grader_drift,
+        },
+        "passk": curve,
+        "notes": [
+            "verdict = grade_answer(reference, final_answer) recomputed now, "
+            "so grader drift is visible instead of inherited from the archive",
+            "answer_stable compares whitespace-normalised answer strings; a "
+            "task can be answer-stable and verdict-stable, or neither",
+            "turn_stable compares every emitted turn's text and tool arguments "
+            "byte-for-byte: the strictest form of 'same run'",
+            "every replica decodes at temperature 0.0, so this measures "
+            "reproducibility of one greedy sample, not sampling variance "
+            "(that needs temperature > 0 and is measured separately on gsm8k)",
+            "pass^k is computed over replicate index as the repeat axis "
+            "(same weights, same seed, temperature 0.0)",
+            "single suite, single model, synthetic lab tasks: the Just et al. "
+            "ceiling is untouched",
+        ],
+    }
+
+
 def grade_probes(tasks: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
     """Author probes for ``grade_answer`` and report its accept/reject rates."""
     tasks = AGENT_TASKS if tasks is None else tasks
