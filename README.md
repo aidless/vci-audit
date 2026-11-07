@@ -147,8 +147,8 @@ Standard library only. Python 3.9+. Nothing is fetched at run time.
 git clone https://github.com/aidless/vci-audit.git vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 219 tests locally; a clean clone runs 209 and the
-                           # two work/-dependent modules self-skip (10 tests)
+python3 -m pytest -q       # 224 tests locally; a clean clone passes 214, skips 2
+                           # (work/-dependent modules self-skip)
 ```
 
 Verified from a clean clone: `pip install -e .` builds an editable wheel, `from vci import
@@ -270,6 +270,10 @@ python3 -m vci agent-sampling --sampled outputs/agent-samples.json \
                                          # temperature > 0 arm: sampling variance, per-task
                                          # stability classes, pass^k, greedy-baseline
                                          # disagreement (round 18, offline)
+python3 -m vci agent-failure-modes       # classify 66 archived task-runs by failure mode,
+                                         # test the empty-tool-output predictor, and replay
+                                         # failures under a REPL-echo harness (round 19,
+                                         # offline; no model calls)
 ```
 
 One command reproduces every deliverable in `outputs/`:

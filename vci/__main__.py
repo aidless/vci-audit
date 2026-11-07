@@ -291,6 +291,42 @@ def cmd_agent_sampling(args):
     return 0
 
 
+def cmd_agent_failure_modes(args):
+    import json
+    from . import agent_trace
+    archives = []
+    for path in args.archives:
+        with open(path, encoding="utf-8") as fh:
+            doc = json.load(fh)
+        archives.extend(doc["replicas"] if "replicas" in doc else [doc])
+    rep = agent_trace.failure_report(archives)
+    if not args.no_echo:
+        rep["echo_replay"] = agent_trace.echo_replay(archives)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    d = rep["design"]
+    print(f"agent-failure-modes: {d['n_cells']} cells -> "
+          f"{d['n_unique_cells']} unique trajectories "
+          f"(x{d['duplicate_factor']}), pass@1 unique = "
+          f"{d['pass_at_1_unique']}")
+    print(f"modes (unique): {rep['modes']['unique_cells']}")
+    for name, t in rep["predictor"].items():
+        print(f"predictor {name}: n={t['n_flag']} "
+              f"fail|flag={t['fail_rate_given_flag']} "
+              f"fail|no-flag={t['fail_rate_without_flag']} "
+              f"fisher p={t['fisher_two_sided_p']}")
+    if "echo_replay" in rep:
+        e = rep["echo_replay"]["pooled"]
+        print(f"echo replay: {e['n_echo_recoverable']}/{e['n_unique_failing']} "
+              f"failing trajectories recoverable "
+              f"({e['recoverable_tasks']}); pass@1 unique "
+              f"{e['pass_at_1_unique_before']} -> "
+              f"{e['pass_at_1_unique_after_echo_upper_bound']} (upper bound)")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_realfail(args):
     import json
     from . import realfail
@@ -630,6 +666,20 @@ def build_parser():
                      help="optional greedy archive for the baseline comparison")
     asp.add_argument("--out", default="outputs/agent-sampling-summary.json")
     asp.set_defaults(fn=cmd_agent_sampling)
+
+    afm = sub.add_parser(
+        "agent-failure-modes",
+        help="classify archived agent task-runs by failure mode, test the "
+             "empty-tool-output predictor, and replay failing trajectories "
+             "under a REPL-echo harness (offline; no model calls)")
+    afm.add_argument("--archives", nargs="+",
+                     default=["outputs/agent-replicates.json",
+                              "outputs/agent-samples.json"],
+                     help="one or more {'replicas': [...]} / single archives")
+    afm.add_argument("--out", default="outputs/agent-failure-modes.json")
+    afm.add_argument("--no-echo", action="store_true",
+                     help="skip the offline echo replay subprocesses")
+    afm.set_defaults(fn=cmd_agent_failure_modes)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

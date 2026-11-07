@@ -1080,3 +1080,81 @@ R18 24), testing whether the final tool-call shape (`print(...)` vs bare
 expression) predicts the flips, alongside turn-budget and serialization;
 (3) record ollama version and VRAM split in the manifest and repeat under a
 constrained-VRAM split (R17 leftover).
+
+## R19. Failure-mode audit: the empty-output mechanism explains the flips, not the failure mass
+
+**Question.**  R18 attributed the two verdict flips to the stdout-only tool
+contract (`run_python` captures stdout, not the value of a bare final
+expression) and wrote that "the verdict variance lives in whether the solver
+asks for evidence (`print`) or assumes REPL echo".  That is a claim about why
+runs fail, so it is testable offline over every archived agent task-run:
+classify each run's observable failure mode, cross-tabulate the empty-output
+predictor against the verdict, and replay failing trajectories under an
+echo-capable harness.
+
+**Design.**  Eleven archives -- R17's 7 greedy replicas (6 tasks) and R18's 4
+temperature-1.0 samples (6 tasks), one model digest -- give 66 task-runs.
+Byte-identical trajectories are collapsed *before* any rate is computed
+(R17's seven copies are one observation): 66 cells -> **28 unique
+trajectories**.  Classification is read-only over `tool_calls` / `turns`
+(final statement parsed with `ast`; stdout length; submitted-vs-reference list
+length).  Echo replay re-executes archived snippets in a fresh 15 s
+subprocess under a second runner that returns the value of each snippet's
+final bare expression *alongside* stdout.  Code
+`vci/agent_trace.failure_report` + `echo_replay`, CLI
+`vci agent-failure-modes`, artifact `outputs/agent-failure-modes.json`.
+
+**Result [M].**
+
+| failure mode | unique trajectories (n=28) | archived cells (n=66) |
+|---|---|---|
+| pass | 17 | 42 |
+| `length_mismatch` (submitted list length != reference) | 5 | 11 |
+| `no_submit_truncated_tool_error` (no answer, snippet truncated) | 4 | 11 |
+| `empty_tool_output` (submit after an empty tool result) | 2 | 2 |
+
+`pass@1` is **42/66 = 0.636** over archived cells and **17/28 = 0.607** over
+unique trajectories; the gap is replica inflation, not a second estimate.
+Empty last tool output: **2/2 failed** (fail rate 1.00) versus **9/26 = 0.346**
+without it, Fisher two-sided **p = 0.1455**.  The direction matches R18, but
+at n = 2 this is a mechanism/existence check, *not* a validated predictor.
+The two empty-output cells are exactly the two mixed-task failing samples of
+R18 (`agt-04-primes`, `agt-06-sort-records`); no other unique trajectory has
+an empty final stdout.
+
+**Echo counterfactual [M].**  Eleven unique failing trajectories replayed:
+**2 recover a correct echoed value** (`agt-04` -> `501`; `agt-06` -> the
+correct id order), 5 `agt-02` rows echo nothing (last statement is a `print`;
+stdout already carried 40 values while the submitted string held 39), and 4
+`agt-05` rows are **unreplayable** (the archived snippet is truncated by
+`num_predict` and raises `SyntaxError`).  So `pass@1` on unique trajectories
+would move **0.607 -> 0.679 (+0.071)** if the model submitted the echoed
+value.  That is an upper bound: echo changes the observation and therefore the
+rest of the trajectory, which was not re-run.
+
+**What this changes.**  R18's sentence survives only in its narrow form: both
+observed flips are bare-expression cells, and both carried the correct value
+at the last tool call.  It does **not** generalise to the failure mass --
+9 of 11 unique failures carry non-empty evidence, and the two dominant modes
+are structural: 5 serialization/`length_mismatch` defects (39 of 40 values
+re-typed by hand) and 4 turn-budget/truncation failures with no
+`submit_answer`.  The harness contract is a 2/2 explanation of the flips and
+a 2/11 explanation of failures; citing it as the main failure cause would be
+wrong.  This is also the smallest honest form of the harness-differential
+question: same task set, two execution contracts, and a quantified (upper
+bound) score difference of +0.071 on this suite.
+
+Bounds: one 6-task synthetic suite, one 14B local model, one host, two
+decoding settings; classifier features are shape-level, so a hidden reasoning
+error that happens to end in `print(...)` is labelled
+`evidence_present_wrong_answer` without further attribution.  The echo arm is
+an upper bound, not a predicted score.  The Just et al. ceiling is untouched:
+authored tasks with machine references, no human labels.  Suite size is now
+**224 tests locally / 214 passed + 2 skipped in a clean clone** (earlier
+counts are historical).
+
+**Next candidates.**  (1) Run k = 12 on the two mixed tasks only -- the
+flip-rate denominator R18 named, still unrun; (2) fill
+`annotations/labels.csv`, the only step that lifts the κ/α ceiling; (3) widen
+the suite beyond 6 tasks so the pooled `pass@1` CI is informative.
+

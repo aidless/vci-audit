@@ -33,6 +33,7 @@ Tasks are synthetic lab tasks with programmatically computed references.
 No real-buyer claim: this is external-validity groundwork, and the Just et
 al.  ceiling on the VCI headline is untouched (this is not probe coverage).
 """
+import ast
 import json
 import os
 import queue
@@ -229,15 +230,57 @@ while True:
     sys.stdout.flush()
 '''
 
+# Round 19 counterfactual harness: same protocol as the production runner, but
+# a final bare expression is evaluated and its value returned (REPL echo),
+# instead of stdout being the only channel.  Used offline on archived code.
+_ECHO_RUNNER = r'''
+import ast, contextlib, io, json, sys
+ns = {"__name__": "__session__"}
+while True:
+    line = sys.stdin.readline()
+    if not line:
+        break
+    line = line.strip()
+    if not line:
+        continue
+    try:
+        job = json.loads(line)
+    except ValueError:
+        sys.stdout.write(json.dumps({"ok": False, "stdout": "", "value": None,
+                                     "error": "bad job"}) + "\n")
+        sys.stdout.flush()
+        continue
+    buf = io.StringIO()
+    err = None
+    val = None
+    try:
+        with contextlib.redirect_stdout(buf):
+            tree = ast.parse(job.get("code") or "")
+            if tree.body and isinstance(tree.body[-1], ast.Expr):
+                body = ast.Module(body=tree.body[:-1], type_ignores=[])
+                exec(compile(body, "<tool>", "exec"), ns)
+                val = eval(compile(ast.Expression(tree.body[-1].value),
+                                   "<tool>", "eval"), ns)
+            else:
+                exec(compile(tree, "<tool>", "exec"), ns)
+    except BaseException as e:
+        err = type(e).__name__ + (": " + str(e) if str(e) else "")
+    res = {"ok": err is None, "stdout": buf.getvalue()[-4000:],
+           "value": None if val is None else str(val)[:400], "error": err}
+    sys.stdout.write(json.dumps(res, default=str) + "\n")
+    sys.stdout.flush()
+'''
+
 SESSION_FATAL = ("SessionDead", "SessionTimeout", "SessionDied", "SessionDesync")
 
 
 class Session:
     """A persistent Python subprocess; state survives across run() calls."""
 
-    def __init__(self, timeout_s: float = 15.0):
+    def __init__(self, timeout_s: float = 15.0,
+                 runner: str = _SESSION_RUNNER):
         self.proc = subprocess.Popen(
-            [sys.executable, "-I", "-c", _SESSION_RUNNER],
+            [sys.executable, "-I", "-c", runner],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL, text=True, bufsize=1)
         self.timeout_s = timeout_s
@@ -1186,6 +1229,282 @@ def sampling_report(sampled: List[Dict[str, Any]],
             "how large it is, not its asymptotic distribution",
             "synthetic lab tasks, no human labels: the Just et al. ceiling "
             "on the VCI headline is untouched",
+        ],
+    }
+
+
+def _last_statement_kind(code: str) -> str:
+    """Shape of the final top-level statement (stdout is the only channel)."""
+    try:
+        tree = ast.parse(code or "")
+    except SyntaxError:
+        return "unparseable"
+    if not tree.body:
+        return "empty"
+    last = tree.body[-1]
+    if isinstance(last, ast.Expr):
+        val = last.value
+        if isinstance(val, ast.Call) and isinstance(val.func, ast.Name) \
+                and val.func.id == "print":
+            return "print"
+        return "bare_expression"
+    return "statement"
+
+
+def _fisher_two_sided(a: int, b: int, c: int, d: int) -> float:
+    """Exact Fisher test for [[a, b], [c, d]]; stdlib only (math.comb)."""
+    from math import comb
+    n, r1, c1 = a + b + c + d, a + b, a + c
+    if n == 0:
+        return 1.0
+
+    def prob(x: int) -> float:
+        return (comb(r1, x) * comb(n - r1, c1 - x) / comb(n, c1))
+
+    lo, hi = max(0, c1 - (n - r1)), min(r1, c1)
+    observed = prob(a)
+    return min(1.0, sum(prob(x) for x in range(lo, hi + 1)
+                        if prob(x) <= observed + 1e-12))
+
+
+def _unique_records(archives: List[Dict[str, Any]]):
+    """Collapse byte-identical trajectories; replicas are not independent."""
+    groups: Dict[Any, List[Dict[str, Any]]] = {}
+    for arc in archives:
+        temp = (arc.get("manifest") or {}).get("temperature")
+        for rec in arc.get("records") or []:
+            key = (rec.get("task_id"), _turn_signature(rec))
+            groups.setdefault(key, []).append({"temperature": temp, "rec": rec})
+    return [{"task_id": tid, "signature": sig, "copies": cells,
+             "rec": cells[0]["rec"]} for (tid, sig), cells in sorted(groups.items())]
+
+
+def _failure_mode(rec: Dict[str, Any], passed: bool) -> str:
+    if passed:
+        return "pass"
+    snippets = task_snippets(rec)
+    if not snippets:
+        return "no_run_python"
+    last = snippets[-1]
+    answered = rec.get("final_answer") is not None
+    if not answered:
+        if not last.get("ok") and _last_statement_kind(last.get("code")) == "unparseable":
+            return "no_submit_truncated_tool_error"
+        return "no_submit_turn_budget"
+    if not last.get("ok"):
+        return "tool_error_unresolved"
+    if not (last.get("stdout") or ""):
+        return "empty_tool_output"
+    ref = str(rec.get("reference") or "")
+    if "," in ref:
+        want = len(ref.split(","))
+        got = len(str(rec.get("final_answer")).split(","))
+        if want != got:
+            return "length_mismatch"
+    return "evidence_present_wrong_answer"
+
+
+def failure_report(archives: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Classify every archived agent task-run by its observable failure mode.
+
+    Round 18 named one mechanism -- stdout-only tool results plus a bare final
+    expression -- as the source of the two verdict flips.  That is a claim
+    about *why runs fail*, and it is testable offline: classify all archived
+    runs, then cross-tabulate the empty-tool-output predictor against failure.
+    Duplicate replicas are collapsed before any rate is computed, because
+    seven byte-identical copies are one observation, not seven.
+    """
+    unique = _unique_records(archives)
+    cells = []
+    for u in unique:
+        rec = u["rec"]
+        passed = bool(grade_answer(rec.get("reference"),
+                                   rec.get("final_answer")))
+        snippets = task_snippets(rec)
+        last = snippets[-1] if snippets else None
+        ref = str(rec.get("reference") or "")
+        cells.append({
+            "task_id": u["task_id"],
+            "copies": len(u["copies"]),
+            "temperatures": sorted({c["temperature"] for c in u["copies"]}),
+            "passed": passed,
+            "failure_mode": _failure_mode(rec, passed),
+            "final_channel": rec.get("final_channel"),
+            "n_turns": len(rec.get("turns") or []),
+            "n_run_python": len(snippets),
+            "n_submit": sum(1 for t in rec.get("tool_calls") or []
+                            if t.get("name") == "submit_answer"),
+            "last_statement_kind": (_last_statement_kind(last.get("code"))
+                                    if last else "none"),
+            "last_tool_ok": None if last is None else bool(last.get("ok")),
+            "last_stdout_len": (len(last.get("stdout") or "")
+                                if last else 0),
+            "n_submitted_elems": (len(str(rec.get("final_answer")).split(","))
+                                  if "," in ref and rec.get("final_answer")
+                                  is not None else None),
+            "n_reference_elems": len(ref.split(",")) if "," in ref else None,
+        })
+
+    def _modes(rows):
+        out: Dict[str, int] = {}
+        for r in rows:
+            out[r["failure_mode"]] = out.get(r["failure_mode"], 0) + 1
+        return dict(sorted(out.items()))
+
+    def _predictor(flag):
+        fails = [c for c in cells if not c["passed"]]
+        fail_flag = sum(1 for c in fails if flag(c))
+        fail_rest = len(fails) - fail_flag
+        pass_flag = sum(1 for c in cells if c["passed"] and flag(c))
+        pass_rest = sum(1 for c in cells if c["passed"]) - pass_flag
+        n_flag = fail_flag + pass_flag
+        return {
+            "n_flag": n_flag,
+            "table_[[fail_flag, pass_flag], [fail_rest, pass_rest]]":
+                [[fail_flag, pass_flag], [fail_rest, pass_rest]],
+            "fail_rate_given_flag": (round(fail_flag / n_flag, 4)
+                                     if n_flag else None),
+            "fail_rate_without_flag": (round(fail_rest / (fail_rest + pass_rest), 4)
+                                       if (fail_rest + pass_rest) else None),
+            "fisher_two_sided_p": round(_fisher_two_sided(
+                fail_flag, pass_flag, fail_rest, pass_rest), 4),
+        }
+
+    per_task: Dict[str, Dict[str, int]] = {}
+    for c in cells:
+        b = per_task.setdefault(c["task_id"], {"cells": 0, "passed": 0})
+        b["cells"] += 1
+        b["passed"] += int(c["passed"])
+    n_cells = sum(len(a.get("records") or []) for a in archives)
+    n_unique = len(cells)
+    n_unique_pass = sum(1 for c in cells if c["passed"])
+    manifests = [a.get("manifest") or {} for a in archives]
+    return {
+        "kind": "vci-agent-failure-modes", "version": AGENT_TRACE_VERSION,
+        "design": {
+            "n_archives": len(archives), "n_cells": n_cells,
+            "n_unique_cells": n_unique,
+            "duplicate_factor": (round(n_cells / n_unique, 3)
+                                 if n_unique else None),
+            "temperatures": sorted({m.get("temperature") for m in manifests
+                                    if m.get("temperature") is not None}),
+            "seeds": [m.get("seed") for m in manifests],
+            "model_digests": sorted({m.get("model_digest") for m in manifests
+                                     if m.get("model_digest")}),
+            "pass_at_1_all_cells": (round(sum(
+                1 for c in cells for _ in range(c["copies"]) if c["passed"])
+                / n_cells, 4) if n_cells else None),
+            "pass_at_1_unique": round(n_unique_pass / n_unique, 4)
+            if n_unique else None,
+        },
+        "per_task": per_task,
+        "modes": {"unique_cells": _modes(cells),
+                  "all_cells": _modes([
+                      {"failure_mode": c["failure_mode"]}
+                      for c in cells for _ in range(c["copies"])])},
+        "predictor": {
+            "empty_last_tool_output": _predictor(
+                lambda c: c["last_statement_kind"] == "bare_expression"
+                and c["last_stdout_len"] == 0),
+            "bare_final_expression": _predictor(
+                lambda c: c["last_statement_kind"] == "bare_expression"),
+        },
+        "cells": cells,
+        "notes": [
+            "a cell is one (task, trajectory) pair; byte-identical replicas are "
+            "collapsed before rates, so R17's 42 runs contribute 6 observations",
+            "failure_mode is descriptive, not causal: length_mismatch means the "
+            "submitted list length differs from the reference, not that the "
+            "answer was computed wrongly",
+            "the predictor table is two-by-two over unique cells; a single "
+            "empty-output cell moves the fail rate by more than ten points",
+            "synthetic lab tasks, one model, no human labels: the Just et al. "
+            "ceiling is untouched",
+        ],
+    }
+
+
+def echo_replay(archives: List[Dict[str, Any]], timeout_s: float = 15.0) -> Dict[str, Any]:
+    """Counterfactual: replay failing trajectories under a REPL-echo harness.
+
+    Same subprocess protocol, but the final bare expression of each snippet is
+    evaluated and its value returned alongside stdout.  For a failing run,
+    this answers a narrow question: *was the correct value available at the
+    model's last tool call under a harness that echoes it?*  It does **not**
+    predict what the model would have submitted, because a different
+    observation would change the rest of the trajectory; the pooled delta is
+    therefore an upper bound, stated as such.
+    """
+    unique = _unique_records(archives)
+    pass_unique = sum(1 for u in unique
+                      if grade_answer(u["rec"].get("reference"),
+                                      u["rec"].get("final_answer")))
+    rows = []
+    for u in unique:
+        rec = u["rec"]
+        if grade_answer(rec.get("reference"), rec.get("final_answer")):
+            continue
+        session = Session(timeout_s=timeout_s, runner=_ECHO_RUNNER)
+        last = None
+        try:
+            for snip in task_snippets(rec):
+                last = session.run(snip.get("code") or "")
+        finally:
+            session.kill()
+        echo = last.get("value") if last else None
+        echo_ok = bool(echo is not None
+                       and grade_answer(rec.get("reference"), echo))
+        rows.append({
+            "task_id": u["task_id"],
+            "copies": len(u["copies"]),
+            "temperatures": sorted({c["temperature"] for c in u["copies"]}),
+            "failure_mode": _failure_mode(rec, False),
+            "n_snippets": len(task_snippets(rec)),
+            "last_tool_ok": None if last is None else bool(last.get("ok")),
+            "last_error": None if last is None else last.get("error"),
+            "last_stdout_len": (len(last.get("stdout") or "")
+                                if last else 0),
+            "last_statement_kind": (_last_statement_kind(
+                task_snippets(rec)[-1].get("code"))
+                if task_snippets(rec) else "none"),
+            "echo_value": echo,
+            "echo_grades_correct": echo_ok,
+        })
+    recoverable = [r for r in rows if r["echo_grades_correct"]]
+    unreplayable = [r for r in rows if r["last_tool_ok"] is False]
+    n_unique = len(unique)
+    return {
+        "kind": "vci-agent-echo-replay", "version": AGENT_TRACE_VERSION,
+        "design": {
+            "n_unique_cells": n_unique, "n_unique_failing": len(rows),
+            "harness": "production protocol + eval of the final bare "
+                       "expression per snippet; stdout still captured",
+            "scope": "offline replay of archived code only; no model calls",
+        },
+        "pooled": {
+            "n_unique_failing": len(rows),
+            "n_echo_recoverable": len(recoverable),
+            "recoverable_tasks": [r["task_id"] for r in recoverable],
+            "n_unreplayable": len(unreplayable),
+            "unreplayable_tasks": [r["task_id"] for r in unreplayable],
+            "pass_at_1_unique_before": round(pass_unique / n_unique, 4)
+            if n_unique else None,
+            "pass_at_1_unique_after_echo_upper_bound":
+                round((pass_unique + len(recoverable)) / n_unique, 4)
+                if n_unique else None,
+            "delta_upper_bound": round(len(recoverable) / n_unique, 4)
+            if n_unique else None,
+        },
+        "rows": rows,
+        "notes": [
+            "the echo run changes what the model would observe, so "
+            "delta_upper_bound assumes the rest of the trajectory is unchanged",
+            "unreplayable = the archived snippet does not parse on replay "
+            "(truncated by num_predict), so its value cannot be recovered",
+            "a row with last_statement_kind=statement/print has no echoed "
+            "value even though stdout was non-empty: echo only adds one channel",
+            "side effects are bounded by round 14's scanner (0/450 signatures) "
+            "and every replay runs in a fresh 15 s subprocess",
         ],
     }
 

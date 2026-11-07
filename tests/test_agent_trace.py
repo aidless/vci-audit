@@ -589,3 +589,75 @@ def test_sampling_report_excludes_partial_samples():
     assert list(rep["tasks"]) == ["t1"]
     assert rep["pooled"]["n_tasks"] == 1
 
+
+# ------------------------------------ failure modes + echo replay (round 19)
+
+def _run_call(code, ok=True, stdout="", error=None):
+    return {"name": "run_python", "code": code, "ok": ok,
+            "stdout": stdout, "error": error}
+
+
+def test_last_statement_kind_recognises_print_bare_and_unparseable():
+    assert at._last_statement_kind("x = 1\nprint(x)") == "print"
+    assert at._last_statement_kind("x = 1\nx + 1") == "bare_expression"
+    assert at._last_statement_kind("x = 1") == "statement"
+    assert at._last_statement_kind("def f(:") == "unparseable"
+    assert at._last_statement_kind("") == "empty"
+
+
+def test_fisher_two_sided_matches_known_tables():
+    assert at._fisher_two_sided(3, 0, 0, 3) == pytest.approx(0.1)
+    assert at._fisher_two_sided(0, 1, 1, 0) == pytest.approx(1.0)
+
+
+def test_failure_report_collapses_identical_replicas():
+    rec = _rec("t1", 10, "10",
+               turns=[{"content": "a", "tool_calls": []}])
+    rec["tool_calls"] = [_run_call("print(10)", stdout="10")]
+    rep = at.failure_report([_arc([rec]), _arc([rec])])
+    assert rep["design"]["n_cells"] == 2
+    assert rep["design"]["n_unique_cells"] == 1
+    assert rep["design"]["duplicate_factor"] == 2
+    assert rep["design"]["pass_at_1_unique"] == 1.0
+
+
+def test_failure_report_classifies_the_observed_modes():
+    empty = _rec("t-empty", 2, "3",
+                 turns=[{"content": "a", "tool_calls": []}])
+    empty["tool_calls"] = [_run_call("x = 1\nx + 1")]
+    short = _rec("t-short", "1,2", "1",
+                 turns=[{"content": "b", "tool_calls": []}])
+    short["tool_calls"] = [_run_call("print('1,2')", stdout="1,2")]
+    budget = _rec("t-budget", 5, None,
+                  turns=[{"content": "c", "tool_calls": []}])
+    budget["tool_calls"] = [_run_call("print(5)", stdout="5")]
+    trunc = _rec("t-trunc", 5, None,
+                 turns=[{"content": "d", "tool_calls": []}])
+    trunc["tool_calls"] = [_run_call("def f(", ok=False,
+                                     error="SyntaxError")]
+    rep = at.failure_report([_arc([empty, short, budget, trunc])])
+    modes = {c["task_id"]: c["failure_mode"] for c in rep["cells"]}
+    assert modes["t-empty"] == "empty_tool_output"
+    assert modes["t-short"] == "length_mismatch"
+    assert modes["t-budget"] == "no_submit_turn_budget"
+    assert modes["t-trunc"] == "no_submit_truncated_tool_error"
+    p = rep["predictor"]["empty_last_tool_output"]
+    assert p["n_flag"] == 1 and p["fail_rate_given_flag"] == 1.0
+    assert "pass" not in rep["modes"]["unique_cells"]
+
+
+def test_echo_replay_recovers_a_bare_expression_value():
+    failing = _rec("t1", 2, "3",
+                   turns=[{"content": "a", "tool_calls": []}])
+    failing["tool_calls"] = [_run_call("x = 1\nx + 1")]
+    passing = _rec("t2", 7, "7",
+                   turns=[{"content": "b", "tool_calls": []}])
+    passing["tool_calls"] = [_run_call("print(7)", stdout="7")]
+    rep = at.echo_replay([_arc([failing, passing])])
+    p = rep["pooled"]
+    assert p["n_unique_failing"] == 1
+    assert p["n_echo_recoverable"] == 1
+    assert rep["rows"][0]["echo_value"] == "2"
+    assert p["pass_at_1_unique_before"] == 0.5
+    assert p["pass_at_1_unique_after_echo_upper_bound"] == 1.0
+
