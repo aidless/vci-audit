@@ -11,7 +11,9 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest: ubuntu-latest is 26.04, and actions/python-versions
+    # publishes 3.9 builds only for 22.04 and 24.04, so setup-python fails there.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
