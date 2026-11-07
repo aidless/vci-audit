@@ -510,8 +510,15 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         n_tasks: int = 6, seed: int = DEFAULT_SEED, max_turns: int = 6,
         num_predict: int = 448, timeout_s: float = 600.0,
         session_timeout_s: float = 15.0, out_path: Optional[str] = None,
-        responder: Optional[Callable] = None) -> Dict[str, Any]:
+        responder: Optional[Callable] = None,
+        task_ids: Optional[List[str]] = None) -> Dict[str, Any]:
     tasks = AGENT_TASKS[:n_tasks]
+    if task_ids is not None:  # resume a partial archive without re-running it
+        wanted = list(task_ids)
+        tasks = [t for t in AGENT_TASKS if t["task_id"] in wanted]
+        if len(tasks) != len(wanted):
+            missing = sorted(set(wanted) - {t["task_id"] for t in tasks})
+            raise ValueError("unknown task ids: " + ", ".join(missing))
     digest = None
     if responder is None:  # real run: pin the served weights
         digest = ollama_model_digest(host, model)
@@ -520,7 +527,9 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         "model": model, "model_digest": digest,
         "host": host, "seed": seed, "temperature": 0.0,
         "num_predict": num_predict, "max_turns": max_turns,
-        "samples_per_task": 1, "n_tasks_planned": n_tasks,
+        "samples_per_task": 1, "n_tasks_planned": len(tasks),
+        "suite_size": len(AGENT_TASKS),
+        "task_ids": [t["task_id"] for t in tasks],
         "session": "fresh per task (production shape)",
         "protocol": "ollama chat; tool calls parsed natively when served "
                     "tool_calls exist, else from the Qwen JSON shape in "
@@ -729,4 +738,226 @@ def analyze_archive(archive: Dict[str, Any],
             "flips_shared_vs_fresh": flips_s,
             "flips_shared_reversed_vs_fresh": flips_rev},
         "injected_poison_control": control,
+    }
+
+
+# --------------------------------------------------------------------------
+# offline: parser-side loss, measured as a counterfactual reparse
+# --------------------------------------------------------------------------
+
+def _strict_json_object(text: str) -> Optional[dict]:
+    """Like ``_parse_json_object`` but with no repair variants applied."""
+    dec = json.JSONDecoder()
+    idx = text.find("{")
+    while idx != -1:
+        try:
+            obj, _ = dec.raw_decode(text, idx)
+            if isinstance(obj, dict) and "name" in obj and "arguments" in obj:
+                return obj
+        except ValueError:
+            pass
+        idx = text.find("{", idx + 1)
+    return None
+
+
+def reparsing_report(archive: Dict[str, Any],
+                     timeout_s: float = 15.0) -> Dict[str, Any]:
+    """Re-read archived turns through the *current* parser, no model re-run.
+
+    The round-15 archive was produced before the tolerant JSON repairs
+    (``_json_variants``) were in place: some stored turns whose content *is*
+    a tool call carry ``tool_calls: []``.  Those are harness losses, not
+    model failures.  Recovered calls are executed in a fresh session so the
+    report says whether the lost payload was executable at all -- a payload
+    truncated by the token budget recovers as a call whose code is cut
+    mid-string and cannot run.
+    """
+    n_turns = n_stored = 0
+    lost: List[Dict[str, Any]] = []
+    for rec in archive.get("records") or []:
+        for ti, turn in enumerate(rec.get("turns") or []):
+            n_turns += 1
+            stored = [c.get("name") for c in (turn.get("tool_calls") or [])]
+            n_stored += len(stored)
+            content = turn.get("content") or ""
+            if stored or not content:
+                continue
+            recovered = parse_tool_calls({"content": content})
+            if not recovered:
+                continue
+            variant = None
+            if _strict_json_object(content):
+                variant = 0
+            else:
+                for i, cand in enumerate(_json_variants(content)):
+                    if i and _strict_json_object(cand):
+                        variant = i
+                        break
+            if variant is None:  # recovered only through nested repairs
+                variant = -1
+            executions = []
+            session = Session(timeout_s=timeout_s)
+            try:
+                for call in recovered:
+                    if call["name"] != "run_python":
+                        executions.append({"name": call["name"],
+                                           "executed": False})
+                        continue
+                    res = session.run(str(call["args"].get("code") or ""))
+                    executions.append({
+                        "name": "run_python", "executed": True,
+                        "ok": bool(res.get("ok")),
+                        "error": res.get("error"),
+                        "stdout_head": (res.get("stdout") or "")[:120]})
+            finally:
+                session.kill()
+            lost.append({"task_id": rec.get("task_id"), "turn": ti,
+                         "names": [c["name"] for c in recovered],
+                         "json_variant": variant,  # 0 = strict, >0 = repaired
+                         "executions": executions})
+    return {
+        "kind": "vci-agent-reparse", "version": AGENT_TRACE_VERSION,
+        "n_turns": n_turns, "n_stored_calls": n_stored,
+        "n_lost_calls": sum(len(x["names"]) for x in lost),
+        "n_tasks_affected": len({x["task_id"] for x in lost}),
+        "lost": lost,
+    }
+
+
+# --------------------------------------------------------------------------
+# offline: the agent grader audited with the VCI probe discipline
+#
+# The agent harness ships its own verifier (``grade_answer``): relative 1e-9
+# for numbers, whitespace-insensitive string equality for lists.  Rounds 6-10
+# found packaging strictness to dominate real single-shot failures; this
+# measures the same class on the *agent* grader with authored probes.
+# Classes: identity (control, must accept), equivalence (accept-expected),
+# defect (reject-expected), packaging (observe -- the system prompt demands a
+# bare value, so a prose-wrapped answer is a contract violation, not a
+# verifier bug; it is counted and excluded from the pooled rates).
+# --------------------------------------------------------------------------
+
+def _equiv_probes(ref: Any, kind: str) -> List[Dict[str, str]]:
+    out = []
+    if kind in ("int", "float"):
+        out.append({"label": "space-wrapped", "answer": f" {ref} ",
+                    "guess": "accept"})
+        out.append({"label": "plus-sign", "answer": f"+{ref}",
+                    "guess": "accept"})
+        if kind == "int":
+            out.append({"label": "float-form", "answer": f"{ref}.0",
+                        "guess": "accept"})
+            if abs(ref) >= 1000:
+                out.append({"label": "thousands-sep", "answer": f"{ref:,}",
+                            "guess": "accept"})
+        else:
+            out.append({"label": "extra-decimals", "answer": f"{ref:.3f}",
+                        "guess": "accept"})
+            if abs(ref) >= 1000:
+                out.append({"label": "thousands-sep",
+                            "answer": f"{ref:,.2f}", "guess": "accept"})
+    else:
+        out.append({"label": "comma-space", "answer": str(ref).replace(",", ", "),
+                    "guess": "accept"})
+        out.append({"label": "tab-padded",
+                    "answer": str(ref).replace(",", ",\t"), "guess": "accept"})
+        out.append({"label": "space-wrapped", "answer": f" {ref} ",
+                    "guess": "accept"})
+    return out
+
+
+def _defect_probes(ref: Any, kind: str) -> List[Dict[str, str]]:
+    out = []
+    if kind in ("int", "float"):
+        out.append({"label": "off-by-one", "answer": f"{ref + 1}",
+                    "guess": "reject"})
+        out.append({"label": "magnitude-10x", "answer": f"{ref * 10}",
+                    "guess": "reject"})
+        out.append({"label": "sign-flipped", "answer": f"{-ref}",
+                    "guess": "reject"})
+        out.append({"label": "non-numeric", "answer": "n/a",
+                    "guess": "reject"})
+    else:
+        parts = str(ref).split(",")
+        out.append({"label": "reversed-order",
+                    "answer": ",".join(reversed(parts)), "guess": "reject"})
+        out.append({"label": "dropped-last",
+                    "answer": ",".join(parts[:-1]), "guess": "reject"})
+        out.append({"label": "extra-element", "answer": str(ref) + ",zzz",
+                    "guess": "reject"})
+        out.append({"label": "wrong-first",
+                    "answer": ",".join(["zzz"] + parts[1:]),
+                    "guess": "reject"})
+    return out
+
+
+def _packaging_probes(ref: Any, kind: str) -> List[Dict[str, str]]:
+    if kind in ("int", "float"):
+        return [{"label": "prose-sentence",
+                 "answer": f"The answer is {ref}.", "guess": "observe"},
+                {"label": "backticks", "answer": f"`{ref}`",
+                 "guess": "observe"}]
+    # the two list tasks explicitly demand one comma-separated line, so a
+    # newline-separated list is a contract violation, not an equivalent answer
+    return [{"label": "newline-separated",
+             "answer": str(ref).replace(",", "\n"), "guess": "observe"},
+            {"label": "prose-sentence", "answer": f"The answer is: {ref}.",
+             "guess": "observe"},
+            {"label": "json-array", "answer": "[" + str(ref) + "]",
+             "guess": "observe"}]
+
+
+def grade_probes(tasks: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    """Author probes for ``grade_answer`` and report its accept/reject rates."""
+    tasks = AGENT_TASKS if tasks is None else tasks
+    rows: List[Dict[str, Any]] = []
+    for t in tasks:
+        ref, kind = t["reference"], t.get("kind")
+        rows.append({"task_id": t["task_id"], "kind": kind,
+                     "label": "identity", "cls": "identity",
+                     "answer": ref, "ref": ref, "guess": "accept"})
+        for p in _equiv_probes(ref, kind):
+            rows.append({"task_id": t["task_id"], "kind": kind,
+                         "label": p["label"], "cls": "equivalence",
+                         "answer": p["answer"], "ref": ref,
+                         "guess": p["guess"]})
+        for p in _defect_probes(ref, kind):
+            rows.append({"task_id": t["task_id"], "kind": kind,
+                         "label": p["label"], "cls": "defect",
+                         "answer": p["answer"], "ref": ref,
+                         "guess": p["guess"]})
+        for p in _packaging_probes(ref, kind):
+            rows.append({"task_id": t["task_id"], "kind": kind,
+                         "label": p["label"], "cls": "packaging",
+                         "answer": p["answer"], "ref": ref,
+                         "guess": p["guess"]})
+    for r in rows:
+        r["accepted"] = bool(grade_answer(r["ref"], r["answer"]))
+    by_cls: Dict[str, Dict[str, Any]] = {}
+    for r in rows:
+        b = by_cls.setdefault(r["cls"], {"n": 0, "accepted": 0})
+        b["n"] += 1
+        b["accepted"] += int(r["accepted"])
+    def _rate(cls, want_accept):
+        b = by_cls.get(cls, {"n": 0, "accepted": 0})
+        good = b["accepted"] if want_accept else b["n"] - b["accepted"]
+        return None if not b["n"] else round(good / b["n"], 4)
+    return {
+        "kind": "vci-agent-grader-probes", "version": AGENT_TRACE_VERSION,
+        "grader": "grade_answer: relative 1e-9 for numbers, whitespace-"
+                  "insensitive equality for lists",
+        "n_tasks": len(tasks), "n_probes": len(rows),
+        "pooled": {
+            "identity_control_pass": _rate("identity", True),
+            "equivalence_accept_rate": _rate("equivalence", True),
+            "defect_reject_rate": _rate("defect", False),
+            "packaging_accepted": by_cls.get("packaging", {}).get("accepted", 0),
+            "packaging_n": by_cls.get("packaging", {}).get("n", 0),
+            "counts": by_cls,
+        },
+        "false_rejects": [r for r in rows
+                          if r["cls"] == "equivalence" and not r["accepted"]],
+        "false_accepts": [r for r in rows
+                          if r["cls"] == "defect" and r["accepted"]],
+        "rows": rows,
     }

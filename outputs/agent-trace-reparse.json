@@ -1,0 +1,44 @@
+{
+ "kind": "vci-agent-reparse",
+ "version": "1.0",
+ "n_turns": 12,
+ "n_stored_calls": 10,
+ "n_lost_calls": 2,
+ "n_tasks_affected": 1,
+ "lost": [
+  {
+   "task_id": "agt-05-log-latency",
+   "turn": 0,
+   "names": [
+    "run_python"
+   ],
+   "json_variant": 1,
+   "executions": [
+    {
+     "name": "run_python",
+     "executed": true,
+     "ok": false,
+     "error": "SyntaxError: unterminated string literal (detected at line 14) (<tool>, line 14)",
+     "stdout_head": ""
+    }
+   ]
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "turn": 1,
+   "names": [
+    "run_python"
+   ],
+   "json_variant": 1,
+   "executions": [
+    {
+     "name": "run_python",
+     "executed": true,
+     "ok": false,
+     "error": "SyntaxError: unterminated string literal (detected at line 14) (<tool>, line 14)",
+     "stdout_head": ""
+    }
+   ]
+  }
+ ]
+}

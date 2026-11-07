@@ -323,3 +323,80 @@ def test_analyze_empty_tool_trace_is_honest():
     assert rep["signature_scan"]["n_snippets"] == 0
     assert not rep["injected_poison_control"]["attempted"]
     assert rep["agent_performance"]["passed"] == 0
+
+
+# ------------------------------------------------- parser loss (round 16)
+
+_BACKSLASH = chr(92)
+
+
+def test_reparse_recovers_a_turn_the_archive_stored_as_empty():
+    # shape of the round-15 loss: content IS a tool call, but it carries the
+    # Python-style \' escape qwen2.5-coder emits (invalid JSON), so the
+    # parser of that day stored tool_calls=[].
+    code = "print(6*7)  # six" + _BACKSLASH + "'s product"
+    content = ('{"name": "run_python", "arguments": {"code": "'
+               + code + '"}}')
+    arc = {"manifest": {}, "records": [{
+        "task_id": "rp", "turns": [{"content": content, "tool_calls": []}]}]}
+    rep = at.reparsing_report(arc)
+    assert rep["n_stored_calls"] == 0 and rep["n_lost_calls"] == 1
+    assert rep["n_tasks_affected"] == 1
+    lost = rep["lost"][0]
+    assert lost["json_variant"] >= 1  # recovered only via a repair variant
+    assert lost["executions"][0]["ok"] is True
+    assert lost["executions"][0]["stdout_head"].strip() == "42"
+
+
+def test_reparse_reports_truncated_payload_as_unexecutable():
+    # a payload cut by num_predict recovers as a call whose code is truncated:
+    # the verdict must be "not executable", not "silently fine"
+    content = '{"name": "run_python", "arguments": {"code": "print(1'
+    arc = {"manifest": {}, "records": [{
+        "task_id": "tr", "turns": [{"content": content, "tool_calls": []}]}]}
+    rep = at.reparsing_report(arc)
+    assert rep["n_lost_calls"] == 1
+    ex = rep["lost"][0]["executions"][0]
+    assert ex["ok"] is False and "SyntaxError" in ex["error"]
+
+
+def test_reparse_leaves_intact_turns_alone():
+    content = '{"name": "run_python", "arguments": {"code": "print(1)"}}'
+    arc = {"manifest": {}, "records": [{
+        "task_id": "ok", "turns": [{"content": content,
+                                    "tool_calls": [{"name": "run_python",
+                                                    "args": {"code": "print(1)"}}]}]}]}
+    rep = at.reparsing_report(arc)
+    assert rep["n_lost_calls"] == 0 and rep["n_stored_calls"] == 1
+
+
+# ------------------------------------------- grader probes (round 16)
+
+def test_grade_probes_identity_control_accepts_every_task():
+    rep = at.grade_probes()
+    assert rep["n_tasks"] == len(at.AGENT_TASKS)
+    assert rep["pooled"]["identity_control_pass"] == 1.0
+
+
+def test_grade_probes_reject_side_is_clean():
+    rep = at.grade_probes()
+    assert rep["pooled"]["defect_reject_rate"] == 1.0
+    assert rep["false_accepts"] == []
+
+
+def test_grade_probes_record_thousands_separator_strictness():
+    # float("2,397") raises ValueError, so a standard-formatted integer is a
+    # false reject: the observed strictness is recorded, not hidden
+    rep = at.grade_probes()
+    labels = {(r["task_id"], r["label"]) for r in rep["false_rejects"]}
+    assert ("agt-05-log-latency", "thousands-sep") in labels
+    assert ("agt-03-weighted-avg", "thousands-sep") in labels
+
+
+def test_newline_separated_lists_are_packaging_not_equivalence():
+    # both list tasks explicitly demand one comma-separated line, so a
+    # newline-separated list is a contract violation and belongs in 'observe'
+    rep = at.grade_probes()
+    rows = [r for r in rep["rows"] if r["label"] == "newline-separated"]
+    assert len(rows) == 2 and all(r["cls"] == "packaging" for r in rows)
+    assert rep["pooled"]["packaging_accepted"] == 0

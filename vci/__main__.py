@@ -131,11 +131,13 @@ def cmd_cross_task_diff(args):
 
 def cmd_agent_trace(args):
     from . import agent_trace
+    ids = args.task_ids.split(",") if args.task_ids else None
     archive = agent_trace.run(model=args.model, host=args.host,
                               n_tasks=args.tasks, seed=args.seed,
                               max_turns=args.max_turns,
                               num_predict=args.num_predict,
-                              timeout_s=args.timeout, out_path=args.out)
+                              timeout_s=args.timeout, out_path=args.out,
+                              task_ids=ids)
     recs = archive["records"]
     n_code = sum(len(agent_trace.task_snippets(r)) for r in recs)
     n_pass = sum(1 for r in recs if r["grade"])
@@ -173,6 +175,48 @@ def cmd_agent_trace_analyze(args):
               f"flagged_by_scan={ctrl['flagged_by_scan']}")
     else:
         print("poison control: not attempted (" + ctrl.get("reason", "") + ")")
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_agent_trace_reparse(args):
+    import json
+    from . import agent_trace
+    with open(args.archive, encoding="utf-8") as fh:
+        archive = json.load(fh)
+    rep = agent_trace.reparsing_report(archive)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    print(f"agent-trace-reparse: {rep['n_turns']} turns, "
+          f"{rep['n_stored_calls']} stored calls, "
+          f"{rep['n_lost_calls']} recovered by the current parser "
+          f"across {rep['n_tasks_affected']} task(s)")
+    for x in rep["lost"]:
+        ex = [e for e in x["executions"] if e.get("executed")]
+        print(f"  {x['task_id']} turn {x['turn']}: {x['names']} "
+              f"(json_variant={x['json_variant']}) -> "
+              f"{[('ok' if e['ok'] else e['error']) for e in ex]}")
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_agent_grade_probes(args):
+    import json
+    from . import agent_trace
+    rep = agent_trace.grade_probes()
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    p = rep["pooled"]
+    print(f"agent-grade-probes: {rep['n_tasks']} tasks, {rep['n_probes']} probes")
+    print(f"identity control accept: {p['identity_control_pass']}")
+    print(f"equivalence accept rate: {p['equivalence_accept_rate']} "
+          f"({len(rep['false_rejects'])} false rejects)")
+    print(f"defect reject rate: {p['defect_reject_rate']} "
+          f"({len(rep['false_accepts'])} false accepts)")
+    print(f"packaging (observe, excluded): {p['packaging_accepted']}"
+          f"/{p['packaging_n']} accepted")
     print("wrote " + args.out)
     return 0
 
@@ -462,6 +506,8 @@ def build_parser():
     at.add_argument("--num-predict", type=int, default=448, dest="num_predict")
     at.add_argument("--timeout", type=float, default=600.0)
     at.add_argument("--out", default="outputs/agent-traces.json")
+    at.add_argument("--task-ids", dest="task_ids", default=None,
+                    help="comma-separated subset, e.g. agt-06-sort-records")
     at.set_defaults(fn=cmd_agent_trace)
 
     aa = sub.add_parser(
@@ -472,6 +518,21 @@ def build_parser():
     aa.add_argument("--archive", default="outputs/agent-traces.json")
     aa.add_argument("--out", default="outputs/agent-trace-analysis.json")
     aa.set_defaults(fn=cmd_agent_trace_analyze)
+
+    ar = sub.add_parser(
+        "agent-trace-reparse",
+        help="counterfactual reparse of an agent archive through the current "
+             "tool-call parser (harness loss, no model re-run)")
+    ar.add_argument("--archive", default="outputs/agent-traces.json")
+    ar.add_argument("--out", default="outputs/agent-trace-reparse.json")
+    ar.set_defaults(fn=cmd_agent_trace_reparse)
+
+    ag = sub.add_parser(
+        "agent-grade-probes",
+        help="audit the agent harness grader (grade_answer) with identity / "
+             "equivalence / defect / packaging probes")
+    ag.add_argument("--out", default="outputs/agent-grade-probes.json")
+    ag.set_defaults(fn=cmd_agent_grade_probes)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

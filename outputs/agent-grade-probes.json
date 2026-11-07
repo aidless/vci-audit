@@ -1,0 +1,697 @@
+{
+ "kind": "vci-agent-grader-probes",
+ "version": "1.0",
+ "grader": "grade_answer: relative 1e-9 for numbers, whitespace-insensitive equality for lists",
+ "n_tasks": 6,
+ "n_probes": 64,
+ "pooled": {
+  "identity_control_pass": 1.0,
+  "equivalence_accept_rate": 0.9,
+  "defect_reject_rate": 1.0,
+  "packaging_accepted": 0,
+  "packaging_n": 14,
+  "counts": {
+   "identity": {
+    "n": 6,
+    "accepted": 6
+   },
+   "equivalence": {
+    "n": 20,
+    "accepted": 18
+   },
+   "defect": {
+    "n": 24,
+    "accepted": 0
+   },
+   "packaging": {
+    "n": 14,
+    "accepted": 0
+   }
+  }
+ },
+ "false_rejects": [
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "thousands-sep",
+   "cls": "equivalence",
+   "answer": "3,893.83",
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "thousands-sep",
+   "cls": "equivalence",
+   "answer": "2,397",
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": false
+  }
+ ],
+ "false_accepts": [],
+ "rows": [
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "identity",
+   "cls": "identity",
+   "answer": 8,
+   "ref": 8,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " 8 ",
+   "ref": 8,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "plus-sign",
+   "cls": "equivalence",
+   "answer": "+8",
+   "ref": 8,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "float-form",
+   "cls": "equivalence",
+   "answer": "8.0",
+   "ref": 8,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "off-by-one",
+   "cls": "defect",
+   "answer": "9",
+   "ref": 8,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "magnitude-10x",
+   "cls": "defect",
+   "answer": "80",
+   "ref": 8,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "sign-flipped",
+   "cls": "defect",
+   "answer": "-8",
+   "ref": 8,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "non-numeric",
+   "cls": "defect",
+   "answer": "n/a",
+   "ref": 8,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is 8.",
+   "ref": 8,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-01-wordfreq",
+   "kind": "int",
+   "label": "backticks",
+   "cls": "packaging",
+   "answer": "`8`",
+   "ref": 8,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "identity",
+   "cls": "identity",
+   "answer": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "comma-space",
+   "cls": "equivalence",
+   "answer": "132, 820, 820, 820, 820, 864, 864, 864, 864, 864, 864, 864, 864, 889, 889, 889, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 966, 976, 976, 976, 976, 976, 976, 976, 976, 976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "tab-padded",
+   "cls": "equivalence",
+   "answer": "132,\t820,\t820,\t820,\t820,\t864,\t864,\t864,\t864,\t864,\t864,\t864,\t864,\t889,\t889,\t889,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t966,\t976,\t976,\t976,\t976,\t976,\t976,\t976,\t976,\t976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " 132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976 ",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "reversed-order",
+   "cls": "defect",
+   "answer": "976,976,976,976,976,976,976,976,976,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,889,889,889,864,864,864,864,864,864,864,864,820,820,820,820,132",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "dropped-last",
+   "cls": "defect",
+   "answer": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "extra-element",
+   "cls": "defect",
+   "answer": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976,zzz",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "wrong-first",
+   "cls": "defect",
+   "answer": "zzz,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "newline-separated",
+   "cls": "packaging",
+   "answer": "132\n820\n820\n820\n820\n864\n864\n864\n864\n864\n864\n864\n864\n889\n889\n889\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n966\n976\n976\n976\n976\n976\n976\n976\n976\n976",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is: 132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976.",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-02-running-max",
+   "kind": "str",
+   "label": "json-array",
+   "cls": "packaging",
+   "answer": "[132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976]",
+   "ref": "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,966,976,976,976,976,976,976,976,976,976",
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "identity",
+   "cls": "identity",
+   "answer": 3893.83,
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " 3893.83 ",
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "plus-sign",
+   "cls": "equivalence",
+   "answer": "+3893.83",
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "extra-decimals",
+   "cls": "equivalence",
+   "answer": "3893.830",
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "thousands-sep",
+   "cls": "equivalence",
+   "answer": "3,893.83",
+   "ref": 3893.83,
+   "guess": "accept",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "off-by-one",
+   "cls": "defect",
+   "answer": "3894.83",
+   "ref": 3893.83,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "magnitude-10x",
+   "cls": "defect",
+   "answer": "38938.3",
+   "ref": 3893.83,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "sign-flipped",
+   "cls": "defect",
+   "answer": "-3893.83",
+   "ref": 3893.83,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "non-numeric",
+   "cls": "defect",
+   "answer": "n/a",
+   "ref": 3893.83,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is 3893.83.",
+   "ref": 3893.83,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-03-weighted-avg",
+   "kind": "float",
+   "label": "backticks",
+   "cls": "packaging",
+   "answer": "`3893.83`",
+   "ref": 3893.83,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "identity",
+   "cls": "identity",
+   "answer": 501,
+   "ref": 501,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " 501 ",
+   "ref": 501,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "plus-sign",
+   "cls": "equivalence",
+   "answer": "+501",
+   "ref": 501,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "float-form",
+   "cls": "equivalence",
+   "answer": "501.0",
+   "ref": 501,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "off-by-one",
+   "cls": "defect",
+   "answer": "502",
+   "ref": 501,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "magnitude-10x",
+   "cls": "defect",
+   "answer": "5010",
+   "ref": 501,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "sign-flipped",
+   "cls": "defect",
+   "answer": "-501",
+   "ref": 501,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "non-numeric",
+   "cls": "defect",
+   "answer": "n/a",
+   "ref": 501,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is 501.",
+   "ref": 501,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-04-primes",
+   "kind": "int",
+   "label": "backticks",
+   "cls": "packaging",
+   "answer": "`501`",
+   "ref": 501,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "identity",
+   "cls": "identity",
+   "answer": 2397,
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " 2397 ",
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "plus-sign",
+   "cls": "equivalence",
+   "answer": "+2397",
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "float-form",
+   "cls": "equivalence",
+   "answer": "2397.0",
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "thousands-sep",
+   "cls": "equivalence",
+   "answer": "2,397",
+   "ref": 2397,
+   "guess": "accept",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "off-by-one",
+   "cls": "defect",
+   "answer": "2398",
+   "ref": 2397,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "magnitude-10x",
+   "cls": "defect",
+   "answer": "23970",
+   "ref": 2397,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "sign-flipped",
+   "cls": "defect",
+   "answer": "-2397",
+   "ref": 2397,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "non-numeric",
+   "cls": "defect",
+   "answer": "n/a",
+   "ref": 2397,
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is 2397.",
+   "ref": 2397,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-05-log-latency",
+   "kind": "int",
+   "label": "backticks",
+   "cls": "packaging",
+   "answer": "`2397`",
+   "ref": 2397,
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "identity",
+   "cls": "identity",
+   "answer": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "comma-space",
+   "cls": "equivalence",
+   "answer": "id116, id126, id120, id127, id130, id101, id104, id129, id128, id122",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "tab-padded",
+   "cls": "equivalence",
+   "answer": "id116,\tid126,\tid120,\tid127,\tid130,\tid101,\tid104,\tid129,\tid128,\tid122",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "space-wrapped",
+   "cls": "equivalence",
+   "answer": " id116,id126,id120,id127,id130,id101,id104,id129,id128,id122 ",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "accept",
+   "accepted": true
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "reversed-order",
+   "cls": "defect",
+   "answer": "id122,id128,id129,id104,id101,id130,id127,id120,id126,id116",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "dropped-last",
+   "cls": "defect",
+   "answer": "id116,id126,id120,id127,id130,id101,id104,id129,id128",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "extra-element",
+   "cls": "defect",
+   "answer": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122,zzz",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "wrong-first",
+   "cls": "defect",
+   "answer": "zzz,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "reject",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "newline-separated",
+   "cls": "packaging",
+   "answer": "id116\nid126\nid120\nid127\nid130\nid101\nid104\nid129\nid128\nid122",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "prose-sentence",
+   "cls": "packaging",
+   "answer": "The answer is: id116,id126,id120,id127,id130,id101,id104,id129,id128,id122.",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "observe",
+   "accepted": false
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "kind": "str",
+   "label": "json-array",
+   "cls": "packaging",
+   "answer": "[id116,id126,id120,id127,id130,id101,id104,id129,id128,id122]",
+   "ref": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+   "guess": "observe",
+   "accepted": false
+  }
+ ]
+}

@@ -259,6 +259,10 @@ python3 -m vci agent-trace               # tool-using agent on small tasks; arch
 python3 -m vci agent-trace-analyze       # offline: signature scan over the executed snippets
                                          # + fresh/shared/reversed session replay differential
                                          # + injected-poison control (round 15, no model re-run)
+python3 -m vci agent-trace-reparse       # offline: counterfactual reparse of an agent archive
+                                         # through the current tool-call parser (round 16)
+python3 -m vci agent-grade-probes        # audit the agent grader with identity / equivalence /
+                                         # defect / packaging probes (round 16, offline)
 ```
 
 One command reproduces every deliverable in `outputs/`:
