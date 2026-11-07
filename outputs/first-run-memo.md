@@ -993,3 +993,90 @@ exactly what would be needed to name the cause of the single flip.  The
 Just et al. ceiling is untouched — synthetic lab tasks, no human labels.
 Suite size is now **214 tests locally / 204 in a clean clone** (the earlier
 counts here are historical).
+
+## R18. Sampling-variance arm: is a greedy verdict representative of the decoder?
+
+**Question.**  R17 showed that greedy replays are stable (0/42 verdict flips).
+That still leaves the sampling axis unmeasured: `pass^k` over replays collapses
+onto `pass@1` *because temperature is pinned at 0.0*, so the archive could not
+distinguish "the verdict is reliable" from "the decoding path is unique".  This
+round runs the same suite at temperature 1.0 with four distinct seeds and
+changes nothing else.
+
+**Design.**  6 tasks × 4 samples = 24 task-runs, 24 fresh sessions, temperature
+1.0, seeds `20261105 + 7919k` (k = 0…3), model digest `9ec8897f747e…`,
+`num_predict 448`, `max_turns 6`, `timeout 600 s`, prompts byte-identical to
+R17 (scratch slices execute with the same `sys.path` injection, so `sympy`
+remains importable).  Sample wall times: 826 / 729 / 754 / 693 s (3,002 s total,
+plus one model load).  Code `work/agent_sampling_run.py`; analysis
+`vci/agent_trace.sampling_report` (CLI `vci agent-sampling`, offline, pure
+recompute over archives); artifacts `outputs/agent-samples.json`,
+`outputs/agent-samples/temp1.0-sample-0[0-3].json`,
+`outputs/agent-sampling-summary.json`.
+
+**Result [M] (24 cells, 4 samples × 6 tasks).**
+Per-sample pass rates are 4/6, 4/6, 3/6, 3/6; pooled `pass@1 = 14/24 = 0.583`
+(bootstrap over tasks, 95% CI [0.250, 0.917]).  The greedy baseline is
+`4/6 = 0.667` — the maximum observed per-sample rate, +0.083 (one task) above
+the sample mean, and no task where the greedy verdict disagrees with *all* four
+samples (`n_greedy_disagrees = 0`).
+
+Per-task stability classes: 2 stable-pass (`agt-01-wordfreq`,
+`agt-03-weighted-avg`), 2 stable-fail (`agt-02-running-max`,
+`agt-05-log-latency`), 2 mixed (`agt-04-primes` 3/4, `agt-06-sort-records` 3/4).
+`pass^k` (all k samples pass) = 0.583 / 0.500 / 0.417 / 0.333 for k = 1…4
+(k = 4 95% CI [0.000, 0.667]); `pass@k` (any sample passes) = 0.583 / 0.667 /
+0.667 / 0.667.  Answer stability is 4/6 tasks (identical answer in all four
+samples); two tasks produced two distinct answers.  Turn text differs in **6/6**
+tasks (4 distinct trajectories each), and turn counts differ (`agt-03` 2 vs 3,
+`agt-04` 2 vs 3, `agt-06` 2 vs 3), so temperature is demonstrably active.
+
+**Failure anatomy [M].**  The two stable failures are deterministic and
+structural, not decoding noise:
+`agt-02-running-max` submits 39 comma-separated values against the 40-value
+reference (first mismatch at index 30, identical in all four samples, 4/4
+`submit_answer` calls), i.e. a manual re-typing/serialization defect after a
+correct-looking tool run; `agt-05-log-latency` makes **0** `submit_answer`
+calls and always exhausts the 6-turn budget while re-emitting a truncated copy
+of the log list (4/4, `final_answer = null`).
+
+Both mixed tasks flip through *the same* harness-contract mechanism.  The
+`run_python` scratch session captures stdout only (`contextlib.redirect_stdout`
+around `exec`, no REPL echo), so a bare final expression returns an empty
+result.  In the failing `agt-04-primes` sample the last statements are bare
+`len(primes)` and then bare `count`, the tool returns nothing, and the model
+submits 1354 instead of 501; the three passing samples all end with
+`print(...)`.  In the failing `agt-06-sort-records` sample the sort itself is
+correct (`key=lambda x: (-x[1], x[2])`) but the last statement is bare
+`result`, so the tool again returns nothing and the submitted order is a
+fabricated permutation (`id116,id126,id127,id130,id120,…`) rather than the
+reference.  So the verdict variance lives in whether the solver asks for
+evidence (`print`) or assumes REPL echo, not in arithmetic.
+
+
+**What this changes.**  R17's `pass^k = pass@1` is repeat-axis stability at
+temperature 0.0 and must not be cited as verdict reliability.  On the sampling
+axis the verdict is not deterministic: 2/6 tasks change verdict across four
+draws, and a single greedy run sits at the top of the observed range.  It does
+**not** show arithmetic unreliability — both stable failures are task
+comprehension/turn-budget, identical in every sample, and would not be fixed by
+a sampler; both flips are empty-tool-output events under a bare-expression
+contract, i.e. a harness/usage interaction.  Net: the archived single-run score
+is reproducible but optimistic by one task at this sample size, and pass^k at
+temp 0 measures the harness, not the model's sampling distribution.
+
+Bounds: one 6-task synthetic suite, one 14B local model, one non-zero
+temperature (1.0), four samples per task, n = 6 tasks (per-task rates are k/4),
+no human labels; the bootstrap over six tasks is coarse, so the CIs describe
+this suite, not a general sampling-variance law.  The Just et al. ceiling is
+untouched: these are authored tasks with machine references.  Suite size is
+now **219 tests locally / 209 in a clean clone** (earlier counts are
+historical).
+
+**Next candidates.**  (1) Run k = 12 on the two mixed tasks only, to put a
+denominator on the flip rate (1/4 currently cannot separate 10% from 40%);
+(2) offline failure-mode classifier over all 66 archived task-runs (R17 42 +
+R18 24), testing whether the final tool-call shape (`print(...)` vs bare
+expression) predicts the flips, alongside turn-budget and serialization;
+(3) record ollama version and VRAM split in the manifest and repeat under a
+constrained-VRAM split (R17 leftover).

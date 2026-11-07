@@ -3,6 +3,7 @@
 archives.  The live-run protocol (native tool calling, greedy decoding) is
 exercised by `python -m vci agent-trace`, not here."""
 import ast
+import json
 
 import pytest
 
@@ -498,4 +499,93 @@ def test_replicate_report_passk_k1_matches_pass_at_1():
     pk = {p["k"]: p["value"] for p in curve["pass^k"]}
     assert abs(pk[2] - (1.0 + 1.0 / 3.0) / 2.0) < 1e-9
     assert pk[3] == 0.5
+
+
+# ------------------------------------- temperature plumbing (round 18)
+
+def test_ollama_chat_sends_the_configured_temperature(monkeypatch):
+    captured = {}
+
+    class _Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def read(self):
+            return b'{"message": {"content": "ok"}}'
+
+    def fake_urlopen(req, timeout=None):
+        captured["body"] = json.loads(req.data.decode("utf-8"))
+        return _Resp()
+
+    monkeypatch.setattr(at.urllib.request, "urlopen", fake_urlopen)
+    at.ollama_chat("http://h", "m", [{"role": "user", "content": "x"}],
+                   seed=7, max_tokens=16, timeout_s=5.0, temperature=1.3)
+    opts = captured["body"]["options"]
+    assert opts["temperature"] == 1.3 and opts["seed"] == 7
+
+
+def test_run_manifest_records_the_requested_temperature():
+    ref = at.AGENT_TASKS[0]["reference"]
+    arch = at.run(n_tasks=1, temperature=1.0, responder=_script(
+        {"content": "", "tool_calls": [{"function": {
+            "name": "submit_answer",
+            "arguments": {"answer": str(ref)}}}]}))
+    assert arch["manifest"]["temperature"] == 1.0
+    assert arch["records"][0]["grade"] is True
+
+
+# --------------------------------------- sampling variance (round 18)
+
+def _sarc(records, seed, temperature=1.0):
+    return {"manifest": {"model": "m", "model_digest": "d", "seed": seed,
+                         "temperature": temperature, "num_predict": 448,
+                         "max_turns": 6}, "records": records}
+
+
+def test_sampling_report_classifies_stable_and_mixed_tasks():
+    s0 = _sarc([_rec("t1", 10, "10"), _rec("t2", 20, "20"),
+                _rec("t3", 30, "1")], seed=1)
+    s1 = _sarc([_rec("t1", 10, "10"), _rec("t2", 20, "1"),
+                _rec("t3", 30, "2")], seed=2)
+    s2 = _sarc([_rec("t1", 10, "10"), _rec("t2", 20, "20"),
+                _rec("t3", 30, "3")], seed=3)
+    rep = at.sampling_report([s0, s1, s2])
+    assert rep["tasks"]["t1"]["class"] == "stable-pass"
+    assert rep["tasks"]["t2"]["class"] == "mixed"
+    assert rep["tasks"]["t3"]["class"] == "stable-fail"
+    assert rep["pooled"]["n_mixed"] == 1
+    assert rep["design"]["temperatures"] == [1.0]
+    assert rep["design"]["seeds"] == [1, 2, 3]
+    assert rep["design"]["per_sample_pass_at_1"] == pytest.approx(
+        [2 / 3, 1 / 3, 2 / 3])
+    assert rep["tasks"]["t2"]["n_distinct_answers"] == 2
+    assert rep["tasks"]["t2"]["answers"] == ["20", "1", "20"]
+    # t1 always passes, t2 2/3, t3 0/3 -> pass^3 = (1 + 0 + 0)/3
+    curve = rep["passk"]["curves"]["as_failure"]
+    pk = {p["k"]: p["value"] for p in curve["pass^k"]}
+    assert pk[3] == pytest.approx(1 / 3)
+
+
+def test_sampling_report_flags_a_greedy_luck_task():
+    samples = [_sarc([_rec("t1", 10, "10"), _rec("t2", 20, "1"),
+                      _rec("t3", 30, "1")], seed=i) for i in (1, 2, 3)]
+    greedy = _arc([_rec("t1", 10, "10"), _rec("t2", 20, "20"),
+                   _rec("t3", 30, "1")])
+    rep = at.sampling_report(samples, greedy=greedy)
+    g = rep["greedy_baseline"]
+    assert g["greedy_luck_tasks"] == ["t2"]
+    assert g["n_greedy_disagrees"] == 1
+    assert g["pass_at_1"] == pytest.approx(2 / 3)
+    assert rep["tasks"]["t2"]["class"] == "stable-fail"
+
+
+def test_sampling_report_excludes_partial_samples():
+    s0 = _sarc([_rec("t1", 10, "10"), _rec("t2", 20, "20")], seed=1)
+    s1 = _sarc([_rec("t1", 10, "10")], seed=2)
+    rep = at.sampling_report([s0, s1])
+    assert list(rep["tasks"]) == ["t1"]
+    assert rep["pooled"]["n_tasks"] == 1
 

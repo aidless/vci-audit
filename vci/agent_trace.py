@@ -293,10 +293,11 @@ class Session:
 # --------------------------------------------------------------------------
 
 def ollama_chat(host: str, model: str, messages: List[dict], seed: int,
-                max_tokens: int, timeout_s: float) -> Dict[str, Any]:
+                max_tokens: int, timeout_s: float,
+                temperature: float = 0.0) -> Dict[str, Any]:
     body = {"model": model, "messages": messages, "stream": False,
             "tools": TOOLS,
-            "options": {"temperature": 0.0, "seed": seed,
+            "options": {"temperature": temperature, "seed": seed,
                         "num_predict": max_tokens}}
     req = urllib.request.Request(
         host.rstrip("/") + "/api/chat",
@@ -500,9 +501,10 @@ def run_task(task: Dict[str, Any], session: Session, responder: Callable,
 
 
 def _default_responder(model: str, host: str, seed: int, max_tokens: int,
-                       timeout_s: float) -> Callable:
+                       timeout_s: float, temperature: float = 0.0) -> Callable:
     def respond(messages):
-        return ollama_chat(host, model, messages, seed, max_tokens, timeout_s)
+        return ollama_chat(host, model, messages, seed, max_tokens, timeout_s,
+                           temperature=temperature)
     return respond
 
 
@@ -511,7 +513,8 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         num_predict: int = 448, timeout_s: float = 600.0,
         session_timeout_s: float = 15.0, out_path: Optional[str] = None,
         responder: Optional[Callable] = None,
-        task_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+        task_ids: Optional[List[str]] = None,
+        temperature: float = 0.0) -> Dict[str, Any]:
     tasks = AGENT_TASKS[:n_tasks]
     if task_ids is not None:  # resume a partial archive without re-running it
         wanted = list(task_ids)
@@ -525,7 +528,7 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
     manifest = {
         "kind": "vci-agent-trace", "version": AGENT_TRACE_VERSION,
         "model": model, "model_digest": digest,
-        "host": host, "seed": seed, "temperature": 0.0,
+        "host": host, "seed": seed, "temperature": temperature,
         "num_predict": num_predict, "max_turns": max_turns,
         "samples_per_task": 1, "n_tasks_planned": len(tasks),
         "suite_size": len(AGENT_TASKS),
@@ -552,7 +555,7 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         t0 = time.perf_counter()
         resp = responder if responder is not None else _default_responder(
             model=model, host=host, seed=seed, max_tokens=num_predict,
-            timeout_s=timeout_s)
+            timeout_s=timeout_s, temperature=temperature)
         try:
             result = run_task(task, session, resp, max_turns=max_turns)
         finally:
@@ -1049,6 +1052,140 @@ def replicate_report(archives: List[Dict[str, Any]], n_boot: int = 1000,
             "(same weights, same seed, temperature 0.0)",
             "single suite, single model, synthetic lab tasks: the Just et al. "
             "ceiling is untouched",
+        ],
+    }
+
+
+def sampling_report(sampled: List[Dict[str, Any]],
+                    greedy: Optional[Dict[str, Any]] = None,
+                    n_boot: int = 1000, seed: int = 0) -> Dict[str, Any]:
+    """Separate sampling variance from replay stability (round 18).
+
+    :func:`replicate_report` holds temperature at 0.0, so it answers "does
+    the same greedy run reproduce itself"; its pass^k is degenerate because
+    the repeat axis carries no variance by design.  Here the same suite is
+    run several times at a temperature > 0 with a distinct seed per sample,
+    so a verdict difference across archives is attributable to the decoding
+    distribution rather than to harness or server nondeterminism.
+
+    Per-cell bookkeeping (verdict / answer / turn identity, grader drift,
+    pass@k and pass^k) is reused verbatim; this adds:
+
+    * **design** -- the temperatures, seeds and model digests actually
+      recorded in the manifests (a mixed-temperature input is flagged, never
+      silently pooled);
+    * **per-task sampling class** -- ``stable-pass`` / ``stable-fail`` /
+      ``mixed``;
+    * **an optional greedy baseline** -- a task whose single greedy verdict
+      disagrees with *every* sample of the temp>0 arm is one where the
+      single-sample score is not representative of the sampling distribution
+      (``greedy_luck`` when greedy passed and all samples failed,
+      ``greedy_fluke_fail`` when the reverse).
+    """
+    core = replicate_report(sampled, n_boot=n_boot, seed=seed)
+    manifests = [a.get("manifest") or {} for a in sampled]
+    temps = sorted({m.get("temperature") for m in manifests
+                    if m.get("temperature") is not None})
+    seeds = [m.get("seed") for m in manifests]
+    digests = sorted({m.get("model_digest") for m in manifests
+                      if m.get("model_digest")})
+
+    answers: Dict[str, List[str]] = {}
+    per_sample_pass_at_1 = []
+    for arc in sampled:
+        graded = [bool(grade_answer(r.get("reference"),
+                                    r.get("final_answer")))
+                  for r in arc.get("records") or []
+                  if r.get("task_id") in core["tasks"]]
+        if graded:
+            per_sample_pass_at_1.append(sum(graded) / len(graded))
+        for r in arc.get("records") or []:
+            ans = r.get("final_answer")
+            if ans is not None:
+                answers.setdefault(r["task_id"], []).append(str(ans)[:120])
+
+    tasks: Dict[str, Any] = {}
+    for tid, t in core["tasks"].items():
+        if not t["complete"]:
+            continue
+        passes, n = t["passes"], t["n"]
+        tasks[tid] = {
+            "n_samples": n, "passes": passes,
+            "sample_pass_rate": passes / n,
+            "class": ("stable-pass" if passes == n else
+                      "stable-fail" if passes == 0 else "mixed"),
+            "answers": answers.get(tid, []),
+            "n_distinct_answers": t["n_distinct_answers"],
+            "answer_stable": t["answer_stable"],
+            "turn_stable": t["turn_stable"],
+        }
+
+    greedy_cmp = None
+    if greedy is not None:
+        g = {r["task_id"]: bool(grade_answer(r.get("reference"),
+                                             r.get("final_answer")))
+             for r in greedy.get("records") or []}
+        rows = []
+        for tid, t in tasks.items():
+            if tid not in g:
+                continue
+            gp, n, passes = g[tid], t["n_samples"], t["passes"]
+            rows.append({
+                "task_id": tid, "greedy_passed": gp,
+                "sample_passes": passes, "n_samples": n,
+                "greedy_disagrees_with_all_samples":
+                    bool((gp and passes == 0) or ((not gp) and passes == n)),
+            })
+        greedy_cmp = {
+            "pass_at_1": (sum(g.values()) / len(g)) if g else None,
+            "tasks": rows,
+            "n_greedy_disagrees": sum(
+                1 for r in rows if r["greedy_disagrees_with_all_samples"]),
+            "greedy_luck_tasks": [r["task_id"] for r in rows
+                                  if r["greedy_passed"] and r["sample_passes"] == 0],
+            "greedy_fluke_fail_tasks": [r["task_id"] for r in rows
+                                        if (not r["greedy_passed"]) and
+                                        r["sample_passes"] == r["n_samples"]],
+        }
+
+    stable_pass = [tid for tid, t in tasks.items() if t["class"] == "stable-pass"]
+    stable_fail = [tid for tid, t in tasks.items() if t["class"] == "stable-fail"]
+    mixed = [tid for tid, t in tasks.items() if t["class"] == "mixed"]
+    return {
+        "kind": "vci-agent-sampling", "version": AGENT_TRACE_VERSION,
+        "design": {
+            "n_samples": len(sampled), "temperatures": temps, "seeds": seeds,
+            "model_digests": digests, "n_tasks": len(tasks),
+            "samples_per_task": sorted({t["n_samples"]
+                                        for t in tasks.values()}),
+            "per_sample_pass_at_1": per_sample_pass_at_1,
+            "mixed_temperatures": len(temps) > 1,
+        },
+        "tasks": tasks,
+        "pooled": {
+            "n_tasks": len(tasks),
+            "stable_pass_tasks": stable_pass,
+            "stable_fail_tasks": stable_fail,
+            "mixed_tasks": mixed, "n_mixed": len(mixed),
+            "pass_at_1": core["pooled"]["pass_at_1"],
+            "answer_unstable_tasks": core["pooled"]["answer_unstable_tasks"],
+            "turn_unstable_tasks": core["pooled"]["turn_unstable_tasks"],
+            "grader_drift": core["pooled"]["grader_drift"],
+        },
+        "passk": core["passk"],
+        "greedy_baseline": greedy_cmp,
+        "notes": [
+            "verdict = grade_answer(reference, final_answer) recomputed now; "
+            "grader drift is listed, not inherited",
+            "pass^k here is over the *sampling* axis (temperature > 0, "
+            "distinct seeds), unlike replicate_report's repeat axis",
+            "a task must be present in every sample to be scored; partial "
+            "archives are listed by replicate_report and excluded",
+            "single suite, single model, one temperature and a few samples "
+            "per task: this measures whether sampling variance exists and "
+            "how large it is, not its asymptotic distribution",
+            "synthetic lab tasks, no human labels: the Just et al. ceiling "
+            "on the VCI headline is untouched",
         ],
     }
 

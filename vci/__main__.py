@@ -137,7 +137,8 @@ def cmd_agent_trace(args):
                               max_turns=args.max_turns,
                               num_predict=args.num_predict,
                               timeout_s=args.timeout, out_path=args.out,
-                              task_ids=ids)
+                              task_ids=ids,
+                              temperature=args.temperature)
     recs = archive["records"]
     n_code = sum(len(agent_trace.task_snippets(r)) for r in recs)
     n_pass = sum(1 for r in recs if r["grade"])
@@ -240,6 +241,45 @@ def cmd_agent_replicate(args):
         print(f"partial tasks excluded: {p['partial_tasks']}")
     if p["grader_drift"]:
         print(f"grader drift (stored vs recomputed): {p['grader_drift']}")
+    if rep["passk"].get("ok"):
+        from . import passk
+        for line in passk.format_summary(rep["passk"]).splitlines()[1:]:
+            if "as_failure" in line:
+                print(line)
+    else:
+        print("pass^k: " + rep["passk"].get("reason", "n/a"))
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_agent_sampling(args):
+    import json
+    from . import agent_trace
+    with open(args.sampled, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    samples = doc["replicas"] if "replicas" in doc else [doc]
+    greedy = None
+    if args.greedy:
+        with open(args.greedy, encoding="utf-8") as fh:
+            greedy = json.load(fh)
+        if "records" not in greedy and "replicas" in greedy:
+            greedy = greedy["replicas"][0]
+    rep = agent_trace.sampling_report(samples, greedy=greedy)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    d, p = rep["design"], rep["pooled"]
+    print(f"agent-sampling: {d['n_samples']} samples x {p['n_tasks']} tasks at "
+          f"temperature {d['temperatures']}, pass@1 = {p['pass_at_1']}")
+    print(f"stable-pass: {p['stable_pass_tasks']}")
+    print(f"stable-fail: {p['stable_fail_tasks']}")
+    print(f"mixed:       {p['mixed_tasks']}")
+    if rep["greedy_baseline"]:
+        g = rep["greedy_baseline"]
+        print(f"greedy pass@1 = {g['pass_at_1']}; disagreements with all "
+              f"samples: {g['n_greedy_disagrees']} "
+              f"(luck {g['greedy_luck_tasks']}, "
+              f"fluke-fail {g['greedy_fluke_fail_tasks']})")
     if rep["passk"].get("ok"):
         from . import passk
         for line in passk.format_summary(rep["passk"]).splitlines()[1:]:
@@ -535,6 +575,9 @@ def build_parser():
     at.add_argument("--max-turns", type=int, default=6, dest="max_turns")
     at.add_argument("--num-predict", type=int, default=448, dest="num_predict")
     at.add_argument("--timeout", type=float, default=600.0)
+    at.add_argument("--temperature", type=float, default=0.0,
+                    help="decoding temperature; 0.0 keeps the archived "
+                         "greedy protocol, >0 measures the sampling axis")
     at.add_argument("--out", default="outputs/agent-traces.json")
     at.add_argument("--task-ids", dest="task_ids", default=None,
                     help="comma-separated subset, e.g. agt-06-sort-records")
@@ -574,6 +617,19 @@ def build_parser():
                           "(treated as a single replica)")
     arp.add_argument("--out", default="outputs/agent-replicate-summary.json")
     arp.set_defaults(fn=cmd_agent_replicate)
+
+    asp = sub.add_parser(
+        "agent-sampling",
+        help="analyse a temperature > 0 multi-sample arm of the agent suite: "
+             "sampling variance, per-task stability classes and pass^k, with "
+             "an optional greedy baseline comparison")
+    asp.add_argument("--sampled", required=True,
+                     help="{'replicas': [archive, ...]} (one archive per "
+                          "sample) or a single archive")
+    asp.add_argument("--greedy", default=None,
+                     help="optional greedy archive for the baseline comparison")
+    asp.add_argument("--out", default="outputs/agent-sampling-summary.json")
+    asp.set_defaults(fn=cmd_agent_sampling)
 
     rf = sub.add_parser("realfail",
                         help="sample real model outputs via local ollama and "

@@ -147,7 +147,7 @@ Standard library only. Python 3.9+. Nothing is fetched at run time.
 git clone https://github.com/aidless/vci-audit.git vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 214 tests locally; a clean clone runs 204 and the
+python3 -m pytest -q       # 219 tests locally; a clean clone runs 209 and the
                            # two work/-dependent modules self-skip (10 tests)
 ```
 
@@ -265,6 +265,11 @@ python3 -m vci agent-grade-probes        # audit the agent grader with identity 
                                          # defect / packaging probes (round 16, offline)
 python3 -m vci agent-replicate           # compare R replays of the same agent suite: verdict and
                                          # answer stability, pass^k over replicas (round 17, offline)
+python3 -m vci agent-sampling --sampled outputs/agent-samples.json \
+                             --greedy outputs/agent-replicates.json
+                                         # temperature > 0 arm: sampling variance, per-task
+                                         # stability classes, pass^k, greedy-baseline
+                                         # disagreement (round 18, offline)
 ```
 
 One command reproduces every deliverable in `outputs/`:

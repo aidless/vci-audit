@@ -1,0 +1,457 @@
+{
+ "kind": "vci-agent-sampling",
+ "version": "1.0",
+ "design": {
+  "n_samples": 4,
+  "temperatures": [
+   1.0
+  ],
+  "seeds": [
+   20261105,
+   20269024,
+   20276943,
+   20284862
+  ],
+  "model_digests": [
+   "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849"
+  ],
+  "n_tasks": 6,
+  "samples_per_task": [
+   4
+  ],
+  "per_sample_pass_at_1": [
+   0.6666666666666666,
+   0.6666666666666666,
+   0.5,
+   0.5
+  ],
+  "mixed_temperatures": false
+ },
+ "tasks": {
+  "agt-01-wordfreq": {
+   "n_samples": 4,
+   "passes": 4,
+   "sample_pass_rate": 1.0,
+   "class": "stable-pass",
+   "answers": [
+    "8",
+    "8",
+    "8",
+    "8"
+   ],
+   "n_distinct_answers": 1,
+   "answer_stable": true,
+   "turn_stable": false
+  },
+  "agt-02-running-max": {
+   "n_samples": 4,
+   "passes": 0,
+   "sample_pass_rate": 0.0,
+   "class": "stable-fail",
+   "answers": [
+    "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,",
+    "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,",
+    "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,",
+    "132,820,820,820,820,864,864,864,864,864,864,864,864,889,889,889,966,966,966,966,966,966,966,966,966,966,966,966,966,966,"
+   ],
+   "n_distinct_answers": 1,
+   "answer_stable": true,
+   "turn_stable": false
+  },
+  "agt-03-weighted-avg": {
+   "n_samples": 4,
+   "passes": 4,
+   "sample_pass_rate": 1.0,
+   "class": "stable-pass",
+   "answers": [
+    "3893.83",
+    "3893.83",
+    "3893.83",
+    "3893.83"
+   ],
+   "n_distinct_answers": 1,
+   "answer_stable": true,
+   "turn_stable": false
+  },
+  "agt-04-primes": {
+   "n_samples": 4,
+   "passes": 3,
+   "sample_pass_rate": 0.75,
+   "class": "mixed",
+   "answers": [
+    "501",
+    "501",
+    "1354",
+    "501"
+   ],
+   "n_distinct_answers": 2,
+   "answer_stable": false,
+   "turn_stable": false
+  },
+  "agt-05-log-latency": {
+   "n_samples": 4,
+   "passes": 0,
+   "sample_pass_rate": 0.0,
+   "class": "stable-fail",
+   "answers": [],
+   "n_distinct_answers": 1,
+   "answer_stable": true,
+   "turn_stable": false
+  },
+  "agt-06-sort-records": {
+   "n_samples": 4,
+   "passes": 3,
+   "sample_pass_rate": 0.75,
+   "class": "mixed",
+   "answers": [
+    "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+    "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+    "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+    "id116,id126,id127,id130,id120,id101,id104,id128,id129,id122"
+   ],
+   "n_distinct_answers": 2,
+   "answer_stable": false,
+   "turn_stable": false
+  }
+ },
+ "pooled": {
+  "n_tasks": 6,
+  "stable_pass_tasks": [
+   "agt-01-wordfreq",
+   "agt-03-weighted-avg"
+  ],
+  "stable_fail_tasks": [
+   "agt-02-running-max",
+   "agt-05-log-latency"
+  ],
+  "mixed_tasks": [
+   "agt-04-primes",
+   "agt-06-sort-records"
+  ],
+  "n_mixed": 2,
+  "pass_at_1": 0.5833333333333334,
+  "answer_unstable_tasks": [
+   "agt-04-primes",
+   "agt-06-sort-records"
+  ],
+  "turn_unstable_tasks": [
+   "agt-01-wordfreq",
+   "agt-02-running-max",
+   "agt-03-weighted-avg",
+   "agt-04-primes",
+   "agt-05-log-latency",
+   "agt-06-sort-records"
+  ],
+  "grader_drift": []
+ },
+ "passk": {
+  "ok": true,
+  "n_tasks": 6,
+  "n_attempts": 24,
+  "k_max": 4,
+  "max_runs_per_task": 4,
+  "status_counts": {
+   "pass": 14,
+   "fail": 10,
+   "timeout": 0,
+   "refusal": 0,
+   "error": 0
+  },
+  "run_counts": {
+   "min": 4,
+   "max": 4,
+   "mean": 4.0
+  },
+  "seeds": {
+   "per_task": {
+    "agt-01-wordfreq": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "agt-02-running-max": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "agt-03-weighted-avg": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "agt-04-primes": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "agt-05-log-latency": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "agt-06-sort-records": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   "consistent": true
+  },
+  "curves": {
+   "as_failure": {
+    "pass@k": [
+     {
+      "k": 1,
+      "value": 0.5833333333333334,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.25,
+       0.9166666666666666
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     }
+    ],
+    "pass^k": [
+     {
+      "k": 1,
+      "value": 0.5833333333333334,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.25,
+       0.9166666666666666
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.5,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.16666666666666666,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.4166666666666667,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.08333333333333333,
+       0.75
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.3333333333333333,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.6666666666666666
+      ]
+     }
+    ]
+   },
+   "exclude_nonattest": {
+    "pass@k": [
+     {
+      "k": 1,
+      "value": 0.5833333333333334,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.25,
+       0.875
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.6666666666666666,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.3333333333333333,
+       1.0
+      ]
+     }
+    ],
+    "pass^k": [
+     {
+      "k": 1,
+      "value": 0.5833333333333334,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.25,
+       0.875
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.5,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.16666666666666666,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.4166666666666667,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.08333333333333333,
+       0.75
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.3333333333333333,
+      "n_tasks": 6,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.6666666666666666
+      ]
+     }
+    ]
+   }
+  },
+  "bootstrap": {
+   "n_boot": 1000,
+   "seed": 0,
+   "alpha": 0.05
+  },
+  "definitions": {
+   "pass@k": "mean over tasks of 1 - C(n-c, k)/C(n, k); k>n not estimable",
+   "pass^k": "mean over tasks of C(c, k)/C(n, k); k>n not estimable",
+   "pass@1": "mean over tasks of c/n (full-credit pass only)",
+   "n": "attempts for one task; c = attempts with status 'pass'",
+   "as_failure": "timeout/refusal/error count as failures",
+   "exclude_nonattest": "timeout/refusal/error attempts are dropped"
+  },
+  "notes": [
+   "attempts are never pooled across tasks; each task contributes its own per-task estimate",
+   "k > n is not estimable for that task and is excluded from that point (see n_tasks and estimable)",
+   "'pass' means full-credit acceptance; partial credit is not a pass",
+   "timeouts, refusals and transport errors are counted as failures in 'as_failure' and dropped in 'exclude_nonattest'"
+  ]
+ },
+ "greedy_baseline": {
+  "pass_at_1": 0.6666666666666666,
+  "tasks": [
+   {
+    "task_id": "agt-01-wordfreq",
+    "greedy_passed": true,
+    "sample_passes": 4,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   },
+   {
+    "task_id": "agt-02-running-max",
+    "greedy_passed": false,
+    "sample_passes": 0,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   },
+   {
+    "task_id": "agt-03-weighted-avg",
+    "greedy_passed": true,
+    "sample_passes": 4,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   },
+   {
+    "task_id": "agt-04-primes",
+    "greedy_passed": true,
+    "sample_passes": 3,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   },
+   {
+    "task_id": "agt-05-log-latency",
+    "greedy_passed": false,
+    "sample_passes": 0,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   },
+   {
+    "task_id": "agt-06-sort-records",
+    "greedy_passed": true,
+    "sample_passes": 3,
+    "n_samples": 4,
+    "greedy_disagrees_with_all_samples": false
+   }
+  ],
+  "n_greedy_disagrees": 0,
+  "greedy_luck_tasks": [],
+  "greedy_fluke_fail_tasks": []
+ },
+ "notes": [
+  "verdict = grade_answer(reference, final_answer) recomputed now; grader drift is listed, not inherited",
+  "pass^k here is over the *sampling* axis (temperature > 0, distinct seeds), unlike replicate_report's repeat axis",
+  "a task must be present in every sample to be scored; partial archives are listed by replicate_report and excluded",
+  "single suite, single model, one temperature and a few samples per task: this measures whether sampling variance exists and how large it is, not its asymptotic distribution",
+  "synthetic lab tasks, no human labels: the Just et al. ceiling on the VCI headline is untouched"
+ ]
+}
