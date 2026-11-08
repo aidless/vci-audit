@@ -1200,7 +1200,7 @@ interval.  The interval is still wide — 0.391–0.862 for `agt-04` does not
 exclude the 40 % failure reading — so what k = 12 buys is a denominator and a
 flip statistic, not a tight rate.
 
-**Failure anatomy [M].**  Six unique failing trajectories among 23:
+**Failure anatomy [M].**  Six unique failing trajectories among 23 unique cells:
 **5** end on a tool call with empty stdout (4 of them a bare final expression),
 **1** is a turn-budget/truncation failure (6 turns, no `submit_answer`, archived
 snippet raises `SyntaxError` on replay).  The empty-output predictor on this
@@ -1211,7 +1211,10 @@ denominator, not a new claim).  Echo replay recovers **4 of 6** unique failures
 (`agt-04` → 501 twice; `agt-06` → the correct id order twice), so
 `pass@1` on unique trajectories moves **0.739 → 0.913 (+0.174)** under an
 echoing harness — again an upper bound, because the observation would change
-the rest of the trajectory.
+the rest of the trajectory.  Counting differs by denominator and is labelled:
+the flip table above counts **all** cells (agt-06 10/12), the mode table and
+the echo replay count **unique** cells (agt-06 9/11, `agt-04` 8/12), because
+one passing `agt-06` trajectory appears twice byte-for-byte.
 
 **What this changes.**  R19's sentence "the harness contract is a 2/11
 explanation of failures" holds *for the whole suite*; on this two-task pair it
