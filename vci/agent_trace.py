@@ -1233,6 +1233,83 @@ def sampling_report(sampled: List[Dict[str, Any]],
     }
 
 
+def flip_rate_report(sampled: List[Dict[str, Any]], n_boot: int = 1000,
+                     seed: int = 0) -> Dict[str, Any]:
+    """Give the mixed tasks a flip-rate denominator (round 20).
+
+    Round 18 found two mixed tasks at 3/4 samples each and could not say
+    whether the failure rate was 10 %, 25 % or 40 %: n = 4 has no usable
+    denominator.  This report extends the sampling arm to more samples and
+    states, per task, the observed pass rate with a Wilson interval plus the
+    *resample disagreement probability* ``2p(1-p)`` -- the chance that two
+    independent samples of the same task get opposite verdicts.  That number
+    is the flip rate, and unlike ``pass^k`` it is meaningful at any k.
+
+    Only complete tasks (present in every sample) are scored; the underlying
+    :func:`sampling_report` already lists partial ones.
+    """
+    from .metrics import wilson_interval
+
+    core = sampling_report(sampled, n_boot=n_boot, seed=seed)
+    tasks: Dict[str, Any] = {}
+    for tid, t in core["tasks"].items():
+        n, passes = t["n_samples"], t["passes"]
+        p = passes / n
+        lo, hi = wilson_interval(passes, n)
+        tasks[tid] = {
+            "n_samples": n, "passes": passes,
+            "pass_rate": round(p, 4),
+            "pass_rate_ci95": [round(lo, 4), round(hi, 4)],
+            "resample_disagreement": round(2 * p * (1 - p), 4),
+            "class": t["class"],
+            "n_distinct_answers": t["n_distinct_answers"],
+            "answer_stable": t["answer_stable"],
+        }
+    complete = list(tasks)
+    n_cell = sum(tasks[t]["n_samples"] for t in complete)
+    pass_cell = sum(tasks[t]["passes"] for t in complete)
+    pooled_p = pass_cell / n_cell if n_cell else None
+    mean_disagreement = (sum(tasks[t]["resample_disagreement"] * tasks[t]["n_samples"]
+                             for t in complete) / n_cell) if n_cell else None
+    return {
+        "kind": "vci-agent-flip-rate", "version": AGENT_TRACE_VERSION,
+        "design": {
+            "n_samples": core["design"]["n_samples"],
+            "n_tasks": len(tasks),
+            "seeds": core["design"]["seeds"],
+            "temperatures": core["design"]["temperatures"],
+            "model_digests": core["design"]["model_digests"],
+        },
+        "tasks": tasks,
+        "pooled": {
+            "n_cells": n_cell,
+            "pass_at_1": round(pooled_p, 4) if pooled_p is not None else None,
+            "pass_at_1_ci95": ([round(x, 4) for x in wilson_interval(pass_cell, n_cell)]
+                               if n_cell else None),
+            "mean_resample_disagreement": (round(mean_disagreement, 4)
+                                           if mean_disagreement is not None else None),
+            "mixed_tasks": core["pooled"]["mixed_tasks"],
+            "stable_pass_tasks": core["pooled"]["stable_pass_tasks"],
+            "stable_fail_tasks": core["pooled"]["stable_fail_tasks"],
+        },
+        "passk": core["passk"],
+        "sampling": core,
+        "notes": [
+            "resample_disagreement = 2p(1-p) is the probability that two "
+            "independent samples of the same task disagree, i.e. the flip "
+            "rate; it needs no pairing and is defined at any k",
+            "the Wilson interval is a normal-approximation interval on the "
+            "pass rate, not a posterior; at n around 12 it is wide by design",
+            "only complete tasks are scored; the same sampling arm's partial "
+            "archives stay excluded",
+            "synthetic lab tasks, one model, one temperature: this measures "
+            "how much verdict variance this decoder has on this suite, not "
+            "the reliability of the verifier",
+            "the Just et al. ceiling on the VCI headline is untouched",
+        ],
+    }
+
+
 def _last_statement_kind(code: str) -> str:
     """Shape of the final top-level statement (stdout is the only channel)."""
     try:

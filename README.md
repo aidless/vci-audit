@@ -281,6 +281,11 @@ python3 -m vci agent-failure-modes       # classify 66 archived task-runs by fai
                                          # test the empty-tool-output predictor, and replay
                                          # failures under a REPL-echo harness (round 19,
                                          # offline; no model calls)
+python3 -m vci agent-flip-rate --sampled outputs/agent-mixed-k12.json
+                                         # per-task pass rate with a Wilson interval and the
+                                         # resample disagreement probability 2p(1-p): the
+                                         # flip-rate denominator round 18 lacked (round 20,
+                                         # offline)
 ```
 
 One command reproduces every deliverable in `outputs/`:

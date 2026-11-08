@@ -1,0 +1,635 @@
+{
+ "kind": "vci-agent-failure-modes",
+ "version": "1.0",
+ "design": {
+  "n_archives": 12,
+  "n_cells": 24,
+  "n_unique_cells": 23,
+  "duplicate_factor": 1.043,
+  "temperatures": [
+   1.0
+  ],
+  "seeds": [
+   20261105,
+   20269024,
+   20276943,
+   20284862,
+   20292781,
+   20300700,
+   20308619,
+   20316538,
+   20324457,
+   20332376,
+   20340295,
+   20348214
+  ],
+  "model_digests": [
+   "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849"
+  ],
+  "pass_at_1_all_cells": 0.75,
+  "pass_at_1_unique": 0.7391
+ },
+ "per_task": {
+  "agt-04-primes": {
+   "cells": 12,
+   "passed": 8
+  },
+  "agt-06-sort-records": {
+   "cells": 11,
+   "passed": 9
+  }
+ },
+ "modes": {
+  "unique_cells": {
+   "empty_tool_output": 5,
+   "no_submit_truncated_tool_error": 1,
+   "pass": 17
+  },
+  "all_cells": {
+   "empty_tool_output": 5,
+   "no_submit_truncated_tool_error": 1,
+   "pass": 18
+  }
+ },
+ "predictor": {
+  "empty_last_tool_output": {
+   "n_flag": 4,
+   "table_[[fail_flag, pass_flag], [fail_rest, pass_rest]]": [
+    [
+     4,
+     0
+    ],
+    [
+     2,
+     17
+    ]
+   ],
+   "fail_rate_given_flag": 1.0,
+   "fail_rate_without_flag": 0.1053,
+   "fisher_two_sided_p": 0.0017
+  },
+  "bare_final_expression": {
+   "n_flag": 4,
+   "table_[[fail_flag, pass_flag], [fail_rest, pass_rest]]": [
+    [
+     4,
+     0
+    ],
+    [
+     2,
+     17
+    ]
+   ],
+   "fail_rate_given_flag": 1.0,
+   "fail_rate_without_flag": 0.1053,
+   "fisher_two_sided_p": 0.0017
+  }
+ },
+ "cells": [
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "empty_tool_output",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "bare_expression",
+   "last_tool_ok": true,
+   "last_stdout_len": 0,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "empty_tool_output",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "statement",
+   "last_tool_ok": true,
+   "last_stdout_len": 0,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "no_submit_truncated_tool_error",
+   "final_channel": null,
+   "n_turns": 6,
+   "n_run_python": 6,
+   "n_submit": 0,
+   "last_statement_kind": "unparseable",
+   "last_tool_ok": false,
+   "last_stdout_len": 0,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 4,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-04-primes",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "empty_tool_output",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "bare_expression",
+   "last_tool_ok": true,
+   "last_stdout_len": 0,
+   "n_submitted_elems": null,
+   "n_reference_elems": null
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "empty_tool_output",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "bare_expression",
+   "last_tool_ok": true,
+   "last_stdout_len": 0,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": false,
+   "failure_mode": "empty_tool_output",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "bare_expression",
+   "last_tool_ok": true,
+   "last_stdout_len": 0,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 3,
+   "n_run_python": 2,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 2,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  },
+  {
+   "task_id": "agt-06-sort-records",
+   "copies": 1,
+   "temperatures": [
+    1.0
+   ],
+   "passed": true,
+   "failure_mode": "pass",
+   "final_channel": "submit_answer",
+   "n_turns": 2,
+   "n_run_python": 1,
+   "n_submit": 1,
+   "last_statement_kind": "print",
+   "last_tool_ok": true,
+   "last_stdout_len": 60,
+   "n_submitted_elems": 10,
+   "n_reference_elems": 10
+  }
+ ],
+ "notes": [
+  "a cell is one (task, trajectory) pair; byte-identical replicas are collapsed before rates, so R17's 42 runs contribute 6 observations",
+  "failure_mode is descriptive, not causal: length_mismatch means the submitted list length differs from the reference, not that the answer was computed wrongly",
+  "the predictor table is two-by-two over unique cells; a single empty-output cell moves the fail rate by more than ten points",
+  "synthetic lab tasks, one model, no human labels: the Just et al. ceiling is untouched"
+ ],
+ "echo_replay": {
+  "kind": "vci-agent-echo-replay",
+  "version": "1.0",
+  "design": {
+   "n_unique_cells": 23,
+   "n_unique_failing": 6,
+   "harness": "production protocol + eval of the final bare expression per snippet; stdout still captured",
+   "scope": "offline replay of archived code only; no model calls"
+  },
+  "pooled": {
+   "n_unique_failing": 6,
+   "n_echo_recoverable": 4,
+   "recoverable_tasks": [
+    "agt-04-primes",
+    "agt-04-primes",
+    "agt-06-sort-records",
+    "agt-06-sort-records"
+   ],
+   "n_unreplayable": 1,
+   "unreplayable_tasks": [
+    "agt-04-primes"
+   ],
+   "pass_at_1_unique_before": 0.7391,
+   "pass_at_1_unique_after_echo_upper_bound": 0.913,
+   "delta_upper_bound": 0.1739
+  },
+  "rows": [
+   {
+    "task_id": "agt-04-primes",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "empty_tool_output",
+    "n_snippets": 2,
+    "last_tool_ok": true,
+    "last_error": null,
+    "last_stdout_len": 0,
+    "last_statement_kind": "bare_expression",
+    "echo_value": "501",
+    "echo_grades_correct": true
+   },
+   {
+    "task_id": "agt-04-primes",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "empty_tool_output",
+    "n_snippets": 1,
+    "last_tool_ok": true,
+    "last_error": null,
+    "last_stdout_len": 0,
+    "last_statement_kind": "statement",
+    "echo_value": null,
+    "echo_grades_correct": false
+   },
+   {
+    "task_id": "agt-04-primes",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "no_submit_truncated_tool_error",
+    "n_snippets": 6,
+    "last_tool_ok": false,
+    "last_error": "SyntaxError: invalid syntax (<unknown>, line 1)",
+    "last_stdout_len": 0,
+    "last_statement_kind": "unparseable",
+    "echo_value": null,
+    "echo_grades_correct": false
+   },
+   {
+    "task_id": "agt-04-primes",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "empty_tool_output",
+    "n_snippets": 2,
+    "last_tool_ok": true,
+    "last_error": null,
+    "last_stdout_len": 0,
+    "last_statement_kind": "bare_expression",
+    "echo_value": "501",
+    "echo_grades_correct": true
+   },
+   {
+    "task_id": "agt-06-sort-records",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "empty_tool_output",
+    "n_snippets": 1,
+    "last_tool_ok": true,
+    "last_error": null,
+    "last_stdout_len": 0,
+    "last_statement_kind": "bare_expression",
+    "echo_value": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+    "echo_grades_correct": true
+   },
+   {
+    "task_id": "agt-06-sort-records",
+    "copies": 1,
+    "temperatures": [
+     1.0
+    ],
+    "failure_mode": "empty_tool_output",
+    "n_snippets": 1,
+    "last_tool_ok": true,
+    "last_error": null,
+    "last_stdout_len": 0,
+    "last_statement_kind": "bare_expression",
+    "echo_value": "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+    "echo_grades_correct": true
+   }
+  ],
+  "notes": [
+   "the echo run changes what the model would observe, so delta_upper_bound assumes the rest of the trajectory is unchanged",
+   "unreplayable = the archived snippet does not parse on replay (truncated by num_predict), so its value cannot be recovered",
+   "a row with last_statement_kind=statement/print has no echoed value even though stdout was non-empty: echo only adds one channel",
+   "side effects are bounded by round 14's scanner (0/450 signatures) and every replay runs in a fresh 15 s subprocess"
+  ]
+ }
+}

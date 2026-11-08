@@ -590,6 +590,49 @@ def test_sampling_report_excludes_partial_samples():
     assert rep["pooled"]["n_tasks"] == 1
 
 
+# --------------------------------------- flip-rate denominator (round 20)
+
+def test_flip_rate_report_states_the_resample_disagreement():
+    samples = []
+    for i in range(12):
+        samples.append(_sarc([_rec("t1", 10, "10" if i < 8 else "9"),
+                              _rec("t2", 20, "20")], seed=i))
+    rep = at.flip_rate_report(samples)
+    t1 = rep["tasks"]["t1"]
+    assert t1["n_samples"] == 12 and t1["passes"] == 8
+    assert t1["pass_rate"] == pytest.approx(2 / 3, abs=1e-4)
+    assert t1["resample_disagreement"] == pytest.approx(4 / 9, abs=1e-4)
+    lo, hi = t1["pass_rate_ci95"]
+    assert lo == pytest.approx(0.391, abs=1e-3)
+    assert hi == pytest.approx(0.862, abs=1e-3)
+    assert lo < t1["pass_rate"] < hi
+    t2 = rep["tasks"]["t2"]
+    assert t2["class"] == "stable-pass" and t2["resample_disagreement"] == 0.0
+    p = rep["pooled"]
+    assert p["n_cells"] == 24 and p["pass_at_1"] == pytest.approx(20 / 24, abs=1e-4)
+    assert p["mean_resample_disagreement"] == pytest.approx(
+        (4 / 9 * 12) / 24, abs=1e-4)
+    assert p["mixed_tasks"] == ["t1"]
+
+
+def test_flip_rate_report_excludes_partial_samples():
+    s0 = _sarc([_rec("t1", 10, "10"), _rec("t2", 20, "20")], seed=1)
+    s1 = _sarc([_rec("t1", 10, "10")], seed=2)
+    rep = at.flip_rate_report([s0, s1])
+    assert list(rep["tasks"]) == ["t1"]
+    assert rep["pooled"]["n_cells"] == 2
+
+
+def test_flip_rate_report_has_no_numbers_without_complete_tasks():
+    s0 = _sarc([_rec("t1", 10, "10")], seed=1)
+    s1 = _sarc([_rec("t2", 20, "20")], seed=2)
+    rep = at.flip_rate_report([s0, s1])
+    assert rep["tasks"] == {}
+    assert rep["pooled"]["n_cells"] == 0
+    assert rep["pooled"]["pass_at_1"] is None
+    assert rep["pooled"]["pass_at_1_ci95"] is None
+
+
 # ------------------------------------ failure modes + echo replay (round 19)
 
 def _run_call(code, ok=True, stdout="", error=None):

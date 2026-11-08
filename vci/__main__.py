@@ -291,6 +291,27 @@ def cmd_agent_sampling(args):
     return 0
 
 
+def cmd_agent_flip_rate(args):
+    import json
+    from . import agent_trace
+    with open(args.sampled, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    samples = doc["replicas"] if "replicas" in doc else [doc]
+    rep = agent_trace.flip_rate_report(samples)
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    d, p = rep["design"], rep["pooled"]
+    print(f"agent-flip-rate: {d['n_samples']} samples x {d['n_tasks']} tasks, "
+          f"pass@1 = {p['pass_at_1']} CI {p['pass_at_1_ci95']}, "
+          f"mean resample disagreement = {p['mean_resample_disagreement']}")
+    for tid, t in rep["tasks"].items():
+        print(f"  {tid}: {t['passes']}/{t['n_samples']} = {t['pass_rate']} "
+              f"CI {t['pass_rate_ci95']} flip-rate {t['resample_disagreement']}")
+    print("wrote " + args.out)
+    return 0
+
+
 def cmd_agent_failure_modes(args):
     import json
     from . import agent_trace
@@ -666,6 +687,17 @@ def build_parser():
                      help="optional greedy archive for the baseline comparison")
     asp.add_argument("--out", default="outputs/agent-sampling-summary.json")
     asp.set_defaults(fn=cmd_agent_sampling)
+
+    afr = sub.add_parser(
+        "agent-flip-rate",
+        help="per-task pass rate with a Wilson interval and the resample "
+             "disagreement probability 2p(1-p) on a multi-sample arm "
+             "(the flip-rate denominator round 18 lacked; offline)")
+    afr.add_argument("--sampled", required=True,
+                     help="{'replicas': [archive, ...]} (one archive per "
+                          "sample) or a single archive")
+    afr.add_argument("--out", default="outputs/agent-flip-rate.json")
+    afr.set_defaults(fn=cmd_agent_flip_rate)
 
     afm = sub.add_parser(
         "agent-failure-modes",

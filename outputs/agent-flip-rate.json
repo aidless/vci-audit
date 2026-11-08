@@ -1,0 +1,1169 @@
+{
+ "kind": "vci-agent-flip-rate",
+ "version": "1.0",
+ "design": {
+  "n_samples": 12,
+  "n_tasks": 2,
+  "seeds": [
+   20261105,
+   20269024,
+   20276943,
+   20284862,
+   20292781,
+   20300700,
+   20308619,
+   20316538,
+   20324457,
+   20332376,
+   20340295,
+   20348214
+  ],
+  "temperatures": [
+   1.0
+  ],
+  "model_digests": [
+   "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849"
+  ]
+ },
+ "tasks": {
+  "agt-04-primes": {
+   "n_samples": 12,
+   "passes": 8,
+   "pass_rate": 0.6667,
+   "pass_rate_ci95": [
+    0.3906,
+    0.8619
+   ],
+   "resample_disagreement": 0.4444,
+   "class": "mixed",
+   "n_distinct_answers": 5,
+   "answer_stable": false
+  },
+  "agt-06-sort-records": {
+   "n_samples": 12,
+   "passes": 10,
+   "pass_rate": 0.8333,
+   "pass_rate_ci95": [
+    0.552,
+    0.953
+   ],
+   "resample_disagreement": 0.2778,
+   "class": "mixed",
+   "n_distinct_answers": 3,
+   "answer_stable": false
+  }
+ },
+ "pooled": {
+  "n_cells": 24,
+  "pass_at_1": 0.75,
+  "pass_at_1_ci95": [
+   0.551,
+   0.88
+  ],
+  "mean_resample_disagreement": 0.3611,
+  "mixed_tasks": [
+   "agt-04-primes",
+   "agt-06-sort-records"
+  ],
+  "stable_pass_tasks": [],
+  "stable_fail_tasks": []
+ },
+ "passk": {
+  "ok": true,
+  "n_tasks": 2,
+  "n_attempts": 24,
+  "k_max": 10,
+  "max_runs_per_task": 12,
+  "status_counts": {
+   "pass": 18,
+   "fail": 6,
+   "timeout": 0,
+   "refusal": 0,
+   "error": 0
+  },
+  "run_counts": {
+   "min": 12,
+   "max": 12,
+   "mean": 12.0
+  },
+  "seeds": {
+   "per_task": {
+    "agt-04-primes": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "agt-06-sort-records": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ]
+   },
+   "consistent": true
+  },
+  "curves": {
+   "as_failure": {
+    "pass@k": [
+     {
+      "k": 1,
+      "value": 0.75,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.6666666666666667,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.946969696969697,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.9090909090909091,
+       0.9848484848484849
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.990909090909091,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.9818181818181818,
+       1.0
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.998989898989899,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.997979797979798,
+       1.0
+      ]
+     },
+     {
+      "k": 5,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 6,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 7,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 8,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 9,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 10,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    ],
+    "pass^k": [
+     {
+      "k": 1,
+      "value": 0.75,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.6666666666666666,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.553030303030303,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.42424242424242425,
+       0.6818181818181818
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.39999999999999997,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.2545454545454545,
+       0.5454545454545454
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.2828282828282828,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.1414141414141414,
+       0.42424242424242425
+      ]
+     },
+     {
+      "k": 5,
+      "value": 0.19444444444444445,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0707070707070707,
+       0.3181818181818182
+      ]
+     },
+     {
+      "k": 6,
+      "value": 0.12878787878787878,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.030303030303030304,
+       0.22727272727272727
+      ]
+     },
+     {
+      "k": 7,
+      "value": 0.08080808080808081,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.010101010101010102,
+       0.15151515151515152
+      ]
+     },
+     {
+      "k": 8,
+      "value": 0.046464646464646465,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.00202020202020202,
+       0.09090909090909091
+      ]
+     },
+     {
+      "k": 9,
+      "value": 0.022727272727272728,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.045454545454545456
+      ]
+     },
+     {
+      "k": 10,
+      "value": 0.007575757575757576,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.015151515151515152
+      ]
+     }
+    ]
+   },
+   "exclude_nonattest": {
+    "pass@k": [
+     {
+      "k": 1,
+      "value": 0.75,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.6666666666666667,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.946969696969697,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.9090909090909091,
+       0.9848484848484849
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.990909090909091,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.9818181818181818,
+       1.0
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.998989898989899,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.997979797979798,
+       1.0
+      ]
+     },
+     {
+      "k": 5,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 6,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 7,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 8,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 9,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     },
+     {
+      "k": 10,
+      "value": 1.0,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       1.0,
+       1.0
+      ]
+     }
+    ],
+    "pass^k": [
+     {
+      "k": 1,
+      "value": 0.75,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.6666666666666666,
+       0.8333333333333334
+      ]
+     },
+     {
+      "k": 2,
+      "value": 0.553030303030303,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.42424242424242425,
+       0.6818181818181818
+      ]
+     },
+     {
+      "k": 3,
+      "value": 0.39999999999999997,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.2545454545454545,
+       0.5454545454545454
+      ]
+     },
+     {
+      "k": 4,
+      "value": 0.2828282828282828,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.1414141414141414,
+       0.42424242424242425
+      ]
+     },
+     {
+      "k": 5,
+      "value": 0.19444444444444445,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0707070707070707,
+       0.3181818181818182
+      ]
+     },
+     {
+      "k": 6,
+      "value": 0.12878787878787878,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.030303030303030304,
+       0.22727272727272727
+      ]
+     },
+     {
+      "k": 7,
+      "value": 0.08080808080808081,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.010101010101010102,
+       0.15151515151515152
+      ]
+     },
+     {
+      "k": 8,
+      "value": 0.046464646464646465,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.00202020202020202,
+       0.09090909090909091
+      ]
+     },
+     {
+      "k": 9,
+      "value": 0.022727272727272728,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.045454545454545456
+      ]
+     },
+     {
+      "k": 10,
+      "value": 0.007575757575757576,
+      "n_tasks": 2,
+      "estimable": true,
+      "ci": [
+       0.0,
+       0.015151515151515152
+      ]
+     }
+    ]
+   }
+  },
+  "bootstrap": {
+   "n_boot": 1000,
+   "seed": 0,
+   "alpha": 0.05
+  },
+  "definitions": {
+   "pass@k": "mean over tasks of 1 - C(n-c, k)/C(n, k); k>n not estimable",
+   "pass^k": "mean over tasks of C(c, k)/C(n, k); k>n not estimable",
+   "pass@1": "mean over tasks of c/n (full-credit pass only)",
+   "n": "attempts for one task; c = attempts with status 'pass'",
+   "as_failure": "timeout/refusal/error count as failures",
+   "exclude_nonattest": "timeout/refusal/error attempts are dropped"
+  },
+  "notes": [
+   "attempts are never pooled across tasks; each task contributes its own per-task estimate",
+   "k > n is not estimable for that task and is excluded from that point (see n_tasks and estimable)",
+   "'pass' means full-credit acceptance; partial credit is not a pass",
+   "timeouts, refusals and transport errors are counted as failures in 'as_failure' and dropped in 'exclude_nonattest'"
+  ]
+ },
+ "sampling": {
+  "kind": "vci-agent-sampling",
+  "version": "1.0",
+  "design": {
+   "n_samples": 12,
+   "temperatures": [
+    1.0
+   ],
+   "seeds": [
+    20261105,
+    20269024,
+    20276943,
+    20284862,
+    20292781,
+    20300700,
+    20308619,
+    20316538,
+    20324457,
+    20332376,
+    20340295,
+    20348214
+   ],
+   "model_digests": [
+    "9ec8897f747e246e970bc5cfdda85d22f1123dc2e3d34978a010a75968716849"
+   ],
+   "n_tasks": 2,
+   "samples_per_task": [
+    12
+   ],
+   "per_sample_pass_at_1": [
+    1.0,
+    1.0,
+    0.5,
+    0.5,
+    1.0,
+    0.5,
+    1.0,
+    0.5,
+    0.5,
+    1.0,
+    1.0,
+    0.5
+   ],
+   "mixed_temperatures": false
+  },
+  "tasks": {
+   "agt-04-primes": {
+    "n_samples": 12,
+    "passes": 8,
+    "sample_pass_rate": 0.6666666666666666,
+    "class": "mixed",
+    "answers": [
+     "501",
+     "501",
+     "1354",
+     "501",
+     "501",
+     "1229",
+     "501",
+     "501",
+     "501",
+     "501",
+     "348"
+    ],
+    "n_distinct_answers": 5,
+    "answer_stable": false,
+    "turn_stable": false
+   },
+   "agt-06-sort-records": {
+    "n_samples": 12,
+    "passes": 10,
+    "sample_pass_rate": 0.8333333333333334,
+    "class": "mixed",
+    "answers": [
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id127,id130,id120,id101,id104,id128,id129,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id128,id129,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122",
+     "id116,id126,id120,id127,id130,id101,id104,id129,id128,id122"
+    ],
+    "n_distinct_answers": 3,
+    "answer_stable": false,
+    "turn_stable": false
+   }
+  },
+  "pooled": {
+   "n_tasks": 2,
+   "stable_pass_tasks": [],
+   "stable_fail_tasks": [],
+   "mixed_tasks": [
+    "agt-04-primes",
+    "agt-06-sort-records"
+   ],
+   "n_mixed": 2,
+   "pass_at_1": 0.75,
+   "answer_unstable_tasks": [
+    "agt-04-primes",
+    "agt-06-sort-records"
+   ],
+   "turn_unstable_tasks": [
+    "agt-04-primes",
+    "agt-06-sort-records"
+   ],
+   "grader_drift": []
+  },
+  "passk": {
+   "ok": true,
+   "n_tasks": 2,
+   "n_attempts": 24,
+   "k_max": 10,
+   "max_runs_per_task": 12,
+   "status_counts": {
+    "pass": 18,
+    "fail": 6,
+    "timeout": 0,
+    "refusal": 0,
+    "error": 0
+   },
+   "run_counts": {
+    "min": 12,
+    "max": 12,
+    "mean": 12.0
+   },
+   "seeds": {
+    "per_task": {
+     "agt-04-primes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+     ],
+     "agt-06-sort-records": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    },
+    "consistent": true
+   },
+   "curves": {
+    "as_failure": {
+     "pass@k": [
+      {
+       "k": 1,
+       "value": 0.75,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.6666666666666667,
+        0.8333333333333334
+       ]
+      },
+      {
+       "k": 2,
+       "value": 0.946969696969697,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.9090909090909091,
+        0.9848484848484849
+       ]
+      },
+      {
+       "k": 3,
+       "value": 0.990909090909091,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.9818181818181818,
+        1.0
+       ]
+      },
+      {
+       "k": 4,
+       "value": 0.998989898989899,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.997979797979798,
+        1.0
+       ]
+      },
+      {
+       "k": 5,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 6,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 7,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 8,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 9,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 10,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      }
+     ],
+     "pass^k": [
+      {
+       "k": 1,
+       "value": 0.75,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.6666666666666666,
+        0.8333333333333334
+       ]
+      },
+      {
+       "k": 2,
+       "value": 0.553030303030303,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.42424242424242425,
+        0.6818181818181818
+       ]
+      },
+      {
+       "k": 3,
+       "value": 0.39999999999999997,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.2545454545454545,
+        0.5454545454545454
+       ]
+      },
+      {
+       "k": 4,
+       "value": 0.2828282828282828,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.1414141414141414,
+        0.42424242424242425
+       ]
+      },
+      {
+       "k": 5,
+       "value": 0.19444444444444445,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0707070707070707,
+        0.3181818181818182
+       ]
+      },
+      {
+       "k": 6,
+       "value": 0.12878787878787878,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.030303030303030304,
+        0.22727272727272727
+       ]
+      },
+      {
+       "k": 7,
+       "value": 0.08080808080808081,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.010101010101010102,
+        0.15151515151515152
+       ]
+      },
+      {
+       "k": 8,
+       "value": 0.046464646464646465,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.00202020202020202,
+        0.09090909090909091
+       ]
+      },
+      {
+       "k": 9,
+       "value": 0.022727272727272728,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0,
+        0.045454545454545456
+       ]
+      },
+      {
+       "k": 10,
+       "value": 0.007575757575757576,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0,
+        0.015151515151515152
+       ]
+      }
+     ]
+    },
+    "exclude_nonattest": {
+     "pass@k": [
+      {
+       "k": 1,
+       "value": 0.75,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.6666666666666667,
+        0.8333333333333334
+       ]
+      },
+      {
+       "k": 2,
+       "value": 0.946969696969697,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.9090909090909091,
+        0.9848484848484849
+       ]
+      },
+      {
+       "k": 3,
+       "value": 0.990909090909091,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.9818181818181818,
+        1.0
+       ]
+      },
+      {
+       "k": 4,
+       "value": 0.998989898989899,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.997979797979798,
+        1.0
+       ]
+      },
+      {
+       "k": 5,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 6,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 7,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 8,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 9,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "k": 10,
+       "value": 1.0,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        1.0,
+        1.0
+       ]
+      }
+     ],
+     "pass^k": [
+      {
+       "k": 1,
+       "value": 0.75,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.6666666666666666,
+        0.8333333333333334
+       ]
+      },
+      {
+       "k": 2,
+       "value": 0.553030303030303,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.42424242424242425,
+        0.6818181818181818
+       ]
+      },
+      {
+       "k": 3,
+       "value": 0.39999999999999997,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.2545454545454545,
+        0.5454545454545454
+       ]
+      },
+      {
+       "k": 4,
+       "value": 0.2828282828282828,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.1414141414141414,
+        0.42424242424242425
+       ]
+      },
+      {
+       "k": 5,
+       "value": 0.19444444444444445,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0707070707070707,
+        0.3181818181818182
+       ]
+      },
+      {
+       "k": 6,
+       "value": 0.12878787878787878,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.030303030303030304,
+        0.22727272727272727
+       ]
+      },
+      {
+       "k": 7,
+       "value": 0.08080808080808081,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.010101010101010102,
+        0.15151515151515152
+       ]
+      },
+      {
+       "k": 8,
+       "value": 0.046464646464646465,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.00202020202020202,
+        0.09090909090909091
+       ]
+      },
+      {
+       "k": 9,
+       "value": 0.022727272727272728,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0,
+        0.045454545454545456
+       ]
+      },
+      {
+       "k": 10,
+       "value": 0.007575757575757576,
+       "n_tasks": 2,
+       "estimable": true,
+       "ci": [
+        0.0,
+        0.015151515151515152
+       ]
+      }
+     ]
+    }
+   },
+   "bootstrap": {
+    "n_boot": 1000,
+    "seed": 0,
+    "alpha": 0.05
+   },
+   "definitions": {
+    "pass@k": "mean over tasks of 1 - C(n-c, k)/C(n, k); k>n not estimable",
+    "pass^k": "mean over tasks of C(c, k)/C(n, k); k>n not estimable",
+    "pass@1": "mean over tasks of c/n (full-credit pass only)",
+    "n": "attempts for one task; c = attempts with status 'pass'",
+    "as_failure": "timeout/refusal/error count as failures",
+    "exclude_nonattest": "timeout/refusal/error attempts are dropped"
+   },
+   "notes": [
+    "attempts are never pooled across tasks; each task contributes its own per-task estimate",
+    "k > n is not estimable for that task and is excluded from that point (see n_tasks and estimable)",
+    "'pass' means full-credit acceptance; partial credit is not a pass",
+    "timeouts, refusals and transport errors are counted as failures in 'as_failure' and dropped in 'exclude_nonattest'"
+   ]
+  },
+  "greedy_baseline": null,
+  "notes": [
+   "verdict = grade_answer(reference, final_answer) recomputed now; grader drift is listed, not inherited",
+   "pass^k here is over the *sampling* axis (temperature > 0, distinct seeds), unlike replicate_report's repeat axis",
+   "a task must be present in every sample to be scored; partial archives are listed by replicate_report and excluded",
+   "single suite, single model, one temperature and a few samples per task: this measures whether sampling variance exists and how large it is, not its asymptotic distribution",
+   "synthetic lab tasks, no human labels: the Just et al. ceiling on the VCI headline is untouched"
+  ]
+ },
+ "notes": [
+  "resample_disagreement = 2p(1-p) is the probability that two independent samples of the same task disagree, i.e. the flip rate; it needs no pairing and is defined at any k",
+  "the Wilson interval is a normal-approximation interval on the pass rate, not a posterior; at n around 12 it is wide by design",
+  "only complete tasks are scored; the same sampling arm's partial archives stay excluded",
+  "synthetic lab tasks, one model, one temperature: this measures how much verdict variance this decoder has on this suite, not the reliability of the verifier",
+  "the Just et al. ceiling on the VCI headline is untouched"
+ ]
+}

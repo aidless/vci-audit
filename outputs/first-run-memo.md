@@ -1158,3 +1158,85 @@ flip-rate denominator R18 named, still unrun; (2) fill
 `annotations/labels.csv`, the only step that lifts the κ/α ceiling; (3) widen
 the suite beyond 6 tasks so the pooled `pass@1` CI is informative.
 
+## R20. Flip-rate denominator: k = 12 on the two mixed tasks
+
+**Question.**  R18 reported each mixed task at 3/4 samples and wrote that n = 4
+cannot tell a 10 % failure rate from 40 %.  `pass^k` was also uninformative
+there because k was capped at 4.  This round extends the *same* sampling axis
+(temperature 1.0, seed `20261105 + 7919k`, byte-identical prompts /
+`num_predict 448` / `max_turns 6`) to k = 12 on exactly the two mixed tasks.
+
+**Design.**  Samples 0–3 are the R18 archives (reused verbatim, not re-run);
+samples 4–11 were generated here, 2 tasks per sample, wall 69–157 s per sample
+(8 samples, 766 s).  Model digest `9ec8897f747e…` (same weights as R17/R18).
+Every per-sample file is a 2-task archive and the merged artifact trims the
+R18 archives to the same two tasks, so all reports see 2 tasks × 12 samples =
+**24 cells** (23 unique trajectories; one byte-identical pair).  Code
+`work/agent_mixed_k12.py`; analysis `vci/agent_trace.flip_rate_report` (new
+CLI `vci agent-flip-rate`, offline) plus the R19 `failure_report` /
+`echo_replay`; artifacts `outputs/agent-mixed-k12.json`,
+`outputs/agent-samples/mixed12/sample-00..11.json`,
+`outputs/agent-flip-rate.json`, `outputs/agent-mixed-k12-failure-modes.json`.
+
+**Result [M].**
+
+| quantity | value |
+|---|---|
+| pooled `pass@1` (24 cells) | **0.750**, Wilson 95 % CI [0.551, 0.880] |
+| `agt-04-primes` | **8/12 = 0.667**, CI [0.391, 0.862], flip rate **0.444** |
+| `agt-06-sort-records` | **10/12 = 0.833**, CI [0.552, 0.953], flip rate **0.278** |
+| mean resample disagreement (2p(1−p)) | **0.361** |
+| `pass^k` (all k samples pass), k = 1…10 | 0.750 / 0.553 / 0.400 / 0.283 / 0.194 / 0.129 / 0.081 / 0.046 / 0.023 / **0.0076** |
+| `pass@k` (any sample passes), k = 2…5 | 0.947 / 0.991 / 0.999 / **1.000** |
+
+(`pass^k` stops at k = 10 because that is the estimator's default cap; it
+would continue falling with a larger k given 8/12 and 10/12 pass rates.)
+
+Per-sample pass rates over the two tasks: 1.0, 1.0, 0.5, 0.5, 1.0, 0.5, 1.0,
+0.5, 0.5, 1.0, 1.0, 0.5 (18/24).  The R18 four-sample reading (0.75 pass rate,
+2p(1−p) = 0.375) is within 0.014 of the 12-sample mean disagreement (0.361):
+the light estimate was numerically close, but only now does it carry an
+interval.  The interval is still wide — 0.391–0.862 for `agt-04` does not
+exclude the 40 % failure reading — so what k = 12 buys is a denominator and a
+flip statistic, not a tight rate.
+
+**Failure anatomy [M].**  Six unique failing trajectories among 23:
+**5** end on a tool call with empty stdout (4 of them a bare final expression),
+**1** is a turn-budget/truncation failure (6 turns, no `submit_answer`, archived
+snippet raises `SyntaxError` on replay).  The empty-output predictor on this
+pair is now statistically visible: 4 flagged cells, **4/4 failed** vs
+**2/19 = 0.105** without the flag, Fisher two-sided **p = 0.0017** (R19 had
+n = 2 and p = 0.146; this is the same mechanism with four times the
+denominator, not a new claim).  Echo replay recovers **4 of 6** unique failures
+(`agt-04` → 501 twice; `agt-06` → the correct id order twice), so
+`pass@1` on unique trajectories moves **0.739 → 0.913 (+0.174)** under an
+echoing harness — again an upper bound, because the observation would change
+the rest of the trajectory.
+
+**What this changes.**  R19's sentence "the harness contract is a 2/11
+explanation of failures" holds *for the whole suite*; on this two-task pair it
+is **5/6**.  The difference is compositional, not contradictory: these two
+tasks are compute-then-report tasks, so the failure surface is dominated by
+"did the solver print", while the six-task suite's failure mass is dominated
+by serialization and turn budget.  The practical reading: verdict variance on
+these tasks is real (flip rate 0.36 pooled, i.e. roughly one draw in three
+disagrees with another), a single run is therefore not a reliability
+measurement, and the tenfold drop from `pass@1` 0.75 to `pass^10` 0.008 is the
+honest cost of scoring a stochastic solver once.
+
+Bounds: two synthetic tasks, one 14B local model, one host, one temperature,
+no human labels; flip rate is a property of this task pair and this decoder,
+not of the verifier.  The agent grader is machine-checked (`grade_answer`
+against authored references), so the Just et al. ceiling is untouched.  Test
+suite is now **227 tests locally / 217 passed + 2 skipped in a clean clone**
+(224 → 227: three round-20 tests; earlier counts are historical).
+
+**Next candidates.**  (1) Fill `annotations/labels.csv` — still the only step
+that lifts the κ/α ceiling, and still the top item; (2) widen the agent suite
+beyond 6 tasks (the pooled `pass@1` CI and the flip rate both need task
+diversity, not more samples of the same two tasks); (3) make the echo contract
+a *selectable* production runner and run a paired arm (score difference
+measured rather than bounded); (4) carry the same k = 12 design to the
+stable-fail tasks to see whether they stay structural at 12 draws.
+
+
