@@ -1221,7 +1221,7 @@ tasks are compute-then-report tasks, so the failure surface is dominated by
 by serialization and turn budget.  The practical reading: verdict variance on
 these tasks is real (flip rate 0.36 pooled, i.e. roughly one draw in three
 disagrees with another), a single run is therefore not a reliability
-measurement, and the tenfold drop from `pass@1` 0.75 to `pass^10` 0.008 is the
+measurement, and the ~99× drop from `pass@1` 0.750 to `pass^10` 0.0076 is the
 honest cost of scoring a stochastic solver once.
 
 Bounds: two synthetic tasks, one 14B local model, one host, one temperature,
