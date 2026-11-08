@@ -28,7 +28,10 @@ no API key and no network** (Python 3.9+ and the standard library are enough; it
 
 ### 1. Harness differential decomposition
 
-`python3 examples/decompose_realfail.py` — two archived qwen2.5:7b harness runs, 100 tasks:
+`python3 examples/decompose_realfail.py` — two archived qwen2.5:7b harness runs, 100 tasks
+(inputs: [outputs/realfail-real.json](outputs/realfail-real.json) and
+[outputs/realfail-real-check.json](outputs/realfail-real-check.json); printed report:
+[outputs/example-harness-decomp.json](outputs/example-harness-decomp.json)):
 
 ```
 delta = +0.0300  (A 0.1000 -> B 0.1300, n=100 tasks)
@@ -48,7 +51,11 @@ top divergence:
 
 ### 2. pass@1 on the archived single-sample runs
 
-`python3 examples/passk_realfail.py` — 100 tasks, one attempt each:
+`python3 examples/passk_realfail.py` — 100 tasks, one attempt each
+(inputs: [outputs/realfail-real.json](outputs/realfail-real.json),
+[outputs/realfail-coder14b-100.json](outputs/realfail-coder14b-100.json); results:
+[outputs/example-passk-7b.json](outputs/example-passk-7b.json),
+[outputs/example-passk-14b.json](outputs/example-passk-14b.json)):
 
 ```
 == qwen2.5:7b — 100 tasks, 100 attempts ==
