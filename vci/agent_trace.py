@@ -273,6 +273,14 @@ while True:
 
 SESSION_FATAL = ("SessionDead", "SessionTimeout", "SessionDied", "SessionDesync")
 
+# Round 21: the observation contract is a selectable harness, not a rewrite.
+# `stdout` is the production contract (round-17/18/20 archives); `echo` is the
+# round-19 counterfactual wired into the live loop, so its score change can be
+# measured on paired samples instead of bounded offline.
+HARNESS_RUNNERS = {"stdout": _SESSION_RUNNER, "echo": _ECHO_RUNNER}
+HARNESS_LABELS = {"stdout": "stdout_only (production)",
+                  "echo": "stdout+repl_echo (round-19 counterfactual, live)"}
+
 
 class Session:
     """A persistent Python subprocess; state survives across run() calls."""
@@ -481,7 +489,13 @@ def grade_answer(reference: Any, answer: Any) -> bool:
 
 
 def run_task(task: Dict[str, Any], session: Session, responder: Callable,
-             max_turns: int = 6) -> Dict[str, Any]:
+             max_turns: int = 6, echo: bool = False) -> Dict[str, Any]:
+    """One task's agent loop.
+
+    ``echo`` selects the observation contract, not the solver: when true the
+    session is an echo session and the value of a final bare expression is
+    appended to the tool result the model sees (round 21's paired arm).
+    """
     messages = [{"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": task["prompt"]}]
     turns, tool_events = [], []
@@ -522,14 +536,18 @@ def run_task(task: Dict[str, Any], session: Session, responder: Callable,
                 tool_events.append({"name": "run_python", "code": code,
                                     "ok": bool(res.get("ok")),
                                     "stdout": res.get("stdout") or "",
+                                    "value": res.get("value"),
                                     "error": res.get("error")})
+                payload: Dict[str, Any] = {
+                    "ok": res.get("ok"),
+                    "stdout": (res.get("stdout")
+                               or "")[-TOOL_STDOUT_LIMIT:],
+                    "error": res.get("error")}
+                if echo and res.get("value") is not None:
+                    payload["value"] = str(res.get("value"))[:400]
                 messages.append({
                     "role": "user",
-                    "content": "run_python result: " + json.dumps({
-                        "ok": res.get("ok"),
-                        "stdout": (res.get("stdout")
-                                   or "")[-TOOL_STDOUT_LIMIT:],
-                        "error": res.get("error")})})
+                    "content": "run_python result: " + json.dumps(payload)})
             else:
                 tool_events.append({"name": t["name"], "args": t["args"],
                                     "error": "unknown_tool"})
@@ -557,7 +575,17 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         session_timeout_s: float = 15.0, out_path: Optional[str] = None,
         responder: Optional[Callable] = None,
         task_ids: Optional[List[str]] = None,
-        temperature: float = 0.0) -> Dict[str, Any]:
+        temperature: float = 0.0,
+        harness: str = "stdout") -> Dict[str, Any]:
+    """Run the agent suite under one of two observation contracts.
+
+    ``harness="stdout"`` is the production contract: the tool result carries
+    stdout only.  ``harness="echo"`` is the round-19 counterfactual made
+    real: the session additionally evaluates the final bare expression of
+    each snippet and returns its value, so the model observes it.
+    """
+    if harness not in HARNESS_RUNNERS:
+        raise ValueError("unknown harness: " + str(harness))
     tasks = AGENT_TASKS[:n_tasks]
     if task_ids is not None:  # resume a partial archive without re-running it
         wanted = list(task_ids)
@@ -573,6 +601,7 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
         "model": model, "model_digest": digest,
         "host": host, "seed": seed, "temperature": temperature,
         "num_predict": num_predict, "max_turns": max_turns,
+        "harness": HARNESS_LABELS[harness],
         "samples_per_task": 1, "n_tasks_planned": len(tasks),
         "suite_size": len(AGENT_TASKS),
         "task_ids": [t["task_id"] for t in tasks],
@@ -594,13 +623,15 @@ def run(model: str = DEFAULT_MODEL, host: str = DEFAULT_HOST,
                           ensure_ascii=False, indent=1)
 
     for task in tasks:
-        session = Session(timeout_s=session_timeout_s)
+        session = Session(timeout_s=session_timeout_s,
+                          runner=HARNESS_RUNNERS[harness])
         t0 = time.perf_counter()
         resp = responder if responder is not None else _default_responder(
             model=model, host=host, seed=seed, max_tokens=num_predict,
             timeout_s=timeout_s, temperature=temperature)
         try:
-            result = run_task(task, session, resp, max_turns=max_turns)
+            result = run_task(task, session, resp, max_turns=max_turns,
+                              echo=(harness == "echo"))
         finally:
             session.kill()
         records.append({"task_id": task["task_id"], "prompt": task["prompt"],
@@ -1308,6 +1339,155 @@ def flip_rate_report(sampled: List[Dict[str, Any]], n_boot: int = 1000,
             "the Just et al. ceiling on the VCI headline is untouched",
         ],
     }
+
+
+def paired_harness_report(base: List[Dict[str, Any]],
+                          echo: List[Dict[str, Any]],
+                          n_boot: int = 1000, seed: int = 0) -> Dict[str, Any]:
+    """Measure the harness effect on paired samples (round 21).
+
+    Round 19/20 could only *bound* what an echoing harness would score, because
+    the counterfactual changed an observation and then assumed the rest of the
+    trajectory unchanged.  Here both arms are actually run on the same seeds,
+    so the score difference is measured and the per-seed deltas give a variance.
+
+    Pairing is by ``manifest.seed`` (not by list position): an arm that is
+    missing a seed is excluded from both sides, never half-counted.  Each
+    cell is one (seed, task) pair; the exact McNemar test is reported on the
+    discordant cells.  Caution is in the notes: cells within a seed share a
+    task list, so the pooled p-value is approximate and the per-task table is
+    the primary reading.
+    """
+    from .metrics import wilson_interval
+    import statistics
+
+    def _by_seed(arm):
+        out = {}
+        for arc in arm:
+            s = (arc.get("manifest") or {}).get("seed")
+            if s is None:
+                continue
+            rows = {}
+            for r in arc.get("records") or []:
+                rows[r["task_id"]] = bool(grade_answer(r.get("reference"),
+                                                       r.get("final_answer")))
+            out[s] = rows
+        return out
+
+    b_seed, e_seed = _by_seed(base), _by_seed(echo)
+    seeds = sorted(set(b_seed) & set(e_seed))
+    tasks = sorted({t for s in seeds for t in b_seed[s]}
+                   & {t for s in seeds for t in e_seed[s]})
+    seeds = [s for s in seeds
+             if all(t in b_seed[s] and t in e_seed[s] for t in tasks)]
+
+    per_task: Dict[str, Any] = {}
+    for t in tasks:
+        both = base_only = echo_only = neither = 0
+        for s in seeds:
+            bp, ep = b_seed[s][t], e_seed[s][t]
+            if bp and ep:
+                both += 1
+            elif bp:
+                base_only += 1
+            elif ep:
+                echo_only += 1
+            else:
+                neither += 1
+        n = len(seeds)
+        bp_rate = (both + base_only) / n
+        ep_rate = (both + echo_only) / n
+        per_task[t] = {
+            "n_pairs": n,
+            "base_passes": both + base_only,
+            "echo_passes": both + echo_only,
+            "base_pass_rate": round(bp_rate, 4),
+            "echo_pass_rate": round(ep_rate, 4),
+            "base_pass_rate_ci95": [round(x, 4)
+                                    for x in wilson_interval(both + base_only, n)],
+            "echo_pass_rate_ci95": [round(x, 4)
+                                    for x in wilson_interval(both + echo_only, n)],
+            "delta": round(ep_rate - bp_rate, 4),
+            "cells": {"both_pass": both, "base_only": base_only,
+                      "echo_only": echo_only, "both_fail": neither},
+            "mcnemar_exact_p": round(_mcnemar_exact(base_only, echo_only), 4),
+            "base_resample_disagreement": round(2 * bp_rate * (1 - bp_rate), 4),
+            "echo_resample_disagreement": round(2 * ep_rate * (1 - ep_rate), 4),
+        }
+
+    n_cell = len(seeds) * len(tasks)
+    base_pass = sum(per_task[t]["base_passes"] for t in tasks)
+    echo_pass = sum(per_task[t]["echo_passes"] for t in tasks)
+    base_only = sum(per_task[t]["cells"]["base_only"] for t in tasks)
+    echo_only = sum(per_task[t]["cells"]["echo_only"] for t in tasks)
+    per_seed_delta = []
+    for s in seeds:
+        bp = sum(1 for t in tasks if b_seed[s][t])
+        ep = sum(1 for t in tasks if e_seed[s][t])
+        per_seed_delta.append(round((ep - bp) / len(tasks), 4))
+    delta_mean = statistics.mean(per_seed_delta) if per_seed_delta else None
+    delta_sd = (statistics.stdev(per_seed_delta)
+                if len(per_seed_delta) > 1 else None)  # None, not 0, at n=1
+    return {
+        "kind": "vci-agent-paired-harness", "version": AGENT_TRACE_VERSION,
+        "design": {
+            "n_pairs": len(seeds), "n_tasks": len(tasks),
+            "n_cells": n_cell, "seeds": seeds,
+            "base_harness": HARNESS_LABELS["stdout"],
+            "echo_harness": HARNESS_LABELS["echo"],
+            "pairing": "manifest.seed; a seed missing from either arm is "
+                       "dropped from both",
+        },
+        "tasks": per_task,
+        "pooled": {
+            "n_cells": n_cell,
+            "base_passes": base_pass, "echo_passes": echo_pass,
+            "base_pass_at_1": round(base_pass / n_cell, 4) if n_cell else None,
+            "echo_pass_at_1": round(echo_pass / n_cell, 4) if n_cell else None,
+            "delta": (round((echo_pass - base_pass) / n_cell, 4)
+                      if n_cell else None),
+            "base_pass_at_1_ci95": ([round(x, 4)
+                                     for x in wilson_interval(base_pass, n_cell)]
+                                    if n_cell else None),
+            "echo_pass_at_1_ci95": ([round(x, 4)
+                                     for x in wilson_interval(echo_pass, n_cell)]
+                                    if n_cell else None),
+            "cells": {"both_pass": n_cell - base_only - echo_only
+                      - sum(per_task[t]["cells"]["both_fail"] for t in tasks),
+                      "base_only": base_only, "echo_only": echo_only,
+                      "both_fail": sum(per_task[t]["cells"]["both_fail"]
+                                       for t in tasks)},
+            "mcnemar_exact_p": round(_mcnemar_exact(base_only, echo_only), 4),
+            "per_seed_delta": per_seed_delta,
+            "per_seed_delta_mean": (round(delta_mean, 4)
+                                    if delta_mean is not None else None),
+            "per_seed_delta_sd": round(delta_sd, 4) if delta_sd is not None else None,
+        },
+        "notes": [
+            "the two arms differ only in the observation contract (stdout vs "
+            "stdout + final bare expression); model, seed, temperature, "
+            "num_predict and max_turns are identical per pair",
+            "the exact McNemar test is on discordant cells; cells inside one "
+            "seed share a task list, so the pooled reading is approximate and "
+            "the per-task rows are primary",
+            "per_seed_delta is the score difference in tasks per sample; its "
+            "sd is the arm-difference variance, not the solver's variance",
+            "synthetic lab tasks, one 14B local model, one temperature, no "
+            "human labels: this is a harness effect on this decoder, not a "
+            "claim about verifier validity; Just et al. ceiling untouched",
+        ],
+    }
+
+
+def _mcnemar_exact(base_only: int, echo_only: int) -> float:
+    """Two-sided exact binomial McNemar p-value on the discordant pairs."""
+    from math import comb
+    n = base_only + echo_only
+    if n == 0:
+        return 1.0
+    m = min(base_only, echo_only)
+    tail = sum(comb(n, x) for x in range(0, m + 1)) / 2 ** n
+    return min(1.0, 2 * tail)
 
 
 def _last_statement_kind(code: str) -> str:

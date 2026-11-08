@@ -138,12 +138,14 @@ def cmd_agent_trace(args):
                               num_predict=args.num_predict,
                               timeout_s=args.timeout, out_path=args.out,
                               task_ids=ids,
-                              temperature=args.temperature)
+                              temperature=args.temperature,
+                              harness=args.harness)
     recs = archive["records"]
     n_code = sum(len(agent_trace.task_snippets(r)) for r in recs)
     n_pass = sum(1 for r in recs if r["grade"])
     print(f"agent-trace: {len(recs)} tasks archived "
-          f"({n_code} run_python snippets), graded pass {n_pass}/{len(recs)}")
+          f"({n_code} run_python snippets, harness {args.harness}), "
+          f"graded pass {n_pass}/{len(recs)}")
     print("wrote " + args.out)
     return 0
 
@@ -308,6 +310,35 @@ def cmd_agent_flip_rate(args):
     for tid, t in rep["tasks"].items():
         print(f"  {tid}: {t['passes']}/{t['n_samples']} = {t['pass_rate']} "
               f"CI {t['pass_rate_ci95']} flip-rate {t['resample_disagreement']}")
+    print("wrote " + args.out)
+    return 0
+
+
+def cmd_agent_echo_paired(args):
+    import json
+    from . import agent_trace
+    arms = []
+    for path in (args.base, args.echo):
+        with open(path, encoding="utf-8") as fh:
+            doc = json.load(fh)
+        arms.append(doc["replicas"] if "replicas" in doc else [doc])
+    rep = agent_trace.paired_harness_report(arms[0], arms[1])
+    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+    with open(args.out, "w", encoding="utf-8") as fh:
+        json.dump(rep, fh, ensure_ascii=False, indent=1)
+    d, p = rep["design"], rep["pooled"]
+    print(f"agent-echo-paired: {d['n_pairs']} paired samples x "
+          f"{d['n_tasks']} tasks; base pass@1 = {p['base_pass_at_1']}, "
+          f"echo pass@1 = {p['echo_pass_at_1']}, delta = {p['delta']}")
+    print(f"  cells both/base-only/echo-only/both-fail = "
+          f"{p['cells']['both_pass']}/{p['cells']['base_only']}/"
+          f"{p['cells']['echo_only']}/{p['cells']['both_fail']}, "
+          f"McNemar p = {p['mcnemar_exact_p']}, per-seed delta "
+          f"{p['per_seed_delta_mean']} +/- {p['per_seed_delta_sd']}")
+    for tid, t in rep["tasks"].items():
+        print(f"  {tid}: base {t['base_passes']}/{t['n_pairs']} -> echo "
+              f"{t['echo_passes']}/{t['n_pairs']} (delta {t['delta']}, "
+              f"p {t['mcnemar_exact_p']})")
     print("wrote " + args.out)
     return 0
 
@@ -638,6 +669,9 @@ def build_parser():
     at.add_argument("--out", default="outputs/agent-traces.json")
     at.add_argument("--task-ids", dest="task_ids", default=None,
                     help="comma-separated subset, e.g. agt-06-sort-records")
+    at.add_argument("--harness", choices=["stdout", "echo"], default="stdout",
+                    help="observation contract: stdout only (production) or "
+                         "stdout + final bare expression (round-19 echo)")
     at.set_defaults(fn=cmd_agent_trace)
 
     aa = sub.add_parser(
@@ -698,6 +732,18 @@ def build_parser():
                           "sample) or a single archive")
     afr.add_argument("--out", default="outputs/agent-flip-rate.json")
     afr.set_defaults(fn=cmd_agent_flip_rate)
+
+    aep = sub.add_parser(
+        "agent-echo-paired",
+        help="paired harness differential: the stdout-only arm vs the "
+             "stdout+repl-echo arm on the same seeds; measured score delta, "
+             "per-seed delta variance and exact McNemar on discordant cells")
+    aep.add_argument("--base", default="outputs/agent-mixed-k12.json",
+                     help="stdout-only arm ({'replicas': [...]} or one archive)")
+    aep.add_argument("--echo", required=True,
+                     help="echo arm ({'replicas': [...]} or one archive)")
+    aep.add_argument("--out", default="outputs/agent-echo-paired.json")
+    aep.set_defaults(fn=cmd_agent_echo_paired)
 
     afm = sub.add_parser(
         "agent-failure-modes",

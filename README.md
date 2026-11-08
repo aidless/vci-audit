@@ -154,7 +154,7 @@ Standard library only. Python 3.9+. Nothing is fetched at run time.
 git clone https://github.com/aidless/vci-audit.git vci-audit && cd vci-audit
 python3 -m venv .venv && . .venv/bin/activate
 pip install -e ".[dev]"    # editable install + the `vci` console script
-python3 -m pytest -q       # 224 tests locally; a clean clone passes 214, skips 2
+python3 -m pytest -q       # 232 tests locally; a clean clone passes 222, skips 2
                            # (work/-dependent modules self-skip)
 ```
 
@@ -285,6 +285,15 @@ python3 -m vci agent-flip-rate --sampled outputs/agent-mixed-k12.json
                                          # per-task pass rate with a Wilson interval and the
                                          # resample disagreement probability 2p(1-p): the
                                          # flip-rate denominator round 18 lacked (round 20,
+                                         # offline)
+python3 -m vci agent-trace --harness echo --task-ids agt-04-primes,agt-06-sort-records
+                                         # same agent loop under the echo observation
+                                         # contract (stdout + final bare expression; needs
+                                         # ollama); omit --harness for the production contract
+python3 -m vci agent-echo-paired --echo outputs/agent-echo-k12.json
+                                         # paired harness differential on the same seeds:
+                                         # measured score delta, per-seed delta variance and
+                                         # exact McNemar on discordant cells (round 21,
                                          # offline)
 ```
 

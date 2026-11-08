@@ -704,3 +704,75 @@ def test_echo_replay_recovers_a_bare_expression_value():
     assert p["pass_at_1_unique_before"] == 0.5
     assert p["pass_at_1_unique_after_echo_upper_bound"] == 1.0
 
+
+# ---------------------------- paired harness differential (round 21)
+
+def test_echo_harness_changes_only_the_observation_contract():
+    seen = []
+
+    def responder(messages):
+        seen.append(json.loads(json.dumps(messages)))
+        if len(seen) == 1:
+            return {"content": "", "tool_calls": [{"function": {
+                "name": "run_python", "arguments": {"code": "2 + 3"}}}]}
+        return {"content": "", "tool_calls": [{"function": {
+            "name": "submit_answer", "arguments": {"answer": "5"}}}]}
+
+    arch = at.run(n_tasks=1, harness="echo", responder=responder)
+    tool_msg = seen[1][-1]["content"]
+    assert '"value": "5"' in tool_msg
+    assert arch["manifest"]["harness"] == at.HARNESS_LABELS["echo"]
+
+    seen.clear()
+    arch2 = at.run(n_tasks=1, harness="stdout", responder=responder)
+    assert "value" not in seen[1][-1]["content"]
+    assert arch2["manifest"]["harness"] == at.HARNESS_LABELS["stdout"]
+
+
+def test_run_rejects_an_unknown_harness():
+    try:
+        at.run(n_tasks=1, harness="magic", responder=lambda m: {"content": ""})
+    except ValueError as exc:
+        assert "magic" in str(exc)
+    else:
+        raise AssertionError("unknown harness was accepted")
+
+
+def _seed_arc(seed, records):
+    arc = _arc(records)
+    arc["manifest"]["seed"] = seed
+    return arc
+
+
+def test_paired_report_drops_seeds_missing_from_either_arm():
+    base = [_seed_arc(1, [_rec("t1", 10, "10")]),
+            _seed_arc(2, [_rec("t1", 10, "10")]),
+            _seed_arc(3, [_rec("t1", 10, "1")])]
+    echo = [_seed_arc(1, [_rec("t1", 10, "10")]),
+            _seed_arc(3, [_rec("t1", 10, "10")])]
+    rep = at.paired_harness_report(base, echo)
+    assert rep["design"]["n_pairs"] == 2
+    assert rep["pooled"]["n_cells"] == 2
+
+
+def test_paired_report_measures_a_delta_and_counts_discordant_cells():
+    base = [_seed_arc(1, [_rec("t1", 10, "10"), _rec("t2", 20, "1")]),
+            _seed_arc(2, [_rec("t1", 10, "10"), _rec("t2", 20, "20")])]
+    echo = [_seed_arc(1, [_rec("t1", 10, "1"), _rec("t2", 20, "20")]),
+            _seed_arc(2, [_rec("t1", 10, "10"), _rec("t2", 20, "20")])]
+    rep = at.paired_harness_report(base, echo)
+    p = rep["pooled"]
+    assert p["base_passes"] == 3 and p["echo_passes"] == 3
+    assert p["delta"] == 0.0
+    assert p["cells"] == {"both_pass": 2, "base_only": 1,
+                          "echo_only": 1, "both_fail": 0}
+    assert p["mcnemar_exact_p"] == 1.0
+    assert rep["tasks"]["t1"]["delta"] == -0.5
+    assert rep["tasks"]["t2"]["delta"] == 0.5
+
+
+def test_mcnemar_exact_matches_the_binomial():
+    assert at._mcnemar_exact(0, 0) == 1.0
+    assert at._mcnemar_exact(0, 5) == 0.0625
+    assert at._mcnemar_exact(5, 5) == 1.0
+

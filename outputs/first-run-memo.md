@@ -1242,4 +1242,83 @@ a *selectable* production runner and run a paired arm (score difference
 measured rather than bounded); (4) carry the same k = 12 design to the
 stable-fail tasks to see whether they stay structural at 12 draws.
 
+## R21. Paired harness differential: the echo contract measured, not bounded
+
+**Question.**  R19 bounded the echo harness at +0.071 on the 11 unique suite
+failures; R20 bounded it at +0.174 on the two mixed tasks by *replaying*
+archived failures and assuming the rest of the trajectory unchanged.  Both
+numbers are counterfactuals.  R20's next-candidate (3) was to turn the echo
+contract into a selectable runner and run a genuinely paired arm, so the
+difference is measured with a variance on the same seeds.
+
+**Design.**  `vci/agent_trace.py` now routes the session through
+`HARNESS_RUNNERS = {stdout, echo}`; `run_task(..., echo=True)` appends the
+value of a final bare expression to the tool result the model observes and
+changes nothing else.  The echo arm was run on the same axis as R20:
+`qwen2.5-coder:14b`, digest `9ec8897f747e…`, temperature 1.0, seed
+`20261105 + 7919k` for k = 0…11, `num_predict 448`, `max_turns 6`, tasks
+`agt-04-primes` and `agt-06-sort-records`, fresh session per task.  Paired by
+`manifest.seed` (a seed missing from an arm is dropped from both, never
+half-counted).  24 cells in the echo arm, wall **1,071.6 s** (65.6–151.7 s per
+sample), 0 transport or parse errors.  Code `work/agent_echo_run.py`; analysis
+`paired_harness_report` (new CLI `vci agent-echo-paired`, offline); artifacts
+`outputs/agent-echo-k12.json`, `outputs/agent-samples/echo12/sample-00..11.json`,
+`outputs/agent-echo-paired.json`.
+
+**Result [M].**
+
+| quantity | value |
+|---|---|
+| base (`stdout`) `pass@1` | **18/24 = 0.750**, Wilson 95 % CI [0.551, 0.880] |
+| echo (`stdout` + bare-expression value) `pass@1` | **22/24 = 0.917**, CI [0.742, 0.977] |
+| measured delta | **+0.167** |
+| cell table (both / base-only / echo-only / both-fail) | **18 / 0 / 4 / 2** |
+| exact McNemar, pooled | **p = 0.125** (4 : 0) |
+| per-seed delta | mean **0.167**, sd **0.246** (4 of 12 seeds +0.5, 8 of 12 0.0) |
+| `agt-04-primes` | 8/12 → **10/12**, delta +0.167, p = 0.5 |
+| `agt-06-sort-records` | 10/12 → **12/12**, delta +0.167, p = 0.5 |
+| mean resample disagreement, 2p(1−p) | **0.361 → 0.139** (agt-04 0.444 → 0.278; agt-06 0.278 → **0.000**) |
+
+**It is really one variable.**  The two arms' manifests agree on model, model
+digest, host, temperature, `num_predict`, `max_turns`, `suite_size` and session
+policy.  The one manifest field that differs is `task_ids`: the R20 base
+archive still lists the full six-task suite in its manifest although its
+records were trimmed to the same two tasks (a bookkeeping residue of the R20
+merge, not a run difference — the analysis reads records only).  At the record
+level, **20 of 24 final answers are byte-identical** between arms; the four
+that changed are exactly the four `echo_only` cells, i.e. every changed answer
+turned a failure into a pass, and **no passing cell was disturbed**.  The two
+residual echo failures split cleanly: seed `20316538` ends with
+`final_answer = None` (turn budget, no `submit_answer` — the echo contract
+cannot help), and seed `20348214` answers `'348'` in **both** arms (the same
+genuinely wrong computation, unchanged — again not an observation problem).
+
+**What this changes.**  R20's +0.174 upper bound predicted +0.167 measured:
+the bound was tight for this pair, and the measured effect comes with zero
+regressions in 24 cells.  The flip statistic is the more interesting half:
+`agt-06` goes from a 0.278 resample disagreement to **0.000** under echo, so
+the entire verdict variance of that task was the observation contract, not the
+solver.  But significance is *not* reached: 4 discordant cells in one
+direction give exact McNemar p = 0.125, so "echo is better" is a directionally
+consistent measurement at this n, not a demonstrated effect at the 5 % level,
+and a true delta of 0 is not excluded.  Citing the point estimate (+0.167)
+without the p = 0.125 would overstate it; citing p alone would hide that the
+sign is 4:0 and no cell regressed.
+
+Bounds: two synthetic tasks, one 14B local model, one host, one temperature,
+no human labels.  The echo arm changes what the *system* observes, so this is
+a harness effect on this decoder, not evidence that verifier validity (VCI)
+improves, and the Just et al. ceiling is untouched.  Test suite is now
+**232 tests locally / 222 passed + 2 skipped in a clean clone** (227 → 232:
+five round-21 tests; earlier counts are historical).
+
+**Next candidates.**  (1) Fill `annotations/labels.csv` — still the only step
+that lifts the κ/α ceiling; (2) run the paired echo arm on the two
+**stable-fail** suite tasks (`agt-02-running-max`, `agt-05-log-latency`, 0/4 at
+temperature 1.0), where R19 predicts the contract cannot help and the replay
+already showed agt-02 echoes nothing while agt-05 is unreplayable — a predicted
+null, live, is the cheapest falsification test this design has; (3) widen the
+agent suite beyond 6 tasks; (4) raise paired n only if the 4:0 sign survives
+the stable-fail arm, since n = 24 cannot reach significance at a 0.17 effect.
+
 
