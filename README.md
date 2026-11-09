@@ -2,6 +2,10 @@
 
 [![tests](https://github.com/aidless/vci-audit/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/aidless/vci-audit/actions/workflows/tests.yml)
 
+> ⬇️ Quickstart 实录（本机录制，非模拟输出）:
+
+![quickstart demo](docs/demo.gif)
+
 A measurement toolkit for open-ended task verification. Two standalone components can be pointed
 at **your own** benchmark; the rest of the repository is the artefact behind [SPEC.md](SPEC.md).
 
