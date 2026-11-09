@@ -1321,4 +1321,58 @@ null, live, is the cheapest falsification test this design has; (3) widen the
 agent suite beyond 6 tasks; (4) raise paired n only if the 4:0 sign survives
 the stable-fail arm, since n = 24 cannot reach significance at a 0.17 effect.
 
+## R22. Stable-fail paired echo arm: the predicted null, live
+
+**Question.** R21's next-candidate (2) asked for the cheapest falsification
+test of the harness-differential story: run the paired `stdout` / `echo` arms
+on the two stable-fail suite tasks, where R19 predicted the echo contract
+cannot help. This section records that cloud rerun; it does not retroactively
+change R21's mixed-task measurement.
+
+**Design.** Both arms were run on AMD/Radeon cloud with `qwen2.5-coder:14b`,
+digest `9ec8897f747e…`, temperature 1.0, seeds `20261105 + 7919*k` for
+`k=0..11`, `num_predict=448`, `max_turns=6`, and fresh session per task.
+Tasks: `agt-02-running-max` and `agt-05-log-latency`. The only manifest field
+differing between arms is `harness` (`stdout_only (production)` vs
+`stdout+repl_echo (round-19 counterfactual, live)`). Both arms contain 12
+complete two-record archives; pairing is by `manifest.seed`. Committed
+artifacts: `outputs/round22/agent-stable-stdout-k12.json`,
+`outputs/round22/agent-stable-echo-k12.json`,
+`outputs/round22/agent-stable-echo-paired.json`, and `outputs/round22/round22.log`.
+Offline verification command: `python3 examples/verify_round22.py`.
+
+**Result [M].**
+
+| quantity | value |
+|---|---|
+| stdout `pass@1` | **9/24 = 0.375**, Wilson 95% CI [0.2116, 0.5729] |
+| echo `pass@1` | **9/24 = 0.375**, Wilson 95% CI [0.2116, 0.5729] |
+| measured delta | **0.0** |
+| cell table (both / base-only / echo-only / both-fail) | **9 / 0 / 0 / 15** |
+| exact McNemar, pooled | **p = 1.0** |
+| per-seed delta | mean **0.0**, sd **0.0** |
+| `agt-02-running-max` | 9/12 → 9/12, delta 0.0, p = 1.0 |
+| `agt-05-log-latency` | 0/12 → 0/12, delta 0.0, p = 1.0 |
+
+The echo contract changed no verdict on this task pair: there are zero
+discordant cells, so an exact McNemar test has no evidence of an arm effect.
+This is the pre-registered null R19 predicted. It also shows that R21's
+`+0.167` on the mixed `agt-04` / `agt-06` task pair is task-composition
+specific: the observation contract affects that "compute-then-report" failure
+surface, but does not rescue a serialization/turn-budget surface.
+
+**Bounds.** Two synthetic tasks, one 14B model, one temperature, 12 paired
+seeds, no human labels. The confidence intervals remain wide; `p=1.0` means
+this experiment found no discordant cells, not that the two harnesses are
+universally equivalent, and it is not a verifier-validity (VCI) improvement.
+The Just et al. ceiling is untouched. The older local stopped-run artifacts
+(`outputs/agent-samples/stable-stdout12/`,
+`outputs/agent-stable-stdout-k12.json`) are partial and are not merged into
+this result.
+
+**Next candidates.** (1) Fill `annotations/labels.csv`, still the only step
+that lifts the κ/α ceiling; (2) widen the agent suite beyond six tasks;
+(3) do not raise paired `n` for this null unless a wider task set produces a
+discordant signal worth resolving.
+
 

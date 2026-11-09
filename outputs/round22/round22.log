@@ -1,0 +1,32 @@
+
+=== harness=stdout ===
+sample 00 (seed 20261105, ran): 1/2 pass ['agt-02-running-max'] in 168s
+sample 01 (seed 20269024, ran): 1/2 pass ['agt-02-running-max'] in 165s
+sample 02 (seed 20276943, ran): 1/2 pass ['agt-02-running-max'] in 178s
+sample 03 (seed 20284862, ran): 1/2 pass ['agt-02-running-max'] in 161s
+sample 04 (seed 20292781, ran): 1/2 pass ['agt-02-running-max'] in 164s
+sample 05 (seed 20300700, ran): 0/2 pass [] in 166s
+sample 06 (seed 20308619, ran): 0/2 pass [] in 161s
+sample 07 (seed 20316538, ran): 0/2 pass [] in 161s
+sample 08 (seed 20324457, ran): 1/2 pass ['agt-02-running-max'] in 167s
+sample 09 (seed 20332376, ran): 1/2 pass ['agt-02-running-max'] in 167s
+sample 10 (seed 20340295, ran): 1/2 pass ['agt-02-running-max'] in 166s
+sample 11 (seed 20348214, ran): 1/2 pass ['agt-02-running-max'] in 180s
+wrote outputs/agent-stable-stdout-k12.json
+
+=== harness=echo ===
+sample 00 (seed 20261105, ran): 1/2 pass ['agt-02-running-max'] in 167s
+sample 01 (seed 20269024, ran): 1/2 pass ['agt-02-running-max'] in 178s
+sample 02 (seed 20276943, ran): 1/2 pass ['agt-02-running-max'] in 163s
+sample 03 (seed 20284862, ran): 1/2 pass ['agt-02-running-max'] in 161s
+sample 04 (seed 20292781, ran): 1/2 pass ['agt-02-running-max'] in 164s
+sample 05 (seed 20300700, ran): 0/2 pass [] in 159s
+sample 06 (seed 20308619, ran): 0/2 pass [] in 161s
+sample 07 (seed 20316538, ran): 0/2 pass [] in 169s
+sample 08 (seed 20324457, ran): 1/2 pass ['agt-02-running-max'] in 164s
+sample 09 (seed 20332376, ran): 1/2 pass ['agt-02-running-max'] in 167s
+sample 10 (seed 20340295, ran): 1/2 pass ['agt-02-running-max'] in 171s
+sample 11 (seed 20348214, ran): 1/2 pass ['agt-02-running-max'] in 177s
+wrote outputs/agent-stable-echo-k12.json
+
+=== both arms done ===

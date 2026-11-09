@@ -1,0 +1,123 @@
+{
+ "kind": "vci-agent-paired-harness",
+ "version": "1.0",
+ "design": {
+  "n_pairs": 12,
+  "n_tasks": 2,
+  "n_cells": 24,
+  "seeds": [
+   20261105,
+   20269024,
+   20276943,
+   20284862,
+   20292781,
+   20300700,
+   20308619,
+   20316538,
+   20324457,
+   20332376,
+   20340295,
+   20348214
+  ],
+  "base_harness": "stdout_only (production)",
+  "echo_harness": "stdout+repl_echo (round-19 counterfactual, live)",
+  "pairing": "manifest.seed; a seed missing from either arm is dropped from both"
+ },
+ "tasks": {
+  "agt-02-running-max": {
+   "n_pairs": 12,
+   "base_passes": 9,
+   "echo_passes": 9,
+   "base_pass_rate": 0.75,
+   "echo_pass_rate": 0.75,
+   "base_pass_rate_ci95": [
+    0.4677,
+    0.9111
+   ],
+   "echo_pass_rate_ci95": [
+    0.4677,
+    0.9111
+   ],
+   "delta": 0.0,
+   "cells": {
+    "both_pass": 9,
+    "base_only": 0,
+    "echo_only": 0,
+    "both_fail": 3
+   },
+   "mcnemar_exact_p": 1.0,
+   "base_resample_disagreement": 0.375,
+   "echo_resample_disagreement": 0.375
+  },
+  "agt-05-log-latency": {
+   "n_pairs": 12,
+   "base_passes": 0,
+   "echo_passes": 0,
+   "base_pass_rate": 0.0,
+   "echo_pass_rate": 0.0,
+   "base_pass_rate_ci95": [
+    0.0,
+    0.2425
+   ],
+   "echo_pass_rate_ci95": [
+    0.0,
+    0.2425
+   ],
+   "delta": 0.0,
+   "cells": {
+    "both_pass": 0,
+    "base_only": 0,
+    "echo_only": 0,
+    "both_fail": 12
+   },
+   "mcnemar_exact_p": 1.0,
+   "base_resample_disagreement": 0.0,
+   "echo_resample_disagreement": 0.0
+  }
+ },
+ "pooled": {
+  "n_cells": 24,
+  "base_passes": 9,
+  "echo_passes": 9,
+  "base_pass_at_1": 0.375,
+  "echo_pass_at_1": 0.375,
+  "delta": 0.0,
+  "base_pass_at_1_ci95": [
+   0.2116,
+   0.5729
+  ],
+  "echo_pass_at_1_ci95": [
+   0.2116,
+   0.5729
+  ],
+  "cells": {
+   "both_pass": 9,
+   "base_only": 0,
+   "echo_only": 0,
+   "both_fail": 15
+  },
+  "mcnemar_exact_p": 1.0,
+  "per_seed_delta": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "per_seed_delta_mean": 0.0,
+  "per_seed_delta_sd": 0.0
+ },
+ "notes": [
+  "the two arms differ only in the observation contract (stdout vs stdout + final bare expression); model, seed, temperature, num_predict and max_turns are identical per pair",
+  "the exact McNemar test is on discordant cells; cells inside one seed share a task list, so the pooled reading is approximate and the per-task rows are primary",
+  "per_seed_delta is the score difference in tasks per sample; its sd is the arm-difference variance, not the solver's variance",
+  "synthetic lab tasks, one 14B local model, one temperature, no human labels: this is a harness effect on this decoder, not a claim about verifier validity; Just et al. ceiling untouched"
+ ]
+}

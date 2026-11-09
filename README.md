@@ -146,6 +146,11 @@ unreliable rather than being patched into passing.
 so TPR/TNR are an upper bound on real behaviour (Just et al., FSE 2014), and κ/α are currently
 synthetic because no human sheet exists.
 
+Round 22 adds a cloud-rerun, paired null result in
+[`outputs/round22/`](outputs/round22/): on two stable-fail synthetic tasks, the echo observation
+contract changed none of the 24 verdict cells (`delta=0.0`, exact McNemar `p=1.0`). Verify the
+committed archives and report offline with `python3 examples/verify_round22.py`.
+
 ## Install
 
 Standard library only. Python 3.9+. Nothing is fetched at run time.
